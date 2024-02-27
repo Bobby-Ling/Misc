@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <title>计数器</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* 设置最小高度为视口高度，以确保内容占据整个视口 */
+        }
+
+        #Container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            /* align-items: space-between; */
+            /* justify-items: center; */
+        }
+
+        #Ipt {
+            font-size: x-large;
+        }
+
+        #Para {
+            font-family: 'Courier New', Courier, monospace;
+            flex: 1;
+            /* flex-grow: 1; */
+        }
+
+        #Btn {}
+    </style>
+</head>
+
+<body>
+
+    <div id="Container">
+        <input id="Ipt">
+        <p id="Para">SomeText</p>
+        <button id="Btn">Button</button>
+    </div>
+
+</body>
+
+</html>

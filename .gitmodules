@@ -1,0 +1,12 @@
+[submodule "Learning"]
+	path = Learning
+	url = git@gitee.com:bobby-ling/Learning.git
+[submodule "Obsidian"]
+	path = Obsidian
+	url = git@gitee.com:bobby-ling/Obsidian.git
+[submodule "Windows-Dev"]
+	path = Windows-Dev
+	url = git@gitee.com:bobby-ling/windows-dev.git
+[submodule "C++"]
+	path = C++
+	url = git@gitee.com:bobby-ling/cpp.git
