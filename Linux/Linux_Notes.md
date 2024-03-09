@@ -269,6 +269,8 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
   ```bash
   ls | grep -v keep | xargs rm #删除keep文件之外的所有文件, -v参数决定了结果为匹配之外的结果
   find ./ -name '*.txt' -exec echo "Found file: {}" \; -exec cp {} /path/to/destination/ \; #-exec执行多个命令
+
+  find ./ -type f -name "*.sh" -exec chmod +x {} \; # 递归添加执行权限
   ```
 - pwd
   - -P, --physical真实路径
@@ -804,6 +806,9 @@ x{m,n} =x\{m,n\} x的字符数量在m到n个之间。
 ```
 
 ## linux内核
+```bash
+vim ./include/generated/uapi/linux/version.h # 查看版本号
+```
 
 ## 常用软件及其命令
 
@@ -841,7 +846,7 @@ x{m,n} =x\{m,n\} x的字符数量在m到n个之间。
   bobby_ubuntu@Bobby:~$ uname -a
   Linux Bobby 5.15.133.1-microsoft-standard-WSL2 #1 SMP Thu Oct 5 21:02:42 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
   ```
-- `环境变量`
+#### `环境变量`
   ```bash
   cat ~/.bashrc
   ...
@@ -849,6 +854,10 @@ x{m,n} =x\{m,n\} x的字符数量在m到n个之间。
   export winData="/mnt/c/Users/bobby/DATA/"
   ...
   source ~/.bashrc
+
+  vim /etc/apt/sources.list
+  # 注意:sudo执行脚本不会默认载入用户定义的环境变量
+  sudo -E build.sh # 载入当前.bashrc的环境变量来执行shell脚本
   ```
 ### linux调试
 ####  `printk` 

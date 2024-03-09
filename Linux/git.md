@@ -496,3 +496,9 @@ ssh -T git@gitee.com
   git clone --branch <branch_name> <remote-address> --depth 1
   # 只克隆单个分支的最新一次提交。
   ```
+
+- 克隆子模块submodule
+```bash
+git submodule sync --recursive
+git submodule update --recursive --remote
+```
