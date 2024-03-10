@@ -812,6 +812,11 @@ vim ./include/generated/uapi/linux/version.h # 查看版本号
 
 ## 常用软件及其命令
 
+### `Tailscale`
+```bash
+sudo tailscale file get 
+```
+
 ### `sceenfetch`
 显示系统/主题信息的命令行脚本
 
@@ -828,6 +833,16 @@ vim ./include/generated/uapi/linux/version.h # 查看版本号
   sudo service ssh restart
   sudo service ssh status
   sudo systemctl enable ssh #开机启动
+
+  # 开启免密码登录
+  sudo vim /etc/ssh/sshd_config
+  PubkeyAuthentsudo vim /etc/ssh/sshd_configication yes
+  service sshd restart
+
+  # 设置免密码登录
+  ssh-keygen -t rsa -C "email@domain.com" -f filename
+  ssh-copy-id -i ~/.ssh/id_ed25519.pub bobby_ubuntu@100.98.129.77
+
   ```
 ### `cmake`
 `cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1`
@@ -900,3 +915,21 @@ vim ./include/generated/uapi/linux/version.h # 查看版本号
   ```bash
   dmesg -l debug -T | tail -10
   ```
+
+### `GDB+QEMU`
+```bash
+# 编译选项
+CONFIG_RANDOMIZE_BASE=n
+
+mkinitramfs -o ramdisk.img
+
+echo "add-auto-load-safe-path path/to/linux/scripts/gdb/vmlinux-gdb.py" >> ~/.gdbinit
+qemu-system-x86_64 \
+  -kernel arch/x86_64/boot/bzImage \
+  -nographic \
+  -append "console=ttyS0 nokaslr" \
+  -initrd ramdisk.img \
+  -m 1024 \
+  -s -S
+
+```
