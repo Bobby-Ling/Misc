@@ -195,7 +195,7 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
     - `-A `  all,包括隐藏文件,不包括`. `和`.. `目录
     - `-l `  详细信息显示(属性权限时间等)
     - `-F `  在文件名末显示出该文件名代表的类型
-    - `-d `  仅列出目录本身,而不是列出目录内的文件数据???
+    - `-d `  仅列出目录本身,而不是列出目录内的文件数据(查看目录属性)
     - `-f `  直接列出结果(默认会以文件名排序)
     - `-t `  时间,新到旧
     - `-rt `  时间,新到旧
@@ -217,6 +217,7 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
     ```bash
     ls -ltgG
     ls -p | grep -E "[a-zA-Z0-9._-]+" #ls -只列出文件
+    ll -F | grep "/$" #过滤目录
     ```
 - cp
   - 参数
@@ -271,6 +272,18 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
   find ./ -name '*.txt' -exec echo "Found file: {}" \; -exec cp {} /path/to/destination/ \; #-exec执行多个命令
 
   find ./ -type f -name "*.sh" -exec chmod +x {} \; # 递归添加执行权限
+
+  find -wholename "*linux/unistd.h"
+  ./usr/include/linux/unistd.h
+  ./include/uapi/linux/unistd.h
+  ```
+- tree
+  ```bash
+  # 找到特定时间之前的目录
+  find /usr/include -type d ! -newermt "2024-03-12 17:17:00" 
+
+  # 使用 tree 命令显示目录结构，并排除临时文件中的目录
+  tree  -I "$(find /usr/include -maxdepth 1 -type d ! -newermt "2024-03-12 17:17:00" -printf "%f|" | sed 's/|$//')"  -t > ~/Git/code/folderComp/include-HDR2.txt
   ```
 - pwd
   - -P, --physical真实路径
@@ -911,12 +924,26 @@ sudo tailscale file get
   gcc: /usr/bin/gcc /usr/lib/gcc /usr/share/gcc /usr/share/man/man1/gcc.1.gz
   ```
 
+#### `du`
+```bash
+du -sh 
+-h, --human-readable
+    以K，M，G为单位，显示文件的大小
+-s, --summarize
+    只显示总计的文件大小
+-S, --separate-dirs
+    显示时并不含其子文件夹的大小
+-d, --max-depth=N
+    显示子文件夹的深度（层级）
+```
+
 #### `dmesg`
   ```bash
   dmesg -l debug -T | tail -10
   ```
 
-### `GDB+QEMU`
+
+#### `GDB+QEMU`
 ```bash
 # 编译选项
 CONFIG_RANDOMIZE_BASE=n
@@ -931,5 +958,83 @@ qemu-system-x86_64 \
   -initrd ramdisk.img \
   -m 1024 \
   -s -S
+$ gdb vmlinux
+(gdb) target remote :1234
+(gdb) b start_kernel
+(gdb) c
+
+asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
+```
+
+#### `GDB`
+```bash
+file xxx  # 查看文件格式信息
+size *.o   # 查看ELF各个段的长度
+objdump -h *.o # 查看目标文件结构和信息 -h(段信息) -sd(以16进制打印并且反汇编)
+readelf -S *.o 
+nm *.o   # 查看符号表
+c++filt "符号名" # 还原经过mangling后名称
+
+break/b 设置断点(函数名，代码行，a.cpp:20)
+delete n 删除第n个断点
+info b  显示设置的断点
+delete breakpoints 删除所有断点
+set args ... 设置程序参数
+run/r  开始运行
+continue/c 执行到下一个断点
+next/n 下一行，遇到函数不会进入
+step/s 下一步，遇到函数会进入
+backtrace/bt  回溯出问题的调用
+f x  x为6显示的几号代码
+until  运行到退出该函数体
+finish 运行到当前函数返回，并打印堆栈地址和返回值
+
+list/l 默认显示10行代码
+list 行号  显示以行号为中心的前后10行代码
+list 函数名
+list 不带参数则接上次list继续显示剩下的
+
+print/p
+
+dir directory ~/Git/glibc-2.35/
+
+run: 简记为 r , 其作用是运行程序, 当遇到断点后, 程序会在断点处停止运行, 等待用户输入下一步的命令. 
+continue ( 简写c ) : 继续执行, 到下一个断点处( 或运行结束) 
+next: ( 简写 n) , 单步跟踪程序, 当遇到函数调用时, 也不进入此函数体; 此命令同 step 的主要区别是, step 遇到用户自定义的函数, 将步进到函数中去运行, 而 next 则直接调用函数, 不会进入到函数体内. 
+step ( 简写s) : 单步调试如果有函数调用, 则进入函数; 与命令n不同, n是不进入调用的函数的
+until: 当你厌倦了在一个循环体内单步跟踪时, 这个命令可以运行程序直到退出循环体. 
+until+行号:  运行至某行, 不仅仅用来跳出循环
+finish:  运行程序, 直到当前函数完成返回, 并打印函数返回时的堆栈地址和返回值及参数值等信息. 
+call 函数(参数): 调用程序中可见的函数, 并传递" 参数" , 如: call gdb_test(55)
+quit: 简记为 q , 退出gdb
+
+```
+
+#### `系统调用`
+```bash
+arch/x86/entry/syscalls/syscall_64.tbl
+<number> <abi> <name> <entry point>
+
+其中, <num> 代表系统调用号, 例如在 x86_64 架构中 open 的系统调用号就是 5; <abi> 即 x86_64 架构的 ABI, 其含义 application binary interface( 应用程序二进制接口) ; <name> 是系统调用的名字; <entry point> 代表系统调用在内核的接口函数, 在 <name> 前加 sys_ 即可. 
+
+为了保证添加的系统调用能被找到并且调用, 需要在 include/linux/syscalls.h 中声明该系统调用的函数原型. 
+
+函数声明中的 asmlinkage 限定词是一个编译指令, 用于通知编译器仅从堆栈中提取该函数的参数, 而不是从寄存器中, 因为在执行服务例程之前系统已经将通过寄存器传递过来的参数值压入内核堆栈了. 所有的系统调用都需要这个限定词. 
+
+其次, 系统调用函数返回值类型是 long. 为了保证 32 位和 64 位系统的兼容性, 系统调用在用户空间和内核空间有不同的返回值类型, 在用户空间为 int, 在内核空间为 long. 
+
+实现该系统调用, 把它放进 kernel/ 下的一个相关文件, 比如 sys.c
+```
+
+
+### `Glibc`
+```bash
+# gcc
+gcc -v -x c -E /dev/null
+
+~/Git/glibc-2.35$ find -name "syscall-names.list"
+./sysdeps/unix/sysv/linux/syscall-names.list
+find -name "*.py"
+make update-syscall-lists
 
 ```
