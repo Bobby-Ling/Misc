@@ -284,6 +284,67 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
 
   # 使用 tree 命令显示目录结构，并排除临时文件中的目录
   tree  -I "$(find /usr/include -maxdepth 1 -type d ! -newermt "2024-03-12 17:17:00" -printf "%f|" | sed 's/|$//')"  -t > ~/Git/code/folderComp/include-HDR2.txt
+
+  tree --help
+  -a 列出所有文件. 
+  -d 仅列出目录. 
+  -l 遵循目录等符号链接. 
+  -f 打印每个文件的完整路径前缀. 
+  -x 仅保留在当前文件系统上. 
+  -L 级下降深层级目录. 
+  -R 达到最高等级时重新运行树. 
+  -P 模式仅列出与给定模式相匹配的文件. 
+  -I 模式不要列出与给定模式匹配的文件. 
+  --ignore-case 模式匹配时忽略大小写. 
+  --matchdirs在-P 模式匹配中包含目录名称. 
+  --noreport 关闭树列表末尾的文件/目录计数. 
+  --charset X 使用字符集X作为终端/ HTML和缩进行输出. 
+  --filelimit＃ 不要下载超过＃个文件的dirs. 
+  --timefmt <f> 根据格式<f>打印和格式化时间. 
+  -o 文件名输出到文件而不是标准输出. 
+
+  ---------------文件选项---------------
+  -q 将不可打印的字符打印为'? '. 
+  -N 按原样打印不可打印的字符. 
+  -Q 用双引号引用文件名. 
+  -p 打印每个文件的保护. 
+  -u 显示文件所有者或UID号码. 
+  -g 显示文件组所有者或GID号码. 
+  -s 打印每个文件的字节大小. 
+  -h 以更易读的方式打印尺寸. 
+  --si像-h, 但在国际单位制中使用( 幂数为1000) . 
+  -D 打印上次修改日期或( -c) 状态更改. 
+  -F 附加'/', '=', '*', '@', '|'或'>'按照ls -F. 
+  --inodes 打印每个文件的inode编号. 
+  - 设备打印每个文件所属的设备ID号. 
+
+  ---------------排序选项---------------
+  -v 按文本字母数字排序文件. 
+  -t 按上次修改时间对文件进行排序. 
+  -c 按上次状态更改时间对文件进行排序. 
+  -U 保留文件未排序. 
+  -r 反转排序的顺序. 
+  --dirsfirst 列出文件之前的目录( -U禁用) . 
+  - 排序X选择排序: 名称, 版本, 大小, mtime, ctime. 
+
+  ---------------图形选项---------------
+  -i 不要打印缩进线. 
+  -A 打印ANSI线图形缩进线. 
+  -S 使用CP437( 控制台) 图形缩进线打印. 
+  -n 始终关闭着色( -C覆盖) . 
+  -C 总是打开彩色. 
+
+  --------------- XML / HTML / JSON选项---------------
+  -X 打印树的XML表示. 
+  -J 打印出树的JSON表示. 
+  -H baseHREF以baseHREF作为顶层目录打印HTML格式. 
+  -T 字符串用字符串替换默认的HTML标题和H1标题. 
+  --nolinks 关闭HTML输出中的超链接. 
+
+  ---------------其他选项---------------
+  --version 打印版本并退出.
+  --help 打印使用情况和此帮助信息并退出. 
+  --  选项处理终止符
   ```
 - pwd
   - -P, --physical真实路径
@@ -816,6 +877,16 @@ a|b|c 匹配a或b或c。
 () 字符组, 如: love(able|ers) 匹配loveable或lovers。
 (..)(..)\1\2 模板匹配. \1代表前面第一个模板, \2代第二个括弧里面的模板。
 x{m,n} =x\{m,n\} x的字符数量在m到n个之间。
+```
+### `sed`
+```bash
+sed 's/old_string/new_string/' file.txt #替换
+sed '/pattern/a new_line_text' file.txt # 每一行匹配到 pattern 的行之后添加 new_line_text
+sed 's/^[ \t]*//;s/[ \t]*$//' file.txt # 删除行首和行尾的空格
+sed 'Nd' file.txt # # 删除文件中的第N行
+sed '/^$/d' file.txt # 删除文件中的空行
+sed 's/|$//' # 删除最后一个`|`
+find -maxdepth 1 -type d -printf "%f|" | sed 's/|$//;s/x86_64-linux-gnu|//'
 ```
 
 ## linux内核
