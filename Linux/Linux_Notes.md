@@ -1033,8 +1033,10 @@ $ gdb vmlinux
 (gdb) target remote :1234
 (gdb) b start_kernel
 (gdb) c
-
 asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
+
+
+ps aux | grep qem
 ```
 
 #### `GDB`
@@ -1079,6 +1081,22 @@ finish:  运行程序, 直到当前函数完成返回, 并打印函数返回时�
 call 函数(参数): 调用程序中可见的函数, 并传递" 参数" , 如: call gdb_test(55)
 quit: 简记为 q , 退出gdb
 
+
+(gdb) set args          # 设置程序启动参数，如：set args 10 20 30
+
+(gdb) show args         # 查看程序启动参数
+
+(gdb) path <dir>        # 设置程序的运行路径
+
+(gdb) show paths        # 查看程序的运行路径
+
+(gdb) set env <name=val># 设置环境变量，如：set env USER=chen
+
+(gdb) show env [name]   # 查看环境变量
+
+(gdb) cd <dir>          # 相当于shell的cd命令
+
+(gdb) pwd               # 显示当前所在目录
 ```
 
 #### `系统调用`
