@@ -659,8 +659,11 @@ PrivateTmp=true
 WantedBy=multi-user.target
 # 实现开机自启动
 
+sudo systemctl daemon-reload
 systemctl start wyc
 systemctl status wyc.service
+
+sudo systemctl [enable|start|stop|restart|status] xxx.service
 ```
 
 ## SSH
