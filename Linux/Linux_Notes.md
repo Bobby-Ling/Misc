@@ -81,8 +81,8 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
 ### 文件类型和权限
 `drwxr-xr-x. 3 root root 17 May 6 00:14 .config `
 - 文件类型
-  - 当为`d `则是目录, 例如上表文件名为“.config”的那一行
-  - 当为`- `则是文件, 例如上表文件名为“initial-setup-ks.cfg”那一行
+  - 当为`d `则是目录, 例如上表文件名为" .config" 的那一行
+  - 当为`- `则是文件, 例如上表文件名为" initial-setup-ks.cfg" 那一行
   - 若是`l `则表示为链接文件(link file)
   - `b ` 区块(block) 设备文件,如硬盘,可以随机的在硬盘的不同区块读写(可随机存取设备)
   - `c ` 字符(character) 设备文件,如键盘/鼠标(一次性读取设备)
@@ -224,7 +224,7 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
     - `-a `  --archive, 同`-dR --preserve=all `,它保留链接、文件属性,并复制目录下的所有内容;其作用等于dpR参数组合
       > 无法复制ctime这个属性???
     - `-R `  -r, --recursive
-    - `-p `  same as --preserve=mode,ownership,timestamps除复制文件的内容外,还把修改时间和访问权限也复制到新文件中。
+    - `-p `  same as --preserve=mode,ownership,timestamps除复制文件的内容外,还把修改时间和访问权限也复制到新文件中. 
     - `-d `  --no-dereference --preserve=links复制时保留链接(cp默认复制源文件)
     - `-s `  --symbolic-link复制成为符号链接文件(快捷方式,文件名右侧会有个指向`-> `的符号)
     - `-l `  --link复制为硬链接
@@ -282,7 +282,7 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
   # 找到特定时间之前的目录
   find /usr/include -type d ! -newermt "2024-03-12 17:17:00" 
 
-  # 使用 tree 命令显示目录结构，并排除临时文件中的目录
+  # 使用 tree 命令显示目录结构, 并排除临时文件中的目录
   tree  -I "$(find /usr/include -maxdepth 1 -type d ! -newermt "2024-03-12 17:17:00" -printf "%f|" | sed 's/|$//')"  -t > ~/Git/code/folderComp/include-HDR2.txt
 
   tree --help
@@ -378,7 +378,7 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
 当文件内容行数大于屏幕输出的行数时,最后一行会显示出目前显示的百分比,并等待指令
   - Enter : 代表向下翻一行
   - 空白键 (Space) : 代表向下翻一页
-  - /string : 代表在这个显示的内容当中, 向下搜寻“string”这个关键字
+  - /string : 代表在这个显示的内容当中, 向下搜寻" string" 这个关键字
   - n : 搜索时向下继续搜索
   - :f : 立刻显示出文件名以及目前显示的行数
   - q : 退出
@@ -389,7 +389,7 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
   - 空白键 (Space) : 代表向下翻一页
   - [pagedown] : 向下翻动一行
   - [pageup] : 向上翻动一行
-  - /string : 代表在这个显示的内容当中, 向下搜寻“string”这个关键字
+  - /string : 代表在这个显示的内容当中, 向下搜寻" string" 这个关键字
   - ?string : 向上搜索
   - n : 搜索时继续搜索
   - N : 搜索时反向继续搜索(向上搜索时为向下,反之亦然)
@@ -574,6 +574,95 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
   ```
 
 ### 常用bash命令和规范
+
+### Systemd
+> [https://zhuanlan.zhihu.com/p/651550778](https://zhuanlan.zhihu.com/p/651550778)
+
+linux 的 service 脚本一般存放在 /etc/systemd/ 和 /usr/lib/systemd 路径下, 前者包含着多个 *.target.wants 文件, 如 multi-user.target.wants 等; 而后者为安装软件生成 service 的目录, 一般编写自己的 service 可以放在此目录下. 但需要注意的是, 位于 /usr/lib/systemd/ 中服务脚本可能会在下次更新时被覆盖. 
+
+无论是 /etc/systemd/ 还是 /usr/lib/systemd 目录, 其中又包含 system 和 user 目录. 前者是系统服务, 开机不需要用户登录即可运行的服务; 后者是用户服务, 需要用户登录后才能运行的服务. 
+
+/etc/systemd/system/
+/etc/systemd/user/
+/usr/lib/systemd/system/
+/usr/lib/system/user/
+
+服务脚本文件以 .service 结尾, 由 Unit、Service 和 Install 三个区块组成:
+
+#### [Unit] 区块    启动顺序与依赖关系
+  - 服务描述
+    - Description: 给出当前服务的简单描述. 
+    - Documentation: 给出文档位置. 
+  - 启动顺序
+    - After: 定义 xxx.service 应该在哪些 target 或 service 服务之后启动, 例如网络服务 network.target. 
+    - Before: 定义 xxx.service 应该在哪些 target 或 service 服务之前启动. 
+  - 依赖关系
+    - Wants: 表示 xxx.service 与定义的服务存在" 弱依赖" 关系, 即指定的服务启动失败或停止运行不影响 xxx 的运行. 
+    - Requires: 则表示" 强依赖" 关系, 即指定服务启动失败或异常退出, 那么 xxx 也必须退出; 反之 xxx 启动则指定服务也会启动. 
+#### [Service] 区块    启动行为定义
+  - 启动命令
+    - EnvironmentFile: 指定当前服务的环境参数文件( 路径) , 如 EnviromentFile=-/etc/sysconfig/xxx, 连词号表示抑制错误, 即发生错误时, 不影响其他命令的执行. 
+    - Environment: 后面接多个不同的 shell 变量, 如 Environment=DATA_DIR=/dir/data. 
+    - User: 设置服务运行的用户. 
+    - Group: 设置服务运行的用户组. 
+    - WorkingDirectory: 设置服务运行的路径. 
+    - Exec*: 各种与执行相关的命令. 
+    - ExecStart: 定义启动服务时执行的命令. 
+    - ExecStop: 定义停止服务时执行的命令. 
+    - ExecStartPre: 定义启动服务前执行的命令. 
+    - ExecStartPost: 定义启动服务后执行的命令. 
+    - ExecStopPost: 定义停止服务后执行的命令. 
+    - ExecReload: 定义重启服务时执行的命令. 
+  - 启动类型
+    Type: 字段定义启动类型, 可以设置的值如下: 
+    - simple( 默认值) : ExecStart 字段启动的进程为主进程, 即直接启动服务进程. 
+    - forking: ExecStart 字段将以 fork() 方式启动, 此时父进程将会退出, 子进程将成为主进程( 例如用 shell 脚本启动服务进程) . 
+    - oneshot: 类似于 simple, 但只执行一次, systemd 会等它执行完, 才启动其他服务. 
+    - dbus: 类似于 simple, 但会等待 D-Bus 信号后启动. 
+    - notify: 类似于 simple, 启动结束后会发出通知信号, 然后 systemd 再启动其他服务. 
+    - idle: 类似于 simple, 但是要等到其他任务都执行完, 才会启动该服务. 一种使用场合是为让该服务的输出, 不与其他服务的输出相混合. 
+    - RemainAfterExit: 设为 yes, 表示进程退出以后, 服务仍然保持执行. 
+  - 重启行为
+    - KillMode: 定义 systemd 如何停止服务, 可以设置的值如下: 
+    - control-group( default) : 当前控制组里面的所有子进程, 都会被杀掉. 
+    - process: 只杀主进程. 
+    - mixed: 主进程将收到 SIGTERM 信号, 子进程收到 SIGKILL 信号. 
+    - none: 没有进程会被杀掉, 只是执行服务的 stop 命令. 
+    - Restart: 定义了服务退出后, Systemd 的重启方式, 可以设置的值如下( 对于守护进程, 推荐设为 on-failure, 对于那些允许发生错误退出的服务, 可以设为 on-abnormal) : 
+    - no( default) : 退出后不会重启. 
+    - on-success: 只有正常退出时( 退出状态码为0) , 才会重启. 
+    - on-failure: 非正常退出时( 退出状态码非0) , 包括被信号终止和超时, 才会重启. 
+    - on-abnormal: 只有被信号终止和超时, 才会重启. 
+    - on-abort: 只有在收到没有捕捉到的信号终止时, 才会重启. 
+    - on-watchdog: 超时退出, 才会重启. 
+    - always: 不管是什么退出原因, 总是重启. 
+    - RestartSec: 表示 systemd 重启服务之前, 需要等待的秒数. 
+#### [Install] 区块    服务安装定义
+- WantedBy: 表示该服务所在的 Target. 
+  Target 的含义是服务组, 如 WantedBy=multi-user.target 指的是该服务所属于 multi-user.target. 当执行 systemctl enable xxx.service 命令时, xxx.service 的符号链接就会被创建在 /etc/systemd/system/multi-user.target 目录下.
+  可以通过 systemctl get-default 命令查看系统默认启动的 target, 一般为 multi-user 或者是 graphical. 因此配置好相应的 WantedBy 字段, 可以实现服务的开机启动. 
+
+#### 实例
+- WYC
+```bash
+vim /usr/lib/systemd/system/wyc.service
+
+[Unit]
+Description=wangyunchuan
+After=network.target
+[Service]
+Type=simple
+ExecStart=/usr/local/wyc_linux_64 -token=***              
+PrivateTmp=true
+# 使用私有的tmp目录
+[Install]
+WantedBy=multi-user.target
+# 实现开机自启动
+
+systemctl start wyc
+systemctl status wyc.service
+```
+
 ## SSH
 
 - 远程登录
@@ -605,7 +694,7 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
 ## tmux
 
 - C/S模型构建
-  输入tmux命令就相当于开启了一个服务器,此时默认将新建一个会话,然后会话中默认新建一个窗口,窗口中默认新建一个面板。一个tmux session(会话)可以包含多个window(窗口),窗口默认充满会话界面,因此这些窗口中可以运行相关性不大的任务。一个window又可以包含多个pane(面板),窗口下的面板,都处于同一界面下,这些面板适合运行相关性高的任务,以便同时观察到它们的运行情况。
+  输入tmux命令就相当于开启了一个服务器,此时默认将新建一个会话,然后会话中默认新建一个窗口,窗口中默认新建一个面板. 一个tmux session(会话)可以包含多个window(窗口),窗口默认充满会话界面,因此这些窗口中可以运行相关性不大的任务. 一个window又可以包含多个pane(面板),窗口下的面板,都处于同一界面下,这些面板适合运行相关性高的任务,以便同时观察到它们的运行情况. 
 - 会话session
 
   - 新建会话
@@ -647,7 +736,7 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
     ```
 
     - 处于会话中: [Ctrl]+b+ s
-      此时tmux将打开一个会话列表,按上下键(⬆︎⬇︎)或者鼠标滚轮,可选中目标会话,按左右键(⬅︎➜)可收起或展开会话的窗口,选中目标会话或窗口后,按回车键即可完成切换。
+      此时tmux将打开一个会话列表,按上下键(⬆︎⬇︎)或者鼠标滚轮,可选中目标会话,按左右键(⬅︎➜)可收起或展开会话的窗口,选中目标会话或窗口后,按回车键即可完成切换. 
   - 关闭会话
 
     - kill-pane
@@ -716,47 +805,47 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
   略
 - Tmux快捷指令(复制)
 
-  - 表一:系统指令。
-    前缀	指令	描述
-    Ctrl+b	?	    显示快捷键帮助文档
-    Ctrl+b	d	    断开当前会话
-    Ctrl+b	D	    选择要断开的会话
-    Ctrl+b	Ctrl+z	挂起当前会话
-    Ctrl+b	r	    强制重载当前会话
-    Ctrl+b	s	    显示会话列表用于选择并切换
-    Ctrl+b	:	    进入命令行模式,此时可直接输入ls等命令
-    Ctrl+b	[	    进入复制模式,按q退出
-    Ctrl+b	]	    粘贴复制模式中复制的文本
-    Ctrl+b	~	    列出提示信息缓存
-  - 表二:窗口(window)指令。
-    前缀	指令	描述
-    Ctrl+b	c	新建窗口
-    Ctrl+b	&	关闭当前窗口(关闭前需输入y or n确认)
-    Ctrl+b	0~9	切换到指定窗口
-    Ctrl+b	p	切换到上一窗口
-    Ctrl+b	n	切换到下一窗口
-    Ctrl+b	w	打开窗口列表,用于且切换窗口
-    Ctrl+b	,	重命名当前窗口
-    Ctrl+b	.	修改当前窗口编号(适用于窗口重新排序)
-    Ctrl+b	f	快速定位到窗口(输入关键字匹配窗口名称)
-  - 表三:面板(pane)指令。
-    前缀	指令	描述
-    Ctrl+b	"	    当前面板上下一分为二,下侧新建面板
-    Ctrl+b	%	    当前面板左右一分为二,右侧新建面板
-    Ctrl+b	x	    关闭当前面板(关闭前需输入y or n确认)
-    Ctrl+b	z	    最大化当前面板,再重复一次按键后恢复正常(v1.8版本新增)
-    Ctrl+b	!	    将当前面板移动到新的窗口打开(原窗口中存在两个及以上面板有效)
-    Ctrl+b	;	    切换到最后一次使用的面板
-    Ctrl+b	q	    显示面板编号,在编号消失前输入对应的数字可切换到相应的面板
-    Ctrl+b	{	    向前置换当前面板
-    Ctrl+b	}	    向后置换当前面板
-    Ctrl+b	Ctrl+o	顺时针旋转当前窗口中的所有面板
-    Ctrl+b	方向键	 移动光标切换面板
-    Ctrl+b	o	     选择下一面板
-    Ctrl+b	空格键	 在自带的面板布局中循环切换
-    Ctrl+b	Alt+方向键	以5个单元格为单位调整当前面板边缘
-    Ctrl+b	Ctrl+方向键	以1个单元格为单位调整当前面板边缘(Mac下被系统快捷键覆盖)
-    Ctrl+b	t	显示时钟
+  - 表一:系统指令. 
+    前缀    指令    描述
+    Ctrl+b    ?        显示快捷键帮助文档
+    Ctrl+b    d        断开当前会话
+    Ctrl+b    D        选择要断开的会话
+    Ctrl+b    Ctrl+z    挂起当前会话
+    Ctrl+b    r        强制重载当前会话
+    Ctrl+b    s        显示会话列表用于选择并切换
+    Ctrl+b    :        进入命令行模式,此时可直接输入ls等命令
+    Ctrl+b    [        进入复制模式,按q退出
+    Ctrl+b    ]        粘贴复制模式中复制的文本
+    Ctrl+b    ~        列出提示信息缓存
+  - 表二:窗口(window)指令. 
+    前缀    指令    描述
+    Ctrl+b    c    新建窗口
+    Ctrl+b    &    关闭当前窗口(关闭前需输入y or n确认)
+    Ctrl+b    0~9    切换到指定窗口
+    Ctrl+b    p    切换到上一窗口
+    Ctrl+b    n    切换到下一窗口
+    Ctrl+b    w    打开窗口列表,用于且切换窗口
+    Ctrl+b    ,    重命名当前窗口
+    Ctrl+b    .    修改当前窗口编号(适用于窗口重新排序)
+    Ctrl+b    f    快速定位到窗口(输入关键字匹配窗口名称)
+  - 表三:面板(pane)指令. 
+    前缀    指令    描述
+    Ctrl+b    "        当前面板上下一分为二,下侧新建面板
+    Ctrl+b    %        当前面板左右一分为二,右侧新建面板
+    Ctrl+b    x        关闭当前面板(关闭前需输入y or n确认)
+    Ctrl+b    z        最大化当前面板,再重复一次按键后恢复正常(v1.8版本新增)
+    Ctrl+b    !        将当前面板移动到新的窗口打开(原窗口中存在两个及以上面板有效)
+    Ctrl+b    ;        切换到最后一次使用的面板
+    Ctrl+b    q        显示面板编号,在编号消失前输入对应的数字可切换到相应的面板
+    Ctrl+b    {        向前置换当前面板
+    Ctrl+b    }        向后置换当前面板
+    Ctrl+b    Ctrl+o    顺时针旋转当前窗口中的所有面板
+    Ctrl+b    方向键     移动光标切换面板
+    Ctrl+b    o         选择下一面板
+    Ctrl+b    空格键     在自带的面板布局中循环切换
+    Ctrl+b    Alt+方向键    以5个单元格为单位调整当前面板边缘
+    Ctrl+b    Ctrl+方向键    以1个单元格为单位调整当前面板边缘(Mac下被系统快捷键覆盖)
+    Ctrl+b    t    显示时钟
 - 简单实操
 
 ```bash
@@ -776,8 +865,8 @@ tmux new -s session0
     - 方向键和hjkl(20↓或nj)
     - \- 上一行
     - \+ 下一行
-    - [Ctrl] + [u] 屏幕“向上”移动半页
-    - [Ctrl] + [d] 屏幕“向下”移动半页???
+    - [Ctrl] + [u] 屏幕" 向上" 移动半页
+    - [Ctrl] + [d] 屏幕" 向下" 移动半页???
     - 0 或功能键[Home] 行首
     - $ 或功能键[End] 行尾
     - H M L 屏幕首中尾
@@ -851,9 +940,9 @@ tmux new -s session0
   - :files 列出打开的所有文件
 - 多窗口编辑
   - :sp [filename] 
-  打开一个新窗口, 如果有加 filename, 表示在新窗口打开一个新文件, 否则表示两个窗口为同一个文件内容(同步显示） 
+  打开一个新窗口, 如果有加 filename, 表示在新窗口打开一个新文件, 否则表示两个窗口为同一个文件内容(同步显示)  
   - [ctrl]+w+j / [ctrl]+w+↓
-  按键的按法是： 先按下 [ctrl] 不放, 再按下 w 后放开所有的按键, 然后再按下 j (或向下方向键） , 则光标可移动到下方的窗口
+  按键的按法是:  先按下 [ctrl] 不放, 再按下 w 后放开所有的按键, 然后再按下 j (或向下方向键)  , 则光标可移动到下方的窗口
   - [ctrl]+w+k / [ctrl]+w+↑ 
   同上, 不过光标移动到上面的窗口
   - [ctrl]+w+q
@@ -869,14 +958,14 @@ ls -p| grep "[a-zA-Z0-9._-]+" #所有文件, 不含目录
 ### `grep` 
 ```
 egrep = grep -E
-可以使用基本的正则表达外, 还可以用扩展表达式。
-扩展表达式：
-+ 匹配一个或者多个先前的字符, 至少一个先前字符。
-? 匹配0个或者多个先前字符。
-a|b|c 匹配a或b或c。
-() 字符组, 如: love(able|ers) 匹配loveable或lovers。
-(..)(..)\1\2 模板匹配. \1代表前面第一个模板, \2代第二个括弧里面的模板。
-x{m,n} =x\{m,n\} x的字符数量在m到n个之间。
+可以使用基本的正则表达外, 还可以用扩展表达式. 
+扩展表达式: 
++ 匹配一个或者多个先前的字符, 至少一个先前字符. 
+? 匹配0个或者多个先前字符. 
+a|b|c 匹配a或b或c. 
+() 字符组, 如: love(able|ers) 匹配loveable或lovers. 
+(..)(..)\1\2 模板匹配. \1代表前面第一个模板, \2代第二个括弧里面的模板. 
+x{m,n} =x\{m,n\} x的字符数量在m到n个之间. 
 ```
 ### `sed`
 ```bash
@@ -909,9 +998,9 @@ sudo tailscale file get
   sudo apt install openssh-server
   sudo vim /etc/ssh/sshd_config  # sshd_config is a readonly file
   ...
-  Port 2222                   # 监听的端口，可以是其它的
+  Port 2222                   # 监听的端口, 可以是其它的
   ListenAddress 0.0.0.0       # 0.0.0.0 表示所有的地址
-  PasswordAuthentication yes  # 把原来的no改成yes，意思是可以用密码登录
+  PasswordAuthentication yes  # 把原来的no改成yes, 意思是可以用密码登录
   PermitRootLogin yes         # 把原来的prohibit-password改成yes
   ...
   sudo service ssh restart
@@ -937,8 +1026,20 @@ sudo tailscale file get
   passwd smb  ##设置密码为smb
   sudo vim /etc/samba/smb.conf
 
-
   ```
+
+### `du`
+```bash
+du -sh 
+-h, --human-readable
+    以K, M, G为单位, 显示文件的大小
+-s, --summarize
+    只显示总计的文件大小
+-S, --separate-dirs
+    显示时并不含其子文件夹的大小
+-d, --max-depth=N
+    显示子文件夹的深度( 层级) 
+```
 ### 散装命令
 #### `uname -a`
   ```bash
@@ -995,18 +1096,6 @@ sudo tailscale file get
   gcc: /usr/bin/gcc /usr/lib/gcc /usr/share/gcc /usr/share/man/man1/gcc.1.gz
   ```
 
-#### `du`
-```bash
-du -sh 
--h, --human-readable
-    以K，M，G为单位，显示文件的大小
--s, --summarize
-    只显示总计的文件大小
--S, --separate-dirs
-    显示时并不含其子文件夹的大小
--d, --max-depth=N
-    显示子文件夹的深度（层级）
-```
 
 #### `dmesg`
   ```bash
@@ -1048,19 +1137,19 @@ readelf -S *.o
 nm *.o   # 查看符号表
 c++filt "符号名" # 还原经过mangling后名称
 
-break/b 设置断点(函数名，代码行，a.cpp:20)
+break/b 设置断点(函数名, 代码行, a.cpp:20)
 delete n 删除第n个断点
 info b  显示设置的断点
 delete breakpoints 删除所有断点
 set args ... 设置程序参数
 run/r  开始运行
 continue/c 执行到下一个断点
-next/n 下一行，遇到函数不会进入
-step/s 下一步，遇到函数会进入
+next/n 下一行, 遇到函数不会进入
+step/s 下一步, 遇到函数会进入
 backtrace/bt  回溯出问题的调用
 f x  x为6显示的几号代码
 until  运行到退出该函数体
-finish 运行到当前函数返回，并打印堆栈地址和返回值
+finish 运行到当前函数返回, 并打印堆栈地址和返回值
 
 list/l 默认显示10行代码
 list 行号  显示以行号为中心的前后10行代码
@@ -1082,7 +1171,7 @@ call 函数(参数): 调用程序中可见的函数, 并传递" 参数" , 如: c
 quit: 简记为 q , 退出gdb
 
 
-(gdb) set args          # 设置程序启动参数，如：set args 10 20 30
+(gdb) set args          # 设置程序启动参数, 如: set args 10 20 30
 
 (gdb) show args         # 查看程序启动参数
 
@@ -1090,7 +1179,7 @@ quit: 简记为 q , 退出gdb
 
 (gdb) show paths        # 查看程序的运行路径
 
-(gdb) set env <name=val># 设置环境变量，如：set env USER=chen
+(gdb) set env <name=val># 设置环境变量, 如: set env USER=chen
 
 (gdb) show env [name]   # 查看环境变量
 
