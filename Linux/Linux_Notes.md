@@ -1206,16 +1206,44 @@ arch/x86/entry/syscalls/syscall_64.tbl
 
 实现该系统调用, 把它放进 kernel/ 下的一个相关文件, 比如 sys.c
 ```
+#### `Kernel`
+```bash
+make help
+cd /lib/modules/$(uname -r)
+vim ./modules.builtin
+vim ./vim modules.dep
+version_h := include/generated/uapi/linux/version.h
+export KBUILD_USERCFLAGS := -Wall -Wmissing-prototypes -Wstrict-prototypes \
+			      -O2 -fomit-frame-pointer -std=gnu89
+#     - See include/linux/module.h for more details
 
+sudo make drivers/usb/serial/usbserial.ko KCONFIG_CONFIG=config-wsl-modified-5.15.1 -j $(nproc)
+```
 
 ### `Glibc`
 ```bash
 # gcc
 gcc -v -x c -E /dev/null
 
-~/Git/glibc-2.35$ find -name "syscall-names.list"
+~/Git/glibc-2.35$ find -name  "syscall-names.list"
 ./sysdeps/unix/sysv/linux/syscall-names.list
 find -name "*.py"
 make update-syscall-lists
+
+../configure \
+        --prefix=/opt/glibc-2.35 \
+        --disable-werror \
+        --without-selinux \
+        --enable-add-ons \
+        --enable-kernel=5.15.1 \
+        --without-gd \
+        --enable-debug=yes \
+        --with-headers=/usr/include/kernelheader/include \
+        --enable-kernel=5.15.1 \
+        CFLAGS="-Og -g3" \
+        CXXFLAGS="-Og -g3"
+
+patchelf --set-interpreter /home/richar/glibc/lib/lib/ld-2.32.so  --set-rpath /home/richar/glibc/lib/lib [executable]
+
 
 ```
