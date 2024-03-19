@@ -15,7 +15,7 @@ public class HM2 {
             m /= 10;
         }
         System.out.print("sum is" + sum);
-
+        input.close();
     }
 
 }
