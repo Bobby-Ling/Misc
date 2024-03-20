@@ -20,10 +20,10 @@
 /Others/
 /Repos/
 /MyRepos/
-# /C++/
-# /Learning/
-# /Obsidian/
-# /Windows-Dev/
+/C++/
+/Learning/
+/Obsidian/
+/Windows-Dev/
 
 *.zip
 *.rar
