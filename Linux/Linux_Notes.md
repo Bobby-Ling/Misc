@@ -1,4 +1,4 @@
-# Linux B
+# Linux Notes
 
 ## 安装
 
@@ -957,6 +957,7 @@ tmux new -s session0
 [a-zA-Z0-9._-]+ #Linux文件名
 ls | grep "[a-zA-Z0-9._-]+" #所有文件
 ls -p| grep "[a-zA-Z0-9._-]+" #所有文件, 不含目录
+(?<=\d+)、
 ```
 ### `grep` 
 ```
