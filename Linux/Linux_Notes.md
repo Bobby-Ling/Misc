@@ -982,6 +982,11 @@ sed 's/|$//' # 删除最后一个`|`
 find -maxdepth 1 -type d -printf "%f|" | sed 's/|$//;s/x86_64-linux-gnu|//'
 ```
 
+### `xargs`
+```bash
+find . -regex  ".*/Lab_[0-9]/Lab_[0-9]\.hw.+" -type f  | xargs -I {} git rm --cached  -r -n {}
+```
+
 ## linux内核
 ```bash
 vim ./include/generated/uapi/linux/version.h # 查看版本号
