@@ -18,14 +18,18 @@
 - gcc 编译加上"-Wl,-rpath=/opt/glibc-2.35/lib"
 - 或者
 ```bash 
-patchelf --set-interpreter /opt/glibc-2.35/lib/ld-2.32.so  --set-rpath /opt/glibc-2.35/lib [executable]
+patchelf --set-interpreter /opt/glibc-2.35/lib/ld-2.35.so  --set-rpath /opt/glibc-2.35/lib [executable]
 ```
 - 链接上:
-```
-~/Git/code$ ldd out
-        linux-vdso.so.1 (0x00007ffd6d9a6000)
-        libc.so.6 => /opt/glibc-2.35/lib/libc.so.6 (0x00007f38e16fb000)
-        /lib64/ld-linux-x86-64.so.2 (0x00007f38e18f2000)
+```bash
+bobby_ubuntu@Bobby:~/Git/code$ ldd out_no_debug 
+        linux-vdso.so.1 (0x00007ffdd1dec000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fd722486000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007fd7226c1000)
+bobby_ubuntu@Bobby:~/Git/code$ ldd out
+        linux-vdso.so.1 (0x00007ffe7d4c6000)
+        libc.so.6 => /opt/glibc-2.35/lib/libc.so.6 (0x00007f69c6cfd000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f69c6ef4000)
 ```
 
 # `GDB+vscode+QEMU`调试Kernel
@@ -76,4 +80,16 @@ patchelf --set-interpreter /opt/glibc-2.35/lib/ld-2.32.so  --set-rpath /opt/glib
         "detail": "startvm.sh"
       },
     ]
+```
+
+# glibc 
+```bash
+~/Git/glibc-2.35$ find -name  "syscall-names.list"
+./sysdeps/unix/sysv/linux/syscall-names.list
+make update-syscall-lists
+```
+
+# 模块
+```bash
+sudo make drivers/usb/serial/usbserial.ko KCONFIG_CONFIG=config-wsl-modified-5.15.1 -j $(nproc)
 ```
