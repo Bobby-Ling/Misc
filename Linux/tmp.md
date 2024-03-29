@@ -1,4 +1,5 @@
 # `GDB+vscode`调试Glibc
+
 - 编译具备调试信息的glibc:
 
 ```bash
@@ -15,12 +16,16 @@
     CFLAGS="-Og -g3" \
     CXXFLAGS="-Og -g3"
 ```
+
 - gcc 编译加上"-Wl,-rpath=/opt/glibc-2.35/lib"
 - 或者
-```bash 
+
+```bash
 patchelf --set-interpreter /opt/glibc-2.35/lib/ld-2.35.so  --set-rpath /opt/glibc-2.35/lib [executable]
 ```
+
 - 链接上:
+
 ```bash
 bobby_ubuntu@Bobby:~/Git/code$ ldd out_no_debug 
         linux-vdso.so.1 (0x00007ffdd1dec000)
@@ -33,6 +38,7 @@ bobby_ubuntu@Bobby:~/Git/code$ ldd out
 ```
 
 # `GDB+vscode+QEMU`调试Kernel
+
 ```.vscode/launch.json
 {  
     "version": "0.2.0",  
@@ -82,7 +88,8 @@ bobby_ubuntu@Bobby:~/Git/code$ ldd out
     ]
 ```
 
-# glibc 
+# glibc
+
 ```bash
 ~/Git/glibc-2.35$ find -name  "syscall-names.list"
 ./sysdeps/unix/sysv/linux/syscall-names.list
@@ -90,6 +97,7 @@ make update-syscall-lists
 ```
 
 # 模块
+
 ```bash
 sudo make drivers/usb/serial/usbserial.ko KCONFIG_CONFIG=config-wsl-modified-5.15.1 -j $(nproc)
 ```
