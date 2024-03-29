@@ -1,4 +1,5 @@
 # `GDB+vscode`调试Glibc
+
 - 编译具备调试信息的glibc:
 
 ```bash
@@ -15,12 +16,16 @@
     CFLAGS="-Og -g3" \
     CXXFLAGS="-Og -g3"
 ```
+
 - gcc 编译加上"-Wl,-rpath=/opt/glibc-2.35/lib"
 - 或者
-```bash 
+
+```bash
 patchelf --set-interpreter /opt/glibc-2.35/lib/ld-2.32.so  --set-rpath /opt/glibc-2.35/lib [executable]
 ```
+
 - 链接上:
+
 ```
 ~/Git/code$ ldd out
         linux-vdso.so.1 (0x00007ffd6d9a6000)
@@ -29,6 +34,7 @@ patchelf --set-interpreter /opt/glibc-2.35/lib/ld-2.32.so  --set-rpath /opt/glib
 ```
 
 # `GDB+vscode+QEMU`调试Kernel
+
 ```.vscode/launch.json
 {  
     "version": "0.2.0",  

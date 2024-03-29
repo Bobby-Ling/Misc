@@ -19,7 +19,7 @@ wsl --shutdown
 
 ### 占用内存过大解决
 
-  - 修改%UserProfile%\.wslconfig
+- 修改%UserProfile%\.wslconfig
 
   ```powershell
   # Settings apply across all Linux distros running on WSL 2
@@ -38,13 +38,13 @@ wsl --shutdown
   # swapfile=C:\\temp\\wsl-swap.vhdx
   ```
 
-  - 然后
+- 然后
 
   ```powershell
   wsl --shutdown
   ```
 
-  - 查看是否生效
+- 查看是否生效
 
   ```bash
   # 查看内存、swap大小
@@ -53,12 +53,14 @@ wsl --shutdown
   cat /proc/cpuinfo| grep "processor"| wc -l
   ```
 
-  - linux释放cache
+- linux释放cache
 
   ```bash
   echo 3 > /proc/sys/vm/drop_caches
   ```
+
 ### 强制重启
+
 ```powershell
 # powershell管理员模式
 taskkill -IM "wslservice.exe" /F 
@@ -67,6 +69,7 @@ wsl --shutdown
 ```
 
 ### Windows10启用systemd
+
 ```bash
 sudo vi /etc/wsl.conf
 # 加入:
@@ -75,23 +78,26 @@ sudo vi /etc/wsl.conf
 ```
 
 >
-https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-the-virtual-machine-could-not-be-started-because-a-required-feature-is-not-installed
+<https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-the-virtual-machine-could-not-be-started-because-a-required-feature-is-not-installed>
+
 ## 权限管理
 
 ### 文件类型和权限
-`drwxr-xr-x. 3 root root 17 May 6 00:14 .config `
+
+`drwxr-xr-x. 3 root root 17 May 6 00:14 .config`
+
 - 文件类型
-  - 当为`d `则是目录, 例如上表文件名为" .config" 的那一行
-  - 当为`- `则是文件, 例如上表文件名为" initial-setup-ks.cfg" 那一行
-  - 若是`l `则表示为链接文件(link file)
-  - `b ` 区块(block) 设备文件,如硬盘,可以随机的在硬盘的不同区块读写(可随机存取设备)
-  - `c ` 字符(character) 设备文件,如键盘/鼠标(一次性读取设备)
-  - `s ` 数据接口文件(sockets) 例如,可以启动一个程序来监听用户端的要求, 而用户端可以通过这个socket来进行数据的沟通
-  - `p ` 数据输送档(FIFO,first-in-first-out, pipe) 一种特殊的文件类型,旨在解决多个程序同时存取一个文件所造成的错误问题
+  - 当为`d`则是目录, 例如上表文件名为" .config" 的那一行
+  - 当为`-`则是文件, 例如上表文件名为" initial-setup-ks.cfg" 那一行
+  - 若是`l`则表示为链接文件(link file)
+  - `b` 区块(block) 设备文件,如硬盘,可以随机的在硬盘的不同区块读写(可随机存取设备)
+  - `c` 字符(character) 设备文件,如键盘/鼠标(一次性读取设备)
+  - `s` 数据接口文件(sockets) 例如,可以启动一个程序来监听用户端的要求, 而用户端可以通过这个socket来进行数据的沟通
+  - `p` 数据输送档(FIFO,first-in-first-out, pipe) 一种特殊的文件类型,旨在解决多个程序同时存取一个文件所造成的错误问题
 - 文件权限
-  - `r ` 读取文件内容或读取目录结构清单(可以用ls读取文件名但不能cd进入和ll查看文件详细信息)
-  - `w ` 修改文件内容或修改目录结构清单(创建/删除(不论文件权限如何)/移动/重命名文件或目录)
-  - `x ` 执行文件或访问目录(仅有x不能列出文件清单但是可以凭借文件名访问(查看/编辑文件))
+  - `r` 读取文件内容或读取目录结构清单(可以用ls读取文件名但不能cd进入和ll查看文件详细信息)
+  - `w` 修改文件内容或修改目录结构清单(创建/删除(不论文件权限如何)/移动/重命名文件或目录)
+  - `x` 执行文件或访问目录(仅有x不能列出文件清单但是可以凭借文件名访问(查看/编辑文件))
   ```bash
   $ ll
   drwxr-xr-x 2 bobby_ubuntu bobby_ubuntu 4096 Jan 25 18:51 xxx/
@@ -132,7 +138,8 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
 
   id -gn bobby_ubuntu #查看主用户组名称
   ```
-> 使用`su - `这个指令来切换身份,离开`su - `则使用 `exit `回到 dmtsai 的身份
+
+> 使用`su -`这个指令来切换身份,离开`su -`则使用 `exit`回到 dmtsai 的身份
 
 - 文件默认权限umask
   - 介绍
@@ -140,9 +147,9 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
   - 应用
   团队共享文件夹的umask应该设置为002而非默认值022以保证group内所有人的写入权限
   - 命令
-    - 查看umask: `umask `
-    - 以符号类型的方式查看umask: `umask -S `
-    - 修改umask: `umask UMASK `
+    - 查看umask: `umask`
+    - 以符号类型的方式查看umask: `umask -S`
+    - 修改umask: `umask UMASK`
     - 见man umask
     - 默认umask: /etc/bashrc
 
@@ -150,14 +157,12 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
 
 - 文件特殊权限 SUID, SGID, SBIT
 
-- 
-
-
-
+-
 
 ### 命令
+
 - chmod
-  - `chmod [-Rcfv] [ugoa...][[-+=][rwxXst]...] file `
+  - `chmod [-Rcfv] [ugoa...][[-+=][rwxXst]...] file`
   - 处理符号链接: 不会更改符号链接,会更改其指向文件的权限
   - 对于目录,x为可进入权限,w为增删权限(可以重命名目录本身和修改其中已有的文件)
   - -R 递归
@@ -168,9 +173,9 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
   chmod a+x test.sh
   ```
 - chown
-  - `chown [-Rcfv]  [owner][:[group]] file `
-  - `--dereference `
-  - `-h, --no-dereference `
+  - `chown [-Rcfv]  [owner][:[group]] file`
+  - `--dereference`
+  - `-h, --no-dereference`
   ```bash
   chown owner file #
   chown owner: file # the group of  the  files is changed to that user's login group
@@ -187,27 +192,27 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
 
 ## 文件目录等操作
 
-###文件目录管理
+### 文件目录管理
 
 - ls
   - 参数
-    - `-a `  all,包括隐藏文件和所有目录
-    - `-A `  all,包括隐藏文件,不包括`. `和`.. `目录
-    - `-l `  详细信息显示(属性权限时间等)
-    - `-F `  在文件名末显示出该文件名代表的类型
-    - `-d `  仅列出目录本身,而不是列出目录内的文件数据(查看目录属性)
-    - `-f `  直接列出结果(默认会以文件名排序)
-    - `-t `  时间,新到旧
-    - `-rt `  时间,新到旧
-    - `-S `  大小,从大到小
-    - `-r `  --reverse
-    - `-R `  --recursive  (列出该目录下的所有文件)
-    - `-h `  --human-readable  (KB,MB...)
-    - `-n `  列出UID和GID而非其名称
-    - `-i `  --inode
-    - `--time=TIME `  查看ctime,mtime,atime
-    - `-l `  --full-time
-    > 如果这个文件被修改的时间距离现在太久了, 那么时间部分会仅显示年份而已, 所以显示出完整的时间格式要在`-l `中用`--full-time `
+    - `-a`  all,包括隐藏文件和所有目录
+    - `-A`  all,包括隐藏文件,不包括`.`和`..`目录
+    - `-l`  详细信息显示(属性权限时间等)
+    - `-F`  在文件名末显示出该文件名代表的类型
+    - `-d`  仅列出目录本身,而不是列出目录内的文件数据(查看目录属性)
+    - `-f`  直接列出结果(默认会以文件名排序)
+    - `-t`  时间,新到旧
+    - `-rt`  时间,新到旧
+    - `-S`  大小,从大到小
+    - `-r`  --reverse
+    - `-R`  --recursive  (列出该目录下的所有文件)
+    - `-h`  --human-readable  (KB,MB...)
+    - `-n`  列出UID和GID而非其名称
+    - `-i`  --inode
+    - `--time=TIME`  查看ctime,mtime,atime
+    - `-l`  --full-time
+    > 如果这个文件被修改的时间距离现在太久了, 那么时间部分会仅显示年份而已, 所以显示出完整的时间格式要在`-l`中用`--full-time`
   - 常用:
     - 由旧到新:-rtl
     - 仅显示目录:ls -d */
@@ -221,22 +226,22 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
     ```
 - cp
   - 参数
-    - `-a `  --archive, 同`-dR --preserve=all `,它保留链接、文件属性,并复制目录下的所有内容;其作用等于dpR参数组合
+    - `-a`  --archive, 同`-dR --preserve=all`,它保留链接、文件属性,并复制目录下的所有内容;其作用等于dpR参数组合
       > 无法复制ctime这个属性???
-    - `-R `  -r, --recursive
-    - `-p `  same as --preserve=mode,ownership,timestamps除复制文件的内容外,还把修改时间和访问权限也复制到新文件中. 
-    - `-d `  --no-dereference --preserve=links复制时保留链接(cp默认复制源文件)
-    - `-s `  --symbolic-link复制成为符号链接文件(快捷方式,文件名右侧会有个指向`-> `的符号)
-    - `-l `  --link复制为硬链接
-    - `-u `  --update
-    - `-i `  --interactive
-    - `-f `  --force
-    - `-v `  --verbose
+    - `-R`  -r, --recursive
+    - `-p`  same as --preserve=mode,ownership,timestamps除复制文件的内容外,还把修改时间和访问权限也复制到新文件中.
+    - `-d`  --no-dereference --preserve=links复制时保留链接(cp默认复制源文件)
+    - `-s`  --symbolic-link复制成为符号链接文件(快捷方式,文件名右侧会有个指向`->`的符号)
+    - `-l`  --link复制为硬链接
+    - `-u`  --update
+    - `-i`  --interactive
+    - `-f`  --force
+    - `-v`  --verbose
   - 常用
     - cp –r srcdir/ destdir(使用-r复制目录,srcdir下所有文件复制至destdir下)
     - cp ~/src.txt a/aa/aaa
     - cp ~/src.txt a/aa/aaa/aaaa.txt
-    - rm -- -aaa--避开文件名中`- `的影响
+    - rm -- -aaa--避开文件名中`-`的影响
 - mv
   - 参数
     - -u, --update
@@ -352,22 +357,22 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
 - basename dir
 - dirname dir
 - cd
-  - `. ` 此目录
-  - `.. ` 上一级目录
-  - `/ ` 根目录
-  - `- ` 上一次访问的目录
-  - `~ `
-  - `~account `
+  - `.` 此目录
+  - `..` 上一级目录
+  - `/` 根目录
+  - `-` 上一次访问的目录
+  - `~`
+  - `~account`
 
 ### 文件查阅
 
 - cat [-AETvbn] (Concatenate)
-  - `-A `  相当于 -vET 的整合选项, 可列出一些特殊字符而不是空白
-  - `-E `  将结尾的断行字符 $ 显示出来
-  - `-T `  将 [tab] 按键以 ^I 显示出来
-  - `-v `  列出一些看不出来的特殊字符
-  - `-b `  列出行号, 仅针对非空白行做行号显示, 空白行不标行号
-  - `-n `  打印出行号, 连同空白行也会有行号, 与 -b 的选项不同
+  - `-A`  相当于 -vET 的整合选项, 可列出一些特殊字符而不是空白
+  - `-E`  将结尾的断行字符 $ 显示出来
+  - `-T`  将 [tab] 按键以 ^I 显示出来
+  - `-v`  列出一些看不出来的特殊字符
+  - `-b`  列出行号, 仅针对非空白行做行号显示, 空白行不标行号
+  - `-n`  打印出行号, 连同空白行也会有行号, 与 -b 的选项不同
 
 - tac (反向)
 见man tac
@@ -401,25 +406,29 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
 
 - head [-n number] file
 显示前number行内容
-> 注意:number为`-number `时显示除了后面number行的内容
+
+> 注意:number为`-number`时显示除了后面number行的内容
 
 - tail [-nf number] [--pid=PID] file
-> 注意:number为`+number `时显示除了前面number行的内容
-  - `-f `  持续侦测
-  - `--pid=PID `  当pid为PID的进程终止时停止侦测,按下[crtl]-c停止侦测
+
+> 注意:number为`+number`时显示除了前面number行的内容
+
+- `-f`  持续侦测
+- `--pid=PID`  当pid为PID的进程终止时停止侦测,按下[crtl]-c停止侦测
+
   ```bash
   # 取第11至20行且带行号
   cat -n /etc/man_db.conf | head -n 20 | tail -n 10
-  ``` 
+  ```
 
 - od [-t TYPE] file二进制文件查看
   - TYPE选项:
     - a : 利用默认的字符来输出
     - c : 使用 ASCII 字符来输出
-    - d[size] : 利用十进制(decimal) 来输出数据, 每个整数占用 size Bytes 
-    - f[size] : 利用浮点数值(floating) 来输出数据, 每个数占用 size Bytes 
-    - o[size] : 利用八进位(octal) 来输出数据, 每个整数占用 size Bytes 
-    - x[size] : 利用十六进制(hexadecimal) 来输出数据, 每个整数占用 size Bytes 
+    - d[size] : 利用十进制(decimal) 来输出数据, 每个整数占用 size Bytes
+    - f[size] : 利用浮点数值(floating) 来输出数据, 每个数占用 size Bytes
+    - o[size] : 利用八进位(octal) 来输出数据, 每个整数占用 size Bytes
+    - x[size] : 利用十六进制(hexadecimal) 来输出数据, 每个整数占用 size Bytes
   ```bash
   $ od -t cd1 abc
   0000000    a    b    c    d    e    f    g    h    i    j    k    l    m    n    o    p
@@ -435,11 +444,11 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
     - status time (ctime) 属性与权限修改时间
     - access time (atime) 最新读取时间
   - 参数
-    - `-a `  仅修改atime
-    - `-m `  仅修改mtime
-    - `-d `  --date=STRING, 使用STRING(格式见man和info)而非当前日期
+    - `-a`  仅修改atime
+    - `-m`  仅修改mtime
+    - `-d`  --date=STRING, 使用STRING(格式见man和info)而非当前日期
     - `-t [[CC]YY]MMDDhhmm[.ss]`  使用给定的时间戳而非当前时间
-    - `-c `  仅修改文件的时间, 若该文件不存在则不创建新文件
+    - `-c`  仅修改文件的时间, 若该文件不存在则不创建新文件
     - `-r`   --reference=FILE, 使用FILE的时间
 
 ### 文件查找
@@ -489,11 +498,11 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
     - -o or
     - -a and
   - 逻辑运算符
-    - && ``[ $a -lt 20 && $b -gt 100 ] ``
+    - && ``[ $a -lt 20 && $b -gt 100 ]``
     - ||
   - 字符串运算符
-    - ``[ $a = $b ] ``
-    - ``[ $a != $b ] ``
+    - ``[ $a = $b ]``
+    - ``[ $a != $b ]``
     - -z
     - -n
     - $
@@ -516,9 +525,9 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
       - Here Document
     - 注意与示例
 
-      - ``command < in > out ``
-      - 合并stdout和stderr ``command > file 2>&1 ``
-      - 
+      - ``command < in > out``
+      - 合并stdout和stderr ``command > file 2>&1``
+      -
 
       ```bash
       #!/bin/bash
@@ -528,8 +537,8 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
       delimeter
       ```
 
-      - 屏蔽所有输出 ``command > /dev/null 2>&1 ``
-      - ``command > /dev/null ``
+      - 屏蔽所有输出 ``command > /dev/null 2>&1``
+      - ``command > /dev/null``
 - 流程控制
 
   - if...fi
@@ -576,11 +585,12 @@ https://learn.microsoft.com/en-us/windows/wsl/troubleshooting#error-0x80370102-t
 ### 常用bash命令和规范
 
 ### Systemd
+>
 > [https://zhuanlan.zhihu.com/p/651550778](https://zhuanlan.zhihu.com/p/651550778)
 
-linux 的 service 脚本一般存放在 /etc/systemd/ 和 /usr/lib/systemd 路径下, 前者包含着多个 *.target.wants 文件, 如 multi-user.target.wants 等; 而后者为安装软件生成 service 的目录, 一般编写自己的 service 可以放在此目录下. 但需要注意的是, 位于 /usr/lib/systemd/ 中服务脚本可能会在下次更新时被覆盖. 
+linux 的 service 脚本一般存放在 /etc/systemd/ 和 /usr/lib/systemd 路径下, 前者包含着多个 *.target.wants 文件, 如 multi-user.target.wants 等; 而后者为安装软件生成 service 的目录, 一般编写自己的 service 可以放在此目录下. 但需要注意的是, 位于 /usr/lib/systemd/ 中服务脚本可能会在下次更新时被覆盖.
 
-无论是 /etc/systemd/ 还是 /usr/lib/systemd 目录, 其中又包含 system 和 user 目录. 前者是系统服务, 开机不需要用户登录即可运行的服务; 后者是用户服务, 需要用户登录后才能运行的服务. 
+无论是 /etc/systemd/ 还是 /usr/lib/systemd 目录, 其中又包含 system 和 user 目录. 前者是系统服务, 开机不需要用户登录即可运行的服务; 后者是用户服务, 需要用户登录后才能运行的服务.
 
 /etc/systemd/system/
 /etc/systemd/user/
@@ -590,60 +600,67 @@ linux 的 service 脚本一般存放在 /etc/systemd/ 和 /usr/lib/systemd 路�
 服务脚本文件以 .service 结尾, 由 Unit、Service 和 Install 三个区块组成:
 
 #### [Unit] 区块    启动顺序与依赖关系
-  - 服务描述
-    - Description: 给出当前服务的简单描述. 
-    - Documentation: 给出文档位置. 
-  - 启动顺序
-    - After: 定义 xxx.service 应该在哪些 target 或 service 服务之后启动, 例如网络服务 network.target. 
-    - Before: 定义 xxx.service 应该在哪些 target 或 service 服务之前启动. 
-  - 依赖关系
-    - Wants: 表示 xxx.service 与定义的服务存在" 弱依赖" 关系, 即指定的服务启动失败或停止运行不影响 xxx 的运行. 
-    - Requires: 则表示" 强依赖" 关系, 即指定服务启动失败或异常退出, 那么 xxx 也必须退出; 反之 xxx 启动则指定服务也会启动. 
+
+- 服务描述
+  - Description: 给出当前服务的简单描述.
+  - Documentation: 给出文档位置.
+- 启动顺序
+  - After: 定义 xxx.service 应该在哪些 target 或 service 服务之后启动, 例如网络服务 network.target.
+  - Before: 定义 xxx.service 应该在哪些 target 或 service 服务之前启动.
+- 依赖关系
+  - Wants: 表示 xxx.service 与定义的服务存在" 弱依赖" 关系, 即指定的服务启动失败或停止运行不影响 xxx 的运行.
+  - Requires: 则表示" 强依赖" 关系, 即指定服务启动失败或异常退出, 那么 xxx 也必须退出; 反之 xxx 启动则指定服务也会启动.
+
 #### [Service] 区块    启动行为定义
-  - 启动命令
-    - EnvironmentFile: 指定当前服务的环境参数文件( 路径) , 如 EnviromentFile=-/etc/sysconfig/xxx, 连词号表示抑制错误, 即发生错误时, 不影响其他命令的执行. 
-    - Environment: 后面接多个不同的 shell 变量, 如 Environment=DATA_DIR=/dir/data. 
-    - User: 设置服务运行的用户. 
-    - Group: 设置服务运行的用户组. 
-    - WorkingDirectory: 设置服务运行的路径. 
-    - Exec*: 各种与执行相关的命令. 
-    - ExecStart: 定义启动服务时执行的命令. 
-    - ExecStop: 定义停止服务时执行的命令. 
-    - ExecStartPre: 定义启动服务前执行的命令. 
-    - ExecStartPost: 定义启动服务后执行的命令. 
-    - ExecStopPost: 定义停止服务后执行的命令. 
-    - ExecReload: 定义重启服务时执行的命令. 
-  - 启动类型
-    Type: 字段定义启动类型, 可以设置的值如下: 
-    - simple( 默认值) : ExecStart 字段启动的进程为主进程, 即直接启动服务进程. 
-    - forking: ExecStart 字段将以 fork() 方式启动, 此时父进程将会退出, 子进程将成为主进程( 例如用 shell 脚本启动服务进程) . 
-    - oneshot: 类似于 simple, 但只执行一次, systemd 会等它执行完, 才启动其他服务. 
-    - dbus: 类似于 simple, 但会等待 D-Bus 信号后启动. 
-    - notify: 类似于 simple, 启动结束后会发出通知信号, 然后 systemd 再启动其他服务. 
-    - idle: 类似于 simple, 但是要等到其他任务都执行完, 才会启动该服务. 一种使用场合是为让该服务的输出, 不与其他服务的输出相混合. 
-    - RemainAfterExit: 设为 yes, 表示进程退出以后, 服务仍然保持执行. 
-  - 重启行为
-    - KillMode: 定义 systemd 如何停止服务, 可以设置的值如下: 
-    - control-group( default) : 当前控制组里面的所有子进程, 都会被杀掉. 
-    - process: 只杀主进程. 
-    - mixed: 主进程将收到 SIGTERM 信号, 子进程收到 SIGKILL 信号. 
-    - none: 没有进程会被杀掉, 只是执行服务的 stop 命令. 
-    - Restart: 定义了服务退出后, Systemd 的重启方式, 可以设置的值如下( 对于守护进程, 推荐设为 on-failure, 对于那些允许发生错误退出的服务, 可以设为 on-abnormal) : 
-    - no( default) : 退出后不会重启. 
-    - on-success: 只有正常退出时( 退出状态码为0) , 才会重启. 
-    - on-failure: 非正常退出时( 退出状态码非0) , 包括被信号终止和超时, 才会重启. 
-    - on-abnormal: 只有被信号终止和超时, 才会重启. 
-    - on-abort: 只有在收到没有捕捉到的信号终止时, 才会重启. 
-    - on-watchdog: 超时退出, 才会重启. 
-    - always: 不管是什么退出原因, 总是重启. 
-    - RestartSec: 表示 systemd 重启服务之前, 需要等待的秒数. 
+
+- 启动命令
+  - EnvironmentFile: 指定当前服务的环境参数文件( 路径) , 如 EnviromentFile=-/etc/sysconfig/xxx, 连词号表示抑制错误, 即发生错误时, 不影响其他命令的执行.
+  - Environment: 后面接多个不同的 shell 变量, 如 Environment=DATA_DIR=/dir/data.
+  - User: 设置服务运行的用户.
+  - Group: 设置服务运行的用户组.
+  - WorkingDirectory: 设置服务运行的路径.
+  - Exec*: 各种与执行相关的命令.
+  - ExecStart: 定义启动服务时执行的命令.
+  - ExecStop: 定义停止服务时执行的命令.
+  - ExecStartPre: 定义启动服务前执行的命令.
+  - ExecStartPost: 定义启动服务后执行的命令.
+  - ExecStopPost: 定义停止服务后执行的命令.
+  - ExecReload: 定义重启服务时执行的命令.
+- 启动类型
+    Type: 字段定义启动类型, 可以设置的值如下:
+  - simple( 默认值) : ExecStart 字段启动的进程为主进程, 即直接启动服务进程.
+  - forking: ExecStart 字段将以 fork() 方式启动, 此时父进程将会退出, 子进程将成为主进程( 例如用 shell 脚本启动服务进程) .
+  - oneshot: 类似于 simple, 但只执行一次, systemd 会等它执行完, 才启动其他服务.
+  - dbus: 类似于 simple, 但会等待 D-Bus 信号后启动.
+  - notify: 类似于 simple, 启动结束后会发出通知信号, 然后 systemd 再启动其他服务.
+  - idle: 类似于 simple, 但是要等到其他任务都执行完, 才会启动该服务. 一种使用场合是为让该服务的输出, 不与其他服务的输出相混合.
+  - RemainAfterExit: 设为 yes, 表示进程退出以后, 服务仍然保持执行.
+- 重启行为
+  - KillMode: 定义 systemd 如何停止服务, 可以设置的值如下:
+  - control-group( default) : 当前控制组里面的所有子进程, 都会被杀掉.
+  - process: 只杀主进程.
+  - mixed: 主进程将收到 SIGTERM 信号, 子进程收到 SIGKILL 信号.
+  - none: 没有进程会被杀掉, 只是执行服务的 stop 命令.
+  - Restart: 定义了服务退出后, Systemd 的重启方式, 可以设置的值如下( 对于守护进程, 推荐设为 on-failure, 对于那些允许发生错误退出的服务, 可以设为 on-abnormal) :
+  - no( default) : 退出后不会重启.
+  - on-success: 只有正常退出时( 退出状态码为0) , 才会重启.
+  - on-failure: 非正常退出时( 退出状态码非0) , 包括被信号终止和超时, 才会重启.
+  - on-abnormal: 只有被信号终止和超时, 才会重启.
+  - on-abort: 只有在收到没有捕捉到的信号终止时, 才会重启.
+  - on-watchdog: 超时退出, 才会重启.
+  - always: 不管是什么退出原因, 总是重启.
+  - RestartSec: 表示 systemd 重启服务之前, 需要等待的秒数.
+
 #### [Install] 区块    服务安装定义
-- WantedBy: 表示该服务所在的 Target. 
+
+- WantedBy: 表示该服务所在的 Target.
   Target 的含义是服务组, 如 WantedBy=multi-user.target 指的是该服务所属于 multi-user.target. 当执行 systemctl enable xxx.service 命令时, xxx.service 的符号链接就会被创建在 /etc/systemd/system/multi-user.target 目录下.
-  可以通过 systemctl get-default 命令查看系统默认启动的 target, 一般为 multi-user 或者是 graphical. 因此配置好相应的 WantedBy 字段, 可以实现服务的开机启动. 
+  可以通过 systemctl get-default 命令查看系统默认启动的 target, 一般为 multi-user 或者是 graphical. 因此配置好相应的 WantedBy 字段, 可以实现服务的开机启动.
 
 #### 实例
+
 - WYC
+
 ```bash
 vim /usr/lib/systemd/system/wyc.service
 
@@ -677,7 +694,7 @@ sudo systemctl [enable|start|stop|restart|status] xxx.service
     - -r
     - -v --verbose
     - -P 指定端口`scp -P 8876 ...
-  - 复制文件和目录 `scp local remote `
+  - 复制文件和目录 `scp local remote`
 
   ```bash
   scp local_file remote_username@remote_ip:remote_folder 
@@ -697,7 +714,7 @@ sudo systemctl [enable|start|stop|restart|status] xxx.service
 ## tmux
 
 - C/S模型构建
-  输入tmux命令就相当于开启了一个服务器,此时默认将新建一个会话,然后会话中默认新建一个窗口,窗口中默认新建一个面板. 一个tmux session(会话)可以包含多个window(窗口),窗口默认充满会话界面,因此这些窗口中可以运行相关性不大的任务. 一个window又可以包含多个pane(面板),窗口下的面板,都处于同一界面下,这些面板适合运行相关性高的任务,以便同时观察到它们的运行情况. 
+  输入tmux命令就相当于开启了一个服务器,此时默认将新建一个会话,然后会话中默认新建一个窗口,窗口中默认新建一个面板. 一个tmux session(会话)可以包含多个window(窗口),窗口默认充满会话界面,因此这些窗口中可以运行相关性不大的任务. 一个window又可以包含多个pane(面板),窗口下的面板,都处于同一界面下,这些面板适合运行相关性高的任务,以便同时观察到它们的运行情况.
 - 会话session
 
   - 新建会话
@@ -739,7 +756,7 @@ sudo systemctl [enable|start|stop|restart|status] xxx.service
     ```
 
     - 处于会话中: [Ctrl]+b+ s
-      此时tmux将打开一个会话列表,按上下键(⬆︎⬇︎)或者鼠标滚轮,可选中目标会话,按左右键(⬅︎➜)可收起或展开会话的窗口,选中目标会话或窗口后,按回车键即可完成切换. 
+      此时tmux将打开一个会话列表,按上下键(⬆︎⬇︎)或者鼠标滚轮,可选中目标会话,按左右键(⬅︎➜)可收起或展开会话的窗口,选中目标会话或窗口后,按回车键即可完成切换.
   - 关闭会话
 
     - kill-pane
@@ -808,7 +825,7 @@ sudo systemctl [enable|start|stop|restart|status] xxx.service
   略
 - Tmux快捷指令(复制)
 
-  - 表一:系统指令. 
+  - 表一:系统指令.
     前缀    指令    描述
     Ctrl+b    ?        显示快捷键帮助文档
     Ctrl+b    d        断开当前会话
@@ -820,7 +837,7 @@ sudo systemctl [enable|start|stop|restart|status] xxx.service
     Ctrl+b    [        进入复制模式,按q退出
     Ctrl+b    ]        粘贴复制模式中复制的文本
     Ctrl+b    ~        列出提示信息缓存
-  - 表二:窗口(window)指令. 
+  - 表二:窗口(window)指令.
     前缀    指令    描述
     Ctrl+b    c    新建窗口
     Ctrl+b    &    关闭当前窗口(关闭前需输入y or n确认)
@@ -831,7 +848,7 @@ sudo systemctl [enable|start|stop|restart|status] xxx.service
     Ctrl+b    ,    重命名当前窗口
     Ctrl+b    .    修改当前窗口编号(适用于窗口重新排序)
     Ctrl+b    f    快速定位到窗口(输入关键字匹配窗口名称)
-  - 表三:面板(pane)指令. 
+  - 表三:面板(pane)指令.
     前缀    指令    描述
     Ctrl+b    "        当前面板上下一分为二,下侧新建面板
     Ctrl+b    %        当前面板左右一分为二,右侧新建面板
@@ -937,29 +954,32 @@ tmux new -s session0
     - :1,$s/word1/word2/g 全文
     - :1,$s/word1/word2/gc 带替换确认
 - 多文本编辑
-  - vim file0 file1 fileN 
+  - vim file0 file1 fileN
   - :n 编辑下一个文件
   - :N 编辑上一个文件
   - :files 列出打开的所有文件
 - 多窗口编辑
-  - :sp [filename] 
+  - :sp [filename]
   打开一个新窗口, 如果有加 filename, 表示在新窗口打开一个新文件, 否则表示两个窗口为同一个文件内容(同步显示)  
   - [ctrl]+w+j / [ctrl]+w+↓
   按键的按法是:  先按下 [ctrl] 不放, 再按下 w 后放开所有的按键, 然后再按下 j (或向下方向键)  , 则光标可移动到下方的窗口
-  - [ctrl]+w+k / [ctrl]+w+↑ 
+  - [ctrl]+w+k / [ctrl]+w+↑
   同上, 不过光标移动到上面的窗口
   - [ctrl]+w+q
-  其实就是 :q 结束离开啦, 举例来说, 如果想要结束下方的窗口, 那么利用 [ctrl]+w+↓ 移动到下方窗口后, 按下 :q 即可离开, 也可以按下[ctrl]+w+q 
+  其实就是 :q 结束离开啦, 举例来说, 如果想要结束下方的窗口, 那么利用 [ctrl]+w+↓ 移动到下方窗口后, 按下 :q 即可离开, 也可以按下[ctrl]+w+q
 - 挑字补全功能
 
 ## 正则表达式
+
 ```bash
 [a-zA-Z0-9._-]+ #Linux文件名
 ls | grep "[a-zA-Z0-9._-]+" #所有文件
 ls -p| grep "[a-zA-Z0-9._-]+" #所有文件, 不含目录
 (?<=\d+)、
 ```
-### `grep` 
+
+### `grep`
+
 ```
 egrep = grep -E
 可以使用基本的正则表达外, 还可以用扩展表达式. 
@@ -971,7 +991,9 @@ a|b|c 匹配a或b或c.
 (..)(..)\1\2 模板匹配. \1代表前面第一个模板, \2代第二个括弧里面的模板. 
 x{m,n} =x\{m,n\} x的字符数量在m到n个之间. 
 ```
+
 ### `sed`
+
 ```bash
 sed 's/old_string/new_string/' file.txt #替换
 sed '/pattern/a new_line_text' file.txt # 每一行匹配到 pattern 的行之后添加 new_line_text
@@ -983,11 +1005,13 @@ find -maxdepth 1 -type d -printf "%f|" | sed 's/|$//;s/x86_64-linux-gnu|//'
 ```
 
 ### `xargs`
+
 ```bash
 find . -regex  ".*/Lab_[0-9]/Lab_[0-9]\.hw.+" -type f  | xargs -I {} git rm --cached  -r -n {}
 ```
 
 ## linux内核
+
 ```bash
 vim ./include/generated/uapi/linux/version.h # 查看版本号
 ```
@@ -995,14 +1019,17 @@ vim ./include/generated/uapi/linux/version.h # 查看版本号
 ## 常用软件及其命令
 
 ### `Tailscale`
+
 ```bash
 sudo tailscale file get 
 ```
 
 ### `sceenfetch`
+
 显示系统/主题信息的命令行脚本
 
 ### `ssh`
+
   ```bash
   sudo apt install openssh-server
   sudo vim /etc/ssh/sshd_config  # sshd_config is a readonly file
@@ -1026,9 +1053,13 @@ sudo tailscale file get
   ssh-copy-id -i ~/.ssh/id_ed25519.pub bobby_ubuntu@100.98.129.77
 
   ```
+
 ### `cmake`
+
 `cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1`
+
 ### `samba`
+
   ```bash
   sudo apt install samba samba-common
   useadd smb ##添加smb用户
@@ -1038,6 +1069,7 @@ sudo tailscale file get
   ```
 
 ### `du`
+
 ```bash
 du -sh 
 -h, --human-readable
@@ -1049,13 +1081,18 @@ du -sh
 -d, --max-depth=N
     显示子文件夹的深度( 层级) 
 ```
+
 ### 散装命令
+
 #### `uname -a`
+
   ```bash
   bobby_ubuntu@Bobby:~$ uname -a
   Linux Bobby 5.15.133.1-microsoft-standard-WSL2 #1 SMP Thu Oct 5 21:02:42 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
   ```
+
 #### `环境变量`
+
   ```bash
   cat ~/.bashrc
   ...
@@ -1068,13 +1105,16 @@ du -sh
   # 注意:sudo执行脚本不会默认载入用户定义的环境变量
   sudo -E build.sh # 载入当前.bashrc的环境变量来执行shell脚本
   ```
+
 ### linux调试
-####  `printk` 
+
+#### `printk`
+
   ```bash
   cat /proc/sys/kernel/printk
   10 1 1 2
   ```
-  内核通过 printk() 输出的信息具有日志级别, 日志级别是通过在 printk() 输出的字符串前加一个带尖括号的整数来控制的, 如 printk("<6>Hello, world!/n");. 内核中共提供了八种不同的日志级别, 在 linux/kernel.h 中有相应的宏对应. 
+  内核通过 printk() 输出的信息具有日志级别, 日志级别是通过在 printk() 输出的字符串前加一个带尖括号的整数来控制的, 如 printk("<6>Hello, world!/n");. 内核中共提供了八种不同的日志级别, 在 linux/kernel.h 中有相应的宏对应.
   ```
   #define KERN_EMERG    "<0>"    /* system is unusable */
   #define KERN_ALERT    "<1>"    /* action must be taken immediately */
@@ -1093,26 +1133,27 @@ du -sh
   <6>级, 内核提示性信息, 很多驱动程序在启动的时候用这个级别打印出它们找到的硬件信息; 
   <7>级, 用于调试信息. 
   ```
-  所以 printk() 可以这样用: printk(KERN_INFO "Hello, world!/n");. 
+  所以 printk() 可以这样用: printk(KERN_INFO "Hello, world!/n");.
 
-  未指定日志级别的 printk() 采用的默认级别是 DEFAULT_MESSAGE_LOGLEVEL, 这个宏在 kernel/printk.c 中被定义为整数 4, 即对应KERN_WARNING. 
+  未指定日志级别的 printk() 采用的默认级别是 DEFAULT_MESSAGE_LOGLEVEL, 这个宏在 kernel/printk.c 中被定义为整数 4, 即对应KERN_WARNING.
 
-  在 /proc/sys/kernel/printk 会显示4个数值( 可由 echo 修改) , 分别表示当前控制台日志级别、未明确指定日志级别的默认消息日志级别、最小( 最高) 允许设置的控制台日志级别、引导时默认的日志级别. 当 printk() 中的消息日志级别小于当前控制台日志级别时, printk 的信息( 要有\n符) 就会在控制台上显示. 但无论当前控制台日志级别是何值, 通过 /proc/kmsg ( 或使用dmesg) 总能查看. 另外如果配置好并运行了 syslogd 或 klogd, 没有在控制台上显示的 printk 的信息也会追加到 /var/log/messages.log 中. 
+  在 /proc/sys/kernel/printk 会显示4个数值( 可由 echo 修改) , 分别表示当前控制台日志级别、未明确指定日志级别的默认消息日志级别、最小( 最高) 允许设置的控制台日志级别、引导时默认的日志级别. 当 printk() 中的消息日志级别小于当前控制台日志级别时, printk 的信息( 要有\n符) 就会在控制台上显示. 但无论当前控制台日志级别是何值, 通过 /proc/kmsg ( 或使用dmesg) 总能查看. 另外如果配置好并运行了 syslogd 或 klogd, 没有在控制台上显示的 printk 的信息也会追加到 /var/log/messages.log 中.
 
 #### `whereis`
+
   ```bash
   whereis gcc
   gcc: /usr/bin/gcc /usr/lib/gcc /usr/share/gcc /usr/share/man/man1/gcc.1.gz
   ```
 
-
 #### `dmesg`
+
   ```bash
   dmesg -l debug -T | tail -10
   ```
 
-
 #### `GDB+QEMU`
+
 ```bash
 # 编译选项
 CONFIG_RANDOMIZE_BASE=n
@@ -1138,6 +1179,7 @@ ps aux | grep qem
 ```
 
 #### `GDB`
+
 ```bash
 file xxx  # 查看文件格式信息
 size *.o   # 查看ELF各个段的长度
@@ -1198,6 +1240,7 @@ quit: 简记为 q , 退出gdb
 ```
 
 #### `系统调用`
+
 ```bash
 arch/x86/entry/syscalls/syscall_64.tbl
 <number> <abi> <name> <entry point>
@@ -1212,7 +1255,9 @@ arch/x86/entry/syscalls/syscall_64.tbl
 
 实现该系统调用, 把它放进 kernel/ 下的一个相关文件, 比如 sys.c
 ```
+
 #### `Kernel`
+
 ```bash
 make help
 cd /lib/modules/$(uname -r)
@@ -1220,13 +1265,14 @@ vim ./modules.builtin
 vim ./vim modules.dep
 version_h := include/generated/uapi/linux/version.h
 export KBUILD_USERCFLAGS := -Wall -Wmissing-prototypes -Wstrict-prototypes \
-			      -O2 -fomit-frame-pointer -std=gnu89
+         -O2 -fomit-frame-pointer -std=gnu89
 #     - See include/linux/module.h for more details
 
 sudo make drivers/usb/serial/usbserial.ko KCONFIG_CONFIG=config-wsl-modified-5.15.1 -j $(nproc)
 ```
 
 ### `Glibc`
+
 ```bash
 # gcc
 gcc -v -x c -E /dev/null
