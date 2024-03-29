@@ -1295,7 +1295,7 @@ make update-syscall-lists
         CFLAGS="-Og -g3" \
         CXXFLAGS="-Og -g3"
 
-patchelf --set-interpreter /home/richar/glibc/lib/lib/ld-2.32.so  --set-rpath /home/richar/glibc/lib/lib [executable]
+patchelf --set-interpreter /opt/glibc-2.35/lib/ld-2.35.so  --set-rpath /opt/glibc-2.35/lib [executable]
 
 
 ```
