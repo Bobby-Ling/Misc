@@ -6,6 +6,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Circle",
+            "request": "launch",
+            "mainClass": "Circle",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "Test_1_6",
+            "request": "launch",
+            "mainClass": "Test_1_6",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "HW9",
+            "request": "launch",
+            "mainClass": "HW9",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
             "name": "Test3",
             "request": "launch",
             "mainClass": "Test3",
