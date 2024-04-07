@@ -15,7 +15,6 @@ class A {
         System.out.println("A" + count + " ");
         count++;
     }
-
 }
 
 class AA {

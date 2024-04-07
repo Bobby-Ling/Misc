@@ -66,81 +66,81 @@ ssh -T git@gitee.com
 ## 基本操作
 
 - git add
-  - `git add ` `* ` `-A ` `--all `
-  - 新建文件`git status `提示 `use "git add <file>``..." to include in what will be committed `
-  - 修改文件 `use "git add <file>``..." to update what will be committed `
+  - `git add` `*` `-A` `--all`
+  - 新建文件`git status`提示 `use "git add <file>``..." to include in what will be committed`
+  - 修改文件 `use "git add <file>``..." to update what will be committed`
 - 回退
   - 未git add
-    修改文件 `git restore <file> ` ,早期版本(prev ver 2.23)`git checkout --<file> `
-  - 已git add 
-    - 先`git restore --staged <file> `(从暂存区撤出,不会撤销更改)
-    - 再`git restore <file> `
+    修改文件 `git restore <file>` ,早期版本(prev ver 2.23)`git checkout --<file>`
+  - 已git add
+    - 先`git restore --staged <file>`(从暂存区撤出,不会撤销更改)
+    - 再`git restore <file>`
   - 版本回退
-    - `git reset --soft commit-id `
+    - `git reset --soft commit-id`
     仅仅修改分支中的HEAD指针的位置,不会改变工作区与暂存区中的文件的版本
-    - `git reset --hard HEAD^ `
-    - `git reset --hard HEAD~n `
+    - `git reset --hard HEAD^`
+    - `git reset --hard HEAD~n`
 - git commit
-  - `git commit -m 'msg' `
-  - `git commit -a/-all <file> ` add+commit all changed files 之前add过的可以,新建的未add的不可以
-  - `create mode 100644 readme.txt ` 100(普通文件)644(文件权限)
+  - `git commit -m 'msg'`
+  - `git commit -a/-all <file>` add+commit all changed files 之前add过的可以,新建的未add的不可以
+  - `create mode 100644 readme.txt` 100(普通文件)644(文件权限)
 - git log HEAD指针之前的提交历史
-  - `--pretty=oneline ` 单行形式
-    - `--pretty=oneline --abbrev-commit `或者`--oneline ` 单行+简写commit ID
+  - `--pretty=oneline` 单行形式
+    - `--pretty=oneline --abbrev-commit`或者`--oneline` 单行+简写commit ID
   - `-n[No.x]` (-n2 -n3 ...)指定查看最近n次提交的内容
-  - `--all ` 查看所有分支历史版本
-    - `-all --graph `
-  - `[branch-name] ` 查看指定分支版本历史
-  - 时间范围,格式,etc... 见`git help log `
+  - `--all` 查看所有分支历史版本
+    - `-all --graph`
+  - `[branch-name]` 查看指定分支版本历史
+  - 时间范围,格式,etc... 见`git help log`
 - git blame
-  - `git blame <file> `列表形式显示修改记录
+  - `git blame <file>`列表形式显示修改记录
 - git reflog 所有提交历史
 - git stash
 - git checkout
-- git diff 
-  - `git diff [--stat] [...] <file> ` 简明查看 
+- git diff
+  - `git diff [--stat] [...] <file>` 简明查看
   - 默认查看工作区与暂存区(上一次add)文件区别
-  - `git diff --cached <file> ` 查看暂存区与本地库中文件内容的区别
-  - `git diff HEAD ` 比较工作区与最新本地版本库(如果HEAD指向的是master分支,那么HEAD还可以换成master)
-  - `git diff commit-id ` 比较工作区与指定commit提交的差异
-  - `git diff --cached commit-id ` 比较暂存区与指定commit提交的差异
-  - `git diff [<commit-id>] [<commit-id>] ` 比较两个commit提交之间的差异
+  - `git diff --cached <file>` 查看暂存区与本地库中文件内容的区别
+  - `git diff HEAD` 比较工作区与最新本地版本库(如果HEAD指向的是master分支,那么HEAD还可以换成master)
+  - `git diff commit-id` 比较工作区与指定commit提交的差异
+  - `git diff --cached commit-id` 比较暂存区与指定commit提交的差异
+  - `git diff [<commit-id>] [<commit-id>]` 比较两个commit提交之间的差异
   - 解读方式
   略
 - 文件重命名
   - 手动直接修改
   删除+新建,但可识别为rename
-  - `git mv <prevfile> <newfile> `
+  - `git mv <prevfile> <newfile>`
 - 分支和HEAD
   - 分支本质上仅仅是指向提交对象的指针
-  - `.git/refs/heads/branchname ` 文件存储的是commit ID
-  - `.git/HEAD `存储的是当前HEAD指针 `refs/heads/branchname `
+  - `.git/refs/heads/branchname` 文件存储的是commit ID
+  - `.git/HEAD`存储的是当前HEAD指针 `refs/heads/branchname`
   - HEAD->branch->commit object
-  - 创建分支 `git branch branchname `
-  - 查看状态 
-    - `git log `
-    - `git branch ` 查看分支列表和当前分支
-    - `git branch -v ` 查看所有分支的最后一次提交
-  - 切换分支 
-    - `git checkout branchname `
-    - `git checkout -b branchname ` 新建+创建
+  - 创建分支 `git branch branchname`
+  - 查看状态
+    - `git log`
+    - `git branch` 查看分支列表和当前分支
+    - `git branch -v` 查看所有分支的最后一次提交
+  - 切换分支
+    - `git checkout branchname`
+    - `git checkout -b branchname` 新建+创建
   - 删除分支
     - 当前工作的分支,不能是该分支
-    - `git branch -d branchname ` 
-    - `git branch -D branchname ` 未合并时强制删除
+    - `git branch -d branchname`
+    - `git branch -D branchname` 未合并时强制删除
 - 设置忽略文件(.gitignore忽略规则)
   - 格式规范
     - 所有空行或者以 # 开头的行都会被 Git 忽略
     - 可以使用标准的glob模式(shell所使用的简化了的正则表达式)匹配,它会递归地应用在整个工作区中
-      - 以`＃ `开头的行用作注释。
-      - 星号`* `匹配零个或多个任意字符。
-      - `[abc] `匹配任何一个列在方括号中的字符 (这个例子要么匹配一个a,要么匹配一个b,要么匹配一个 c);
-      - 如果在方括号中使用短划线分隔两个字符,表示所有在这两个字符范围内的都可以匹配(比如`[0-9] `表示匹配所有 0 到 9 的数字)。
+      - 以`＃`开头的行用作注释。
+      - 星号`*`匹配零个或多个任意字符。
+      - `[abc]`匹配任何一个列在方括号中的字符 (这个例子要么匹配一个a,要么匹配一个b,要么匹配一个 c);
+      - 如果在方括号中使用短划线分隔两个字符,表示所有在这两个字符范围内的都可以匹配(比如`[0-9]`表示匹配所有 0 到 9 的数字)。
       - 问号(?)只匹配一个任意字符。
-      - 使用两个星号`** `表示匹配任意中间目录,比如` a/**/z `可以匹配 `a/z `、` a/b/z `或` a/b/c/z `等。
-    - 匹配模式可以以`/ `开头,防止递归
-    - 匹配模式最后跟`/ `说明要忽略的是目录
-    - 要忽略指定模式以外的文件或目录,可以在模式前加上叹号`! `取反
+      - 使用两个星号`**`表示匹配任意中间目录,比如` a/**/z `可以匹配 `a/z`、` a/b/z `或` a/b/c/z `等。
+    - 匹配模式可以以`/`开头,防止递归
+    - 匹配模式最后跟`/`说明要忽略的是目录
+    - 要忽略指定模式以外的文件或目录,可以在模式前加上叹号`!`取反
   - 例子
   ```bash
   # 1.忽略public下的所有目录及文件
@@ -172,12 +172,12 @@ ssh -T git@gitee.com
   ```
   - 具体方法
     - 忽略单个仓库中的文件(本地使用)
-      - 编辑`.git/info/exclude ` 文件
+      - 编辑`.git/info/exclude` 文件
       - 只在本机当前仓库起效,不会对其他的克隆仓库起效
     - 忽略单个仓库中的文件(远程共用)
-    根目录下新建`.gitignore `文件
+    根目录下新建`.gitignore`文件
     - 全局忽略
-    `git config --global core.excludesfile <filewithpath> `
+    `git config --global core.excludesfile <filewithpath>`
   - 其他
     - 规则失误
       ```bash
@@ -186,11 +186,11 @@ ssh -T git@gitee.com
       1.test
       Use -f if you really want to add them.
       ```
-      - 可使用`git add -f `强制添加被忽略的文件
-      - 使用`git check-ignore `检查生效的规则
+      - 可使用`git add -f`强制添加被忽略的文件
+      - 使用`git check-ignore`检查生效的规则
         ```bash
         $ git check-ignore -v 1.test
-        .gitignore:3:*.class	1.test
+        .gitignore:3:*.class 1.test
         ```
     - 优先级
       1. 从命令行中读取可用的忽略规则
@@ -213,9 +213,7 @@ ssh -T git@gitee.com
       注意
       > 执行 git checkout（切换分支）和git reset（回退版本）命令的时候仍然会影响到这些文件,并把内容恢复到被跟踪的内容（再次执行上面命令,修改仍然不会被跟踪）
       2. 第二种办法
-      `.git/info/exclude `的文件不会提交到版本库中去
-
-
+      `.git/info/exclude`的文件不会提交到版本库中去
 
 ## cheatsheet
 
@@ -225,10 +223,10 @@ ssh -T git@gitee.com
 
 - git config
   - 查看
-    - `git config --list --local ` 仓库级别
-    - `git config --list --global ` 全局(用户)
-    - `git config --list --system ` 系统
-    - `git config --list ` 全部
+    - `git config --list --local` 仓库级别
+    - `git config --list --global` 全局(用户)
+    - `git config --list --system` 系统
+    - `git config --list` 全部
   - 签名
     ```bash
     git config --global user.name "Bobby-Ling"
@@ -238,18 +236,18 @@ ssh -T git@gitee.com
     user.name
     ```
   - 设置别名
-    - `git config [--global/--local/--system] alias.[frdlyname] [command] `
-    - `git config [--global/--local/--system] --unset alias.[frdlyname] ` 删除别名
-    - `git config [--global/--local/--system] --remove-section alias ` 删除所有别名
+    - `git config [--global/--local/--system] alias.[frdlyname] [command]`
+    - `git config [--global/--local/--system] --unset alias.[frdlyname]` 删除别名
+    - `git config [--global/--local/--system] --remove-section alias` 删除所有别名
     ```bash
     #示例,注意引号
     $ git config --global alias.lg "log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %C(cyan)%s %C(magenta)(%cr) %C(bold blue)<%an>%Creset'"
     ```
   - 设置颜色
-  `git config --global color.ui true `
+  `git config --global color.ui true`
 - git核心概念
   - 暂存区(index)
-    - 存储方式 
+    - 存储方式
       - 存储于.git/index文件
       - 包含的是文件的目录树,记录了文件名、文件的时间戳、文件长度、文件类型以及其SHA-1值,没有存储文件内容
       - 存放的是文件内容(blob)的索引(快照)或tree对象的索引,指向.git/objects/目录下的文件
@@ -259,7 +257,7 @@ ssh -T git@gitee.com
 
     > 所以,这里有三个文件夹,暂存区和仓库中是tree对象的形式存在。刚开始,三个文件夹内容一致,我们可以直接修改工作空间的文件夹。然后通过命令(git add/rm)可以将想要提交的修改合并到暂存区中的tree对象上。最后通过命令(git commit)才会将暂存区中的tree保存到库中,并生成一个commit对象指向这个tree对象
     - Git通过暂存区的文件索引信息来创建tree对象
-    - 底层命令 `git ls-files ` 查看暂存区的文件信息
+    - 底层命令 `git ls-files` 查看暂存区的文件信息
         - --cached(-c) 查看暂存区中文件,默认
         - --midified(-m) 查看修改的文件
         - --delete(-d) 查看删除过的文件
@@ -274,10 +272,10 @@ ssh -T git@gitee.com
     - 意义
       - 文件一次次的版本
     - 底层命令
-      - `git hash-object -w 文件路径 ` 把工作区的一个文件提交到本地版本库中
-      - `find .git/objects -type f ` 查看Git数据库中的对象(Linux命令)
-      - `git cat-file -p 40位键 ` 查看该Git对象的内容
-      - `git cat-file -t 40位键 ` 查看该Git对象的类型
+      - `git hash-object -w 文件路径` 把工作区的一个文件提交到本地版本库中
+      - `find .git/objects -type f` 查看Git数据库中的对象(Linux命令)
+      - `git cat-file -p 40位键` 查看该Git对象的内容
+      - `git cat-file -t 40位键` 查看该Git对象的类型
     ```bash
     # 操作
     $ echo 'git manually create blob object'>>2
@@ -301,20 +299,20 @@ ssh -T git@gitee.com
       - 项目一次次的版本
       - 为一个项目commit时全部文件的快照(不含文件信息)
     - 底层命令
-      - `git ls-files ` 查看暂存区的文件信息
+      - `git ls-files` 查看暂存区的文件信息
         - --cached(-c) 查看暂存区中文件,默认
         - --midified(-m) 查看修改的文件
         - --delete(-d) 查看删除过的文件
         - --other(-o) 查看没有被Git跟踪的文件
         - --stage(-s) 显示mode以及文件对应的Blob对象,进而可以获取暂存区中对应文件里面的内容(全部文件,不论修改与否,相当于快照)
-      - `git update-index ` 将一个单独文件存入暂存区中
+      - `git update-index` 将一个单独文件存入暂存区中
         - --add 文件首次添加到暂存区时使用
         - --cacheinfo 要添加的文件位于Git数据库中(接续上一步手动添加blob的操作),而不是位于当前工作目录;不加为加入暂存区+存入版本库
         - 100644 普通文件(blob对象的文件模式一般都为100644)
-          100755 可执行文件 
+          100755 可执行文件
           120000 符号链接
-      - `git write-tree ` 向数据库中写入tree对象
-      - `git read-tree ` 把树对象读入暂存区
+      - `git write-tree` 向数据库中写入tree对象
+      - `git read-tree` 把树对象读入暂存区
         - --prefix=bak 将一个已有的树对象作为子树读入暂存区
       ```bash
       # 添加索引,初次添加使用--add
@@ -433,15 +431,15 @@ ssh -T git@gitee.com
 
     ```
   - 总结
-    - `git add ./ ` 相当于
-      - `git hash-object -w <file> ` 
+    - `git add ./` 相当于
+      - `git hash-object -w <file>`
       每个修改的文件
-      - `git update-index `
-      将工作区的文件快照(索引,全部),存入暂存区(index),之后`git ls-files -s `里的文件为最新版本(最新的blob)
-    - `git commit -m 'msg' ` 相当于
-      - `git write-tree `
+      - `git update-index`
+      将工作区的文件快照(索引,全部),存入暂存区(index),之后`git ls-files -s`里的文件为最新版本(最新的blob)
+    - `git commit -m 'msg'` 相当于
+      - `git write-tree`
       依据暂存区的"临时tree"生成tree对象存储至数据库
-      - `git commit-tree `
+      - `git commit-tree`
       然后封装这个tree对象生成commit对象存入数据库
     - 对于文件记录完整副本,对于工作区记录变更
     - 文件状态????
@@ -455,7 +453,6 @@ ssh -T git@gitee.com
     ```
   - tag
 - 注意
-
 
 ## 其他问题
 
@@ -498,7 +495,43 @@ ssh -T git@gitee.com
   ```
 
 - 克隆子模块submodule
+
 ```bash
 git submodule sync --recursive
 git submodule update --recursive --remote
 ```
+
+## 开源项目
+
+1. fork
+2. clone
+    ```开始
+    git clone git@github.com:${USER}/${PROJECT}.git
+    git remote add upstream https://github.com/${ORG}/${PROJECT}.git
+    # Never push to upstream locally
+    # 添加上游仓库
+    git remote set-url --push upstream no_push
+
+    > git remote -v
+    origin  git@github.com:Bobby-Ling/Logisim-Font.git (fetch)        
+    origin  git@github.com:Bobby-Ling/Logisim-Font.git (push)
+    upstream        https://github.com/Logisim-Ita/Logisim.git (fetch)
+    upstream        no_push (push)
+    ```
+3. 每次开始写之前
+    ```bash
+    git fetch upstream
+    git checkout main
+    git rebase upstream/main
+    ```
+4. 开始编写  
+    ```bash
+    git checkout -b <new-branch-name>
+    # 新增一个<new-branch-name>来完成开发工作
+
+    # 如果当前分支有未提交的文件
+    git stash 
+    git branch <new-branch-name>
+    git stash pop
+    git checkout -b <new-branch-name>
+    ```
