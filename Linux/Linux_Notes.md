@@ -681,6 +681,11 @@ systemctl start wyc
 systemctl status wyc.service
 
 sudo systemctl [enable|start|stop|restart|status] xxx.service
+
+systemctl list-unit-files --state=disabled
+sudo systemctl enable wyc.service
+ls -l /etc/systemd/system/multi-user.target.wants/
+
 ```
 
 ## SSH
