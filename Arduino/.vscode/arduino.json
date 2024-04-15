@@ -1,0 +1,8 @@
+{
+    "board": "arduino:avr:uno",
+    "programmer": "avrispmkii",
+    "intelliSenseGen": "enable",
+    "sketch": "test\\test.ino",
+    "port": "COM9",
+    "output": "./build"
+}
