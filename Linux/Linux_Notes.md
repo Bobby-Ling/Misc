@@ -977,6 +977,8 @@ ls -l /etc/systemd/system/multi-user.target.wants/
       - dG 删除本行到最后一行
       - d0 删除本字符到行首
       - d$ 删除本字符到行尾
+      - dw 删除至当前单词结束
+      - daw 删除当前单词
   - 其他
     - . 重复上一次命令
     - u 撤销
