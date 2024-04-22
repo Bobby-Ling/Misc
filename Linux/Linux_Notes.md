@@ -586,12 +586,11 @@ sudo vi /etc/wsl.conf
 
 - C/S模型构建
   输入tmux命令就相当于开启了一个服务器,此时默认将新建一个会话,然后会话中默认新建一个窗口,窗口中默认新建一个面板. 一个tmux session(会话)可以包含多个window(窗口),窗口默认充满会话界面,因此这些窗口中可以运行相关性不大的任务. 一个window又可以包含多个pane(面板),窗口下的面板,都处于同一界面下,这些面板适合运行相关性高的任务,以便同时观察到它们的运行情况.
-- 会话session
+- 会话sessionF
 
   - 新建会话
 
-  ```bash
-  tmux # 新建一个无名称的会话(名称为(编号)0,1,2,...)
+  ```bash  tmux # 新建一个无名称的会话(名称为(编号)0,1,2,...)
   tmux new -s demo # 新建一个名称为demo的会话
   ```
 
@@ -754,7 +753,6 @@ tmux new -s session0
   ```bash
   echo "set $TERM xterm-256color">>~/.gdbinit
   ```
-
 
 ### 颜色主题： `Starship`
 
@@ -926,8 +924,6 @@ ls -l /etc/systemd/system/multi-user.target.wants/
 - 举例
   - grep "/sbin/nologin" /etc/passwd | wc -l
   - cat readme.txt | wc -l
-
-
 
 ## vim
 
@@ -1160,9 +1156,22 @@ du -sh
   sudo -E build.sh # 载入当前.bashrc的环境变量来执行shell脚本
   ```
 
-### linux调试
+#### `whereis`
 
-#### `printk`
+  ```bash
+  whereis gcc
+  gcc: /usr/bin/gcc /usr/lib/gcc /usr/share/gcc /usr/share/man/man1/gcc.1.gz
+  ```
+
+#### `dmesg`
+
+  ```bash
+  dmesg -l debug -T | tail -10
+  ```
+
+## linux调试
+
+### `printk`
 
   ```bash
   cat /proc/sys/kernel/printk
@@ -1193,46 +1202,193 @@ du -sh
 
   在 /proc/sys/kernel/printk 会显示4个数值( 可由 echo 修改) , 分别表示当前控制台日志级别、未明确指定日志级别的默认消息日志级别、最小( 最高) 允许设置的控制台日志级别、引导时默认的日志级别. 当 printk() 中的消息日志级别小于当前控制台日志级别时, printk 的信息( 要有\n符) 就会在控制台上显示. 但无论当前控制台日志级别是何值, 通过 /proc/kmsg ( 或使用dmesg) 总能查看. 另外如果配置好并运行了 syslogd 或 klogd, 没有在控制台上显示的 printk 的信息也会追加到 /var/log/messages.log 中.
 
-#### `whereis`
+### QEMU
 
-  ```bash
-  whereis gcc
-  gcc: /usr/bin/gcc /usr/lib/gcc /usr/share/gcc /usr/share/man/man1/gcc.1.gz
-  ```
+```bash
+# 查看initrd
+lsinitramfs ./initrd
+zcat ./initrd.img | cpio -id
 
-#### `dmesg`
+# 查看qcow2
+qemu-img create -f qcow2 disk.qcow2 200M
 
-  ```bash
-  dmesg -l debug -T | tail -10
-  ```
+mkdir ./qcow2
 
-#### `GDB+QEMU`
+sudo modprobe nbd max_part=8 # 如果没有将nbd编译进内核
+sudo qemu-nbd --connect=/dev/nbd0 ./disk.qcow2
+sudo fdisk /dev/nbd0 # 进入fdisk命令行进行分区
+sudo fdisk -l /dev/nbd0 # 查看信息
+# Disk /dev/nbd0: 200 MiB, 209715200 bytes, 
+# Device      Boot Start    End Sectors  Size Id Type
+# /dev/nbd0p1       2048 409599  407552  199M 83 Linux
+sudo blkid /dev/nbd0p1 # 查看文件系统
+sudo mkfs.ext4 /dev/nbd0p1 # 格式化为ext4
+sudo mount /dev/nbd0p1 ./qcow2
+
+# echo $$ # 查看当前shell pid
+# sudo lsof ./qcow2 # 查看当前使用此目录的进程
+sudo umount ./qcow2
+sudo qemu-nbd -d /dev/nbd0
+
+mount /dev/vda1 /mnt # in initramfs
+# /dev/vda1 on /mnt type ext4 (rw,relatime)
+df
+# Filesystem           1024-blocks    Used Available Use% Mounted on
+# udev                   1007084         0   1007084   0% /dev
+# tmpfs                   202708      2368    200340   1% /run
+# udev                    174432        28    160144   0% /mnt
+# /dev/vda1               174432        28    160144   0% /mnt
+
+# (qemu) monitor命令行中
+drive_add 0 file=disk.qcow2,media=disk,index=1,if=none,id=drive01
+device_add virtio-blk-pci,scsi=on,drive=drive01,id=disk-01
+# device_del disk-01
+info block # 块
+$ lsblk # lspci lshw
+
+# 以上无法实时共享
+
+# virtiofs
+# 需要CONFIG_VIRTIO_FS等配置
+
+
+
+debugStub.listen.guest64 = "1" # 8864
+```
+
+### `GDB+QEMU+VSCode`
+
+#### 启动虚拟机
 
 ```bash
 # 编译选项
 CONFIG_RANDOMIZE_BASE=n
 
+# 制作ram disk根文件系统(busybox)
 mkinitramfs -o ramdisk.img
 
+# 内核调试gdb脚手架
 echo "add-auto-load-safe-path path/to/linux/scripts/gdb/vmlinux-gdb.py" >> ~/.gdbinit
+
+# 启动QEMU
 qemu-system-x86_64 \
   -kernel arch/x86_64/boot/bzImage \
   -nographic \
   -append "console=ttyS0 nokaslr" \
   -initrd ramdisk.img \
-  -m 1024 \
+  -m 1G \
   -s -S
 $ gdb vmlinux
-(gdb) target remote :1234
+(gdb) target remote:1234
 (gdb) b start_kernel
 (gdb) c
 asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
 
-
-ps aux | grep qem
 ```
 
-#### `GDB`
+#### VSCode配置
+
+##### 配置调试启动
+
+```bash
+# 修改.vscode/launch.json
+"miDebuggerServerAddress": "127.0.0.1:1234",
+"program": "${workspaceFolder}/vmlinux",
+# 相当于:
+$ gdb vmlinux
+(gdb) target remote:1234
+
+
+"setupCommands":[{
+  "description": "为 gdb 启用当前目录的.gdbinit",
+  "text": "source ./.gdbinit",
+  "ignoreFailures": false
+}]
+
+```
+
+##### 配置启动虚拟机task
+
+##### 配置intellisense智能提示
+
+```bash
+# 内核提供的工具
+./scripts/clang-tools/gen_compile_commands.py
+
+# .vscode/c_cpp_properties.json
+"compileCommands": "${workspaceFolder}/compile_commands.json"
+```
+
+##### 附录
+
+```
+{  
+  // .vscode/launch.json
+  "version": "0.2.0",  
+  "configurations": [  
+      {
+          "name": "(gdb) 调试vmlinux",
+          "type": "cppdbg",
+          "request": "launch",
+          "miDebuggerServerAddress": "127.0.0.1:1234",
+          "program": "${workspaceFolder}/vmlinux",
+          "args": [],
+          "stopAtConnect": true,
+          "cwd": "${workspaceFolder}",
+          "externalConsole": false,
+          "MIMode": "gdb",
+          "setupCommands": [
+              {
+                  "text": "cd ${workspaceFolder}", 
+                  "ignoreFailures": false
+              },
+              {
+                  "description": "为 gdb 启用当前目录的.gdbinit",
+                  "text": "source ./.gdbinit",
+                  "ignoreFailures": false
+              }
+          ],
+          "preLaunchTask": "startvm.sh"
+      },
+    ]  
+}
+```
+
+```
+  // .vscode/tasks.json
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "startvm.sh",
+      "command": "nohup sh -c '${workspaceFolder}/startvm.sh &';echo OK",
+      "args": [
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "startvm.sh"
+    },
+  ]
+```
+
+```
+{
+  # .vscode/c_cpp_properties.json
+  # 或者使用clangd
+  "configurations": [
+      {
+          "name": "Linux",
+          "cStandard": "c11",
+          "intelliSenseMode": "gcc-x64",
+          "compileCommands": "${workspaceFolder}/compile_commands.json"
+      }
+  ],
+  "version": 4
+}
+```
+
+### `GDB`
 
 ```bash
 file xxx  # 查看文件格式信息
@@ -1293,7 +1449,7 @@ quit: 简记为 q , 退出gdb
 (gdb) pwd               # 显示当前所在目录
 ```
 
-#### `系统调用`
+### `系统调用`
 
 ```bash
 arch/x86/entry/syscalls/syscall_64.tbl
@@ -1310,7 +1466,7 @@ arch/x86/entry/syscalls/syscall_64.tbl
 实现该系统调用, 把它放进 kernel/ 下的一个相关文件, 比如 sys.c
 ```
 
-#### `Kernel`
+### `Kernel`
 
 ```bash
 make help
@@ -1354,3 +1510,41 @@ patchelf --set-interpreter /opt/glibc-2.35/lib/ld-2.35.so  --set-rpath /opt/glib
 
 ```
 
+### `GDB+vscode`调试Glibc
+
+- 编译具备调试信息的glibc:
+
+```bash
+../configure \
+    --prefix=/opt/glibc-2.35 \
+    --disable-werror \
+    --without-selinux \
+    --enable-add-ons \
+    --enable-kernel=5.15.1 \
+    --without-gd \
+    --enable-debug=yes \
+    --with-headers=/usr/include/kernelheader/include \
+    --enable-kernel=5.15.1 \
+    CFLAGS="-Og -g3" \
+    CXXFLAGS="-Og -g3"
+```
+
+- gcc 编译加上"-Wl,-rpath=/opt/glibc-2.35/lib"
+- 或者
+
+```bash
+patchelf --set-interpreter /opt/glibc-2.35/lib/ld-2.35.so  --set-rpath /opt/glibc-2.35/lib [executable]
+```
+
+- 链接上:
+
+```bash
+bobby_ubuntu@Bobby:~/Git/code$ ldd out_no_debug 
+        linux-vdso.so.1 (0x00007ffdd1dec000)
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fd722486000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007fd7226c1000)
+bobby_ubuntu@Bobby:~/Git/code$ ldd out
+        linux-vdso.so.1 (0x00007ffe7d4c6000)
+        libc.so.6 => /opt/glibc-2.35/lib/libc.so.6 (0x00007f69c6cfd000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007f69c6ef4000)
+```
