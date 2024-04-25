@@ -67,7 +67,7 @@ module Cal(clk,SW,LED,SEG,AN,sum_value);
         .DONE(DONE)
     );
 
-    Display #(.BITWIDTH(BITWIDTH)) DIsplay_Inst(
+    Display #(.BITWIDTH(BITWIDTH)) Display_Inst(
         .clk(clk_DISPLAY),
         .NUM(sum_value),
         .SEG(SEG),
@@ -75,6 +75,5 @@ module Cal(clk,SW,LED,SEG,AN,sum_value);
     );
 
     assign LED={15'b0,DONE};
-    assign AN=8'b11111110;
     // assign SEG
 endmodule //Cal

@@ -1,4 +1,6 @@
 module Reg_N(clk,rst,load,D,Q);
+    parameter DEBUG=0;
+
     parameter BITWIDTH=8;
     input clk;
     input rst;
@@ -13,5 +15,8 @@ module Reg_N(clk,rst,load,D,Q);
         else if(load==1) begin
             Q<=D;
         end
+
+        if(DEBUG==1)
+            $write("load:%b,D:%x,Q:%x\n",load,D,Q);
     end
 endmodule //reg_N 

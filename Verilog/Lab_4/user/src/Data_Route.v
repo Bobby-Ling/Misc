@@ -5,6 +5,8 @@
 `include "./Reg_N.v"
 
 module Data_Route(clk,rst,LOAD_SUM,LOAD_NEXT,SUM_SEL,NEXT_SEL,ADDR_SEL,next_zero,sum_value);
+    parameter DEBUG=0;
+
     parameter BITWIDTH=8;
     input clk;
     input rst;
@@ -43,7 +45,7 @@ module Data_Route(clk,rst,LOAD_SUM,LOAD_NEXT,SUM_SEL,NEXT_SEL,ADDR_SEL,next_zero
     Reg_N #(.BITWIDTH(BITWIDTH)) SUM_STORE_Inst(
         .clk(clk),
         .rst(rst),
-        .load(LD_SUM),
+        .load(LOAD_SUM),
         .D(sum_sel),
         .Q(sum)
     );
@@ -51,7 +53,6 @@ module Data_Route(clk,rst,LOAD_SUM,LOAD_NEXT,SUM_SEL,NEXT_SEL,ADDR_SEL,next_zero
     wire [BITWIDTH-1:0] next_addr;
     wire [BITWIDTH-1:0] next;
     wire [BITWIDTH-1:0] next_added;
-    wire [BITWIDTH-1:0] next_sel;
     wire [BITWIDTH-1:0] addr;
 
     Slector_N #(.BITWIDTH(BITWIDTH)) NEXT_SEL_Inst(
@@ -70,7 +71,7 @@ module Data_Route(clk,rst,LOAD_SUM,LOAD_NEXT,SUM_SEL,NEXT_SEL,ADDR_SEL,next_zero
     Reg_N #(.BITWIDTH(BITWIDTH)) NEXT_ADDR_STORE_Inst(
         .clk(clk),
         .rst(rst),
-        .load(LD_NEXT),
+        .load(LOAD_NEXT),//LOAD_NEXT写成LD_NEXT不会报错
         .D(next_addr),
         .Q(next)
     );
@@ -93,4 +94,21 @@ module Data_Route(clk,rst,LOAD_SUM,LOAD_NEXT,SUM_SEL,NEXT_SEL,ADDR_SEL,next_zero
         .Data(data)
     );
 
+    always@(posedge clk)begin
+        if(DEBUG==1)begin
+            $write("clk:%b ",clk);
+            $write("addr:%x ",addr);
+            $write("data:%x ",data);
+            $write("sum_added:%x ",sum_added);
+            $write("sum_sel:%x ",sum_sel);
+            $write("sum:%x ",sum);
+            $write("next_addr:%x ",next_addr);
+            $write("next:%x ",next);
+            $write("next_added:%x ",next_added);
+            $write("LOAD_SUM:%b, LOAD_NEXT:%b, SUM_SEL:%b, NEXT_SEL:%b, ADDR_SEL:%b ",
+                LOAD_SUM,LOAD_NEXT,SUM_SEL,NEXT_SEL,ADDR_SEL);
+            $write("[%b %b %b %b %b]\n",
+                LOAD_SUM,LOAD_NEXT,SUM_SEL,NEXT_SEL,ADDR_SEL);
+        end
+    end
 endmodule //Data_Route

@@ -22,7 +22,7 @@ module Lab4_1_tb;
 
     assign SW=16'h0001;//start
 
-    Cal  #(.BITWIDTH(8),.N_COMPUTE(2),.N_DISPLAY(10)) Cal_Inst(
+    Cal  #(.BITWIDTH(8),.N_COMPUTE(2),.N_DISPLAY(2)) Cal_Inst(
         .clk(CLK100MHZ),
         .SW(SW),
         .LED(LED),
@@ -31,17 +31,18 @@ module Lab4_1_tb;
         .sum_value(sum_value)
     );
 
-
     integer i;
     initial begin
         $display($time);
         
-        for (i=1; i < 2000; i=i+1)
+        for (i=1; i < 200; i=i+1)
         begin
-            #5
-            $display("i:%d, clk:%b, SEG:%b AN:%b sum_value:%d DONE:%b", 
+            #5 
+            $write("");
+            $display("i:%d, clk:%b, SEG:%b AN:%b sum_value:%x DONE:%b", 
                 i,clk,SEG,AN,sum_value,LED[0]);
         end
         $display($time);
+        $finish;
     end
 endmodule
