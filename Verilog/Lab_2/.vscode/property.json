@@ -1,0 +1,30 @@
+{
+    "toolChain": "xilinx", 
+
+    "prjName": {
+        "PL": "template",
+        "PS": "template"
+    },
+
+    "arch" : {
+        "prjPath": "",
+        "hardware" : {
+            "src"  : "", 
+            "sim"  : "",  
+            "data" : ""   
+        },
+        "software" : {
+            "src"  : "",
+            "data" : ""
+        }
+    },
+
+    "IP_REPO" : [],
+
+    "soc": {
+        "core": "none"
+    },
+
+    "enableShowLog": true,
+    "device": "none"
+}

@@ -1,0 +1,34 @@
+{
+    "toolChain": "xilinx", 
+
+    "prjName": {
+        "PL": "template",
+        "PS": "template"
+    },
+
+    "arch" : {
+        "prjPath": ".",
+        "hardware" : {
+            "src"  : "./user/src/", 
+            "sim"  : "./user/sim/",  
+            "data" : "./user/data/"   
+        },
+        "software" : {
+            "src"  : "",
+            "data" : ""
+        }
+    },
+
+    "iverilogCompileOptions": {
+        "standard": "",
+        "includes": ""
+    },
+    "IP_REPO" : [],
+
+    "soc": {
+        "core": "none"
+    },
+
+    "enableShowLog": true,
+    "device": "none"
+}
