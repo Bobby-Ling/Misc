@@ -10,7 +10,7 @@ module Reg_N(clk,rst,load,D,Q);
 
     always@(posedge clk)begin
         if(rst==1)begin
-            Q<=1;
+            Q<=0;
         end
         else if(load==1) begin
             Q<=D;

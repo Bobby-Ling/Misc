@@ -5,7 +5,7 @@
 `include "./Reg_N.v"
 
 module Data_Route(clk,rst,LOAD_SUM,LOAD_NEXT,SUM_SEL,NEXT_SEL,ADDR_SEL,next_zero,sum_value);
-    parameter DEBUG=0;
+    parameter DEBUG=1;
 
     parameter BITWIDTH=8;
     input clk;
@@ -97,6 +97,7 @@ module Data_Route(clk,rst,LOAD_SUM,LOAD_NEXT,SUM_SEL,NEXT_SEL,ADDR_SEL,next_zero
     always@(posedge clk)begin
         if(DEBUG==1)begin
             $write("clk:%b ",clk);
+            $write("rst:%b ",rst);
             $write("addr:%x ",addr);
             $write("data:%x ",data);
             $write("sum_added:%x ",sum_added);

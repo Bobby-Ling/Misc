@@ -6,8 +6,11 @@ module Lab4_1(
     output [7:0] AN
 );
 
-    Cal  #(.BITWIDTH(8)) Cal_Inst(
-        .CLK100MHZ(CLK100MHZ),
+    Cal  #(
+        .BITWIDTH(8),
+        .N_COMPUTE(100_000_000),
+        .N_DISPLAY(1000_000)) Cal_Inst(
+        .clk(CLK100MHZ),
         .SW(SW),
         .LED(LED),
         .SEG(SEG),

@@ -10,7 +10,7 @@ module FSM(
     output reg ADDR_SEL=0,
     output reg DONE=0
 );
-    parameter DEBUG=0;
+    parameter DEBUG=1;
 
     parameter   STATE_START=      4'b0001,
                 STATE_COMPUTE_SUM=4'b0010,
@@ -19,11 +19,6 @@ module FSM(
 
     reg [3:0] state=STATE_START;
     always@(posedge clk) begin
-        if(rst==1)begin
-            state<=STATE_START;
-        end
-
-
         if(DEBUG==1) begin
             // $write("clk:%b ",clk);
             $write("next_zero:%b ",next_zero);
@@ -102,6 +97,10 @@ module FSM(
                 state=STATE_START;
         endcase
         
+        if(rst==1)begin
+            state=STATE_START;
+        end
+
         case (state)
             STATE_START: 
                 begin

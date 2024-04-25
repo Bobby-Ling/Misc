@@ -17,11 +17,17 @@ module Display(clk,NUM,SEG,AN);
     );
 
     always@(posedge clk)begin
-        num=NUM[3:0];
-        sel=0;
-    end
-    always@(negedge clk)begin
-        num=NUM[7:4];
-        sel=1;
+        case(sel)
+            3'b000:
+                begin
+                    sel=3'b001;
+                    num=NUM[7:4];
+                end
+            3'b001:
+                begin
+                    sel=3'b000;
+                    num=NUM[3:0];
+                end
+        endcase
     end
 endmodule
