@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-
+`include "../src/dynamic_scan.v"
 module Lab3_1_tb;
     parameter clk_period = 10;//T=10ns  
 
@@ -22,8 +22,12 @@ module Lab3_1_tb;
 
     wire [7:0] SEG;
     wire [7:0] AN;
+    reg isOn;
+
     dynamic_scan #(2) dynamic_scan_inst(
         .clk(clk),
+        .isReverse(isReverse),
+        .isOn(isOn),
         .SEG(SEG),
         .AN(AN)
     );
@@ -31,15 +35,37 @@ module Lab3_1_tb;
     integer i;
 
     initial begin
+        isOn=1'b1;
         $display($time);
         for (i=1; i < 200; i=i+1)
         begin
             #5
             $display("i:%d, clk:%b, clk_N_out:%b, SEG:%b AN:%b", i,clk,clk_N_out,SEG,AN);
-            // $display("i:%d, clk:%b", i,clk);
-            // $display("clk_N_out:%b",clk_N_out);
-            // $display("SEG:%b AN:%b",SEG,AN);
         end
         $display($time);
+
+        for (i=1; i < 200; i=i+1)
+        begin
+            #5
+            $display("i:%d, clk:%b, clk_N_out:%b, SEG:%b AN:%b", i,clk,clk_N_out,SEG,AN);
+        end
+        $display($time);
+
+        isOn=1'b0;
+        $display($time);
+        for (i=1; i < 200; i=i+1)
+        begin
+            #5
+            $display("i:%d, clk:%b, clk_N_out:%b, SEG:%b AN:%b", i,clk,clk_N_out,SEG,AN);
+        end
+        $display($time);
+
+        for (i=1; i < 200; i=i+1)
+        begin
+            #5
+            $display("i:%d, clk:%b, clk_N_out:%b, SEG:%b AN:%b", i,clk,clk_N_out,SEG,AN);
+        end
+        $display($time);
+        $finish;
     end
 endmodule

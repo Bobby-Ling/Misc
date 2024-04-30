@@ -1,0 +1,18 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Sim",
+            "type": "shell",
+            "command": "${workspaceFolder}\\sim.bat",
+            "problemMatcher": [],
+            "group": "build",
+            "promptOnClose": false,
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        }
+    ]
+}

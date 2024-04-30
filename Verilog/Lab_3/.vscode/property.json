@@ -1,26 +1,17 @@
 {
-    // 当前使用的第三方工具链
     "toolChain": "xilinx", 
 
-    // 工程命名 
-    // PL : 编程逻辑设计部分即之前的FPGA
-    // PL : 处理系统设计部分即之前的SOC
     "prjName": {
         "PL": "template",
         "PS": "template"
     },
 
-    // 自定义工程结构, 若无该属性则认为是标准文件结构 (详见下文说明) 
-    // 工程路径, 软硬件设计路径
-    // 所有属性均支持${workspace}、${plname}、${psname}、相对路径的写法
-    // ${workspace} :  当前工作区的路径
-    // ${plname}、${psname} : PL或PS的工程的名字
     "arch" : {
-        "prjPath": "",
+        "prjPath": ".",
         "hardware" : {
-            "src"  : "",  // 放置设计源文件, 注: src上一级为IP&bd
-            "sim"  : "",  // 放置仿真文件, 会直接反应在树状结构上
-            "data" : ""   // 放置约束、数据文件, 约束会自动添加进vivado工程
+            "src"  : "./user/src/", 
+            "sim"  : "./user/sim/",  
+            "data" : "./user/data/"   
         },
         "software" : {
             "src"  : "",
@@ -28,38 +19,15 @@
         }
     },
 
-    // 代码库管理, 支持远程和本地两种调用方式 (详见下文库管理) 
-    // 使用UI来进行配置, 不建议用户直接更改
-    // "library" : {
-    //     "state": "", // local | remote
-    //     "hardware" : {
-    //         "common": [], // 插件提供的常见库
-    //         "custom": []  // 用户自己的设计库
-    //     }
-    // },
-
-    // xilinx的IP仓库, 直接添加到vivado的IP repo中
-    // 目前支持ADI和ARM提供的IP repo  (adi | arm) 
+    "iverilogCompileOptions": {
+        "standard": ""
+    },
     "IP_REPO" : [],
 
-    // 当设计时用到PL+PS即为SOC开发
-    // 当其中core不为none的时候即为混合开发
     "soc": {
         "core": "none"
-        // "bd": "",
-        // "os": "",
-        // "app": ""
     },
 
-    // 工程综合实现时, 是否在终端输出信息
     "enableShowLog": true,
-
-    // 设备类型 可以是如下几种: 
-    // "none",
-    // "xc7z020clg400-2",
-    // "xc7a35tftg256-1",
-    // "xc7a35tcsg324-1",
-    // "xc7z035ffg676-2",
-    // "xc7z020clg484-1"
     "device": "none"
 }

@@ -7,11 +7,11 @@
     },
 
     "arch" : {
-        "prjPath": "",
+        "prjPath": ".",
         "hardware" : {
-            "src"  : "", 
-            "sim"  : "",  
-            "data" : ""   
+            "src"  : "./user/src/", 
+            "sim"  : "./user/sim/",  
+            "data" : "./user/data/"   
         },
         "software" : {
             "src"  : "",
@@ -19,6 +19,9 @@
         }
     },
 
+    "iverilogCompileOptions": {
+        "standard": ""
+    },
     "IP_REPO" : [],
 
     "soc": {

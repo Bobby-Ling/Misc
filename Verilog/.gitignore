@@ -16,4 +16,5 @@
 !Lab_*/prj/**
 !Lab_*/simulation
 !Lab_*/simulation/**
-*/.xpr
+!*.xpr
+!sim.bat

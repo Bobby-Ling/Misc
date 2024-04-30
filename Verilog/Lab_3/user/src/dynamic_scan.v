@@ -1,5 +1,13 @@
-module dynamic_scan(clk, SEG, AN);
+`include "../src/counter.v"
+`include "../src/divider.v"
+`include "../src/rom8x4.v"
+`include "../src/pattern.v"
+`include "../src/decoder3_8.v"
+
+module dynamic_scan(clk, isReverse, isOn, SEG, AN);
     input clk; // 系统时钟
+    input isReverse;
+    input isOn;
     output reg [7:0] SEG; // 分别对应 CA、 CB、 CC、 CD、 CE、 CF、 CG 和 DP
     output reg [7:0] AN; // 8 位数码管片选信号
     parameter N = 100_000_000;
@@ -13,6 +21,8 @@ module dynamic_scan(clk, SEG, AN);
     wire [2:0] count;
     counter counter_inst(
         .clk(clk_N),
+        .isReverse(isReverse),
+        .isOn(isOn),
         .out(count)
     );
 

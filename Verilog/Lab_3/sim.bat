@@ -1,0 +1,5 @@
+iverilog -g2012 -s Lab3_1_tb ^
+    -o c:/Users/bobby/DATA/Git/Verilog/Lab_3/simulation/icarus/out.vvp ^
+    -I C:/Users/bobby/DATA/Git/Verilog/Lab_3/user/src ^
+    c:/Users/bobby/DATA/Git/Verilog/Lab_3/user/sim/Lab3_1_tb.v >sim.txt
+vvp -n c:/Users/bobby/DATA/Git/Verilog/Lab_3/simulation/icarus/out.vvp >>sim.txt
