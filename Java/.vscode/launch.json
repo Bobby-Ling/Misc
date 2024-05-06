@@ -6,6 +6,62 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Test_Hide_Override",
+            "request": "launch",
+            "mainClass": "Test_Hide_Override",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "Test5",
+            "request": "launch",
+            "mainClass": "Test5",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "SubClass",
+            "request": "launch",
+            "mainClass": "SubClass",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "Test1",
+            "request": "launch",
+            "mainClass": "Test1",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "Test7",
+            "request": "launch",
+            "mainClass": "Test7",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "MyProgram",
+            "request": "launch",
+            "mainClass": "MyProgram",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "C1",
+            "request": "launch",
+            "mainClass": "C1",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "Ca",
+            "request": "launch",
+            "mainClass": "Ca",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
             "name": "TestB",
             "request": "launch",
             "mainClass": "TestB",
