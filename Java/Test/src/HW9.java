@@ -43,25 +43,25 @@ class B extends A {
     }
 }
 
-class Circle {
+class Circle1 {
     private double radius;
     public static int count = 0;
 
-    public Circle(double r) {
+    public Circle1(double r) {
         radius = r;
         count++;
     }
 
-    public Circle() {
+    public Circle1() {
         this(1.0);
     }
 
     public static void main(String[] args) {
-        Circle c1 = new Circle();
-        Circle c2 = new Circle(15.0);
+        Circle1 c1 = new Circle1();
+        Circle1 c2 = new Circle1(15.0);
         c1.count++;
         c2.count++;
-        Circle.count++;
+        Circle1.count++;
         System.out.println("count =" + count);
     }
 }

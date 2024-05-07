@@ -6,6 +6,41 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Test2_9",
+            "request": "launch",
+            "mainClass": "Test2_9",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "ListTest",
+            "request": "launch",
+            "mainClass": "ListTest",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "Run",
+            "request": "launch",
+            "mainClass": "Run",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "Derived",
+            "request": "launch",
+            "mainClass": "Derived",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
+            "name": "HW19",
+            "request": "launch",
+            "mainClass": "HW19",
+            "projectName": "Java_a4bd60e2"
+        },
+        {
+            "type": "java",
             "name": "Test_Hide_Override",
             "request": "launch",
             "mainClass": "Test_Hide_Override",
