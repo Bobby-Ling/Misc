@@ -1,6 +1,6 @@
 @echo off
-set JAVA_HOME=D:\jdk-17_windows-x64\jdk-17.0.3.1
-set PATH=%JAVA_HOME%/bin;%PATH%
+rem set JAVA_HOME=D:\jdk-17_windows-x64\jdk-17.0.3.1
+rem set PATH=%JAVA_HOME%/bin;%PATH%
 
 rem 设置运行TestNG的依赖Jar包所在目录（当前目录的lib子目录）
 set LIB_DIR=.\lib
