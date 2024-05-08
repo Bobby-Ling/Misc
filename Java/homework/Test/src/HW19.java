@@ -78,15 +78,31 @@ class Test2_9 {
 
 
 class Fruit {
+    @Override
+    public String toString() {
+        return Fruit.class.getName()+"\n";
+    }
 }
 
 class Apple extends Fruit {
+    @Override
+    public String toString() {
+        return super.toString()+Apple.class.getName()+"\n";
+    }
 }
 
 class Jonathane extends Apple {
+    @Override
+    public String toString() {
+        return super.toString()+Jonathane.class.getName()+"\n";
+    }
 }
 
 class Orange extends Fruit {
+    @Override
+    public String toString() {
+        return super.toString()+Orange.class.getName()+"\n";
+    }
 }
 
 class ListTest<T,E> {
@@ -100,6 +116,8 @@ class ListTest<T,E> {
             System.out.println(fruit.getClass().getName());//输出实际类型
         }
         System.out.println(list.getClass().getName());//java.util.ArrayList
+        System.out.println(list.toString());//java.util.ArrayList
+
 
         ArrayList<String> StringList = new ArrayList<String>();
         ArrayList<String>[] ListArr = new ArrayList[10];//元素为ArrayList
