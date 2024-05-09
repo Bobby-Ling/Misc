@@ -14,20 +14,33 @@ public class ComponentList
     /**
      * 记录自定义迭代器当前迭代的位置
      */
-    private int position;
+    private int position=0;
 
-    public ComponentList(){}
+    public ComponentList(){
+        super();
+    }
 
     @Override
     public boolean hasNext() {
-        return false;
+        if(position<super.size())
+            return true;
+        else
+            return false;
     }
 
     @Override
     public Component next() {
-        return null;
+        if(this.hasNext())
+            return super.get(position++);
+        else
+            return null;
     }
 
+    /**
+     * 派生自ArrayList，使内部对子元素具备完全操作权限同时，
+     * 暴露在外的"迭代器"(其实是this)仅能访问指定的迭代方法
+     * @return 保存的复合组件的迭代器
+     */
     public ComponentIterator createIterator(){
         return this;
     }

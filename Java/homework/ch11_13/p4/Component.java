@@ -18,7 +18,9 @@ public abstract class Component {
      */
     protected double price;
 
-    public Component() {}
+    public Component() {
+    }
+
     public Component(int id, String name, double price) {
         this.id = id;
         this.name = name;
@@ -29,7 +31,7 @@ public abstract class Component {
         return id;
     }
 
-    public  void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -51,18 +53,19 @@ public abstract class Component {
 
     @Override
     public String toString() {
-        return "id: " + id + ", name: " + name + ", price: " + price;
+        return "id: " + id + ", name: " + name + ", price: " + calcPrice() + "\n";
     }
 
     /**
      * 基于组件id判断二个组件对象是否相等
+     *
      * @param obj
      * @return
      */
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Component anotherComponent) {
-            if(this==anotherComponent) return true;
+            if (this == anotherComponent) return true;
             return id == anotherComponent.id;
         }
         return false;
@@ -71,18 +74,21 @@ public abstract class Component {
     /**
      * 添加子组件，对于没有子组件的AtomicComponent如内存条，
      * 调用这个方法应该抛出UnsupportedOperationException.
+     *
      * @param component
      */
     public abstract void add(Component component) throws UnsupportedOperationException;
 
     /**
      * 计算组件的价格。
+     *
      * @return
      */
     public abstract double calcPrice();
 
     /**
      * 返回组件的迭代器
+     *
      * @return
      */
     public abstract ComponentIterator createIterator();
@@ -90,6 +96,7 @@ public abstract class Component {
     /**
      * 删除子组件，对于没有子组件的AtomicComponent如内存条，
      * 调用这个方法应该抛出UnsupportedOperationException.
+     *
      * @param component
      * @throws UnsupportedOperationException
      */
