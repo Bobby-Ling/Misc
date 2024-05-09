@@ -58,5 +58,7 @@ public class Test {
 
         System.out.println(root.calcPrice());
         System.out.println(root.getPrice());
+        System.out.println(c1.calcPrice());
+        System.out.println(c1.getPrice());
     }
 }

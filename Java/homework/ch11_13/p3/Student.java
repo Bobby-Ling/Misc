@@ -1,8 +1,8 @@
 package homework.ch11_13.p3;
 
 public class Student extends Person {
-    private String classNo;
-    private String department;
+    private String classNo= "";
+    private String department= "";
     private int studentId;
 
     public Student() {
@@ -17,8 +17,8 @@ public class Student extends Person {
         this.setName(name);
         this.setAge(age);
         this.studentId = studentId;
-        this.department = department;
-        this.classNo = classNo;
+        this.department = department==null?"":department;
+        this.classNo = classNo==null?"":classNo;
     }
 
     public String getClassNo() {
@@ -26,7 +26,7 @@ public class Student extends Person {
     }
 
     public void setClassNo(String classNo) {
-        this.classNo = classNo;
+        this.classNo = classNo==null?"":classNo;
     }
 
     public String getDepartment() {
@@ -34,7 +34,7 @@ public class Student extends Person {
     }
 
     public void setDepartment(String department) {
-        this.department = department;
+        this.department = department==null?"":department;
     }
 
     public int getStudentId() {
@@ -68,9 +68,9 @@ public class Student extends Person {
     @Override
     public Object clone() throws CloneNotSupportedException {
         Student clone = (Student) super.clone();
-        clone.setClassNo(classNo);
-        clone.setDepartment(department);
-        clone.setStudentId(studentId);
+        clone.classNo=new String(classNo);
+        clone.department=new String(department);
+        clone.studentId=studentId;
         return clone;
     }
 }

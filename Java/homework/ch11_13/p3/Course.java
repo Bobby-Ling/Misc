@@ -10,7 +10,7 @@ public class Course implements Cloneable {
     /**
      * 课程名称
      */
-    private String courseName;
+    private String courseName="";
 
     /**
      * 选修课程的学生列表，保存在ArrayList里
@@ -23,7 +23,7 @@ public class Course implements Cloneable {
     private Person teacher;
 
     public Course(String courseName, Person teacher) {
-        this.courseName = courseName;
+        this.courseName = courseName==null?"":courseName;
         this.teacher = teacher;
     }
 
@@ -40,7 +40,7 @@ public class Course implements Cloneable {
         return teacher;
     }
 
-    public int getNumberOfStudents() {
+    public int getNumberOfStudent() {
         return students.size();
     }
 
@@ -51,7 +51,7 @@ public class Course implements Cloneable {
      *
      * @param s
      */
-    void register(Person s) {
+    public void register(Person s) {
         if (students.contains(s)) {
             return;
         }
@@ -64,7 +64,7 @@ public class Course implements Cloneable {
      *
      * @param s
      */
-    void unregister(Person s) {
+    public void unregister(Person s) {
         students.remove(s);//不包含则不会修改
     }
 
@@ -106,11 +106,11 @@ public class Course implements Cloneable {
     @Override
     public Object clone() throws CloneNotSupportedException {
         Course clone = (Course) super.clone();
-//        clone.students = (ArrayList<Person>) students.clone();
-//        for (Person p : students) {
-//            clone.students.add((Person) p.clone());
-//        }
-        clone.courseName = courseName;
+        clone.students = new ArrayList<Person>();
+        for (Person p : students) {
+            clone.students.add((Person) p.clone());
+        }
+        clone.courseName = new String(courseName);
         clone.teacher = (Person) teacher.clone();
         return clone;
     }

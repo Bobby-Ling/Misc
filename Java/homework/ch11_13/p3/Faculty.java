@@ -4,9 +4,9 @@ package homework.ch11_13.p3;
  * 教工类
  */
 public class Faculty extends Person {
-    private String email;
+    private String email= "";
     private int facultyId;
-    private String title;
+    private String title= "";
 
     public Faculty() {
     }
@@ -19,8 +19,8 @@ public class Faculty extends Person {
         this.setName(name);
         this.setAge(age);
         this.facultyId = facultyId;
-        this.title = title;
-        this.email = email;
+        this.title = title==null?"":title;
+        this.email = email==null?"":email;
     }
 
 
@@ -29,7 +29,7 @@ public class Faculty extends Person {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email==null?"":email;
     }
 
     public int getFacultyId() {
@@ -45,7 +45,7 @@ public class Faculty extends Person {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title==null?"":title;
     }
 
     @Override
@@ -72,8 +72,8 @@ public class Faculty extends Person {
     public Object clone() throws CloneNotSupportedException {
         Faculty clone = (Faculty) super.clone();
         clone.facultyId = facultyId;
-        clone.title = title;
-        clone.email = email;
+        clone.title = new String(title);
+        clone.email = new String(email);
         return clone;
     }
 }

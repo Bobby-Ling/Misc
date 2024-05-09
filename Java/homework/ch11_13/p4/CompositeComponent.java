@@ -13,7 +13,10 @@ public class CompositeComponent extends Component {
     }
 
     public CompositeComponent(int id, String name, double price) {
-        super(id, name, price);
+        /**
+         * CompositeComponent本身的price为0.0
+         */
+        super(id, name, 0);
     }
 
     /**
@@ -58,5 +61,10 @@ public class CompositeComponent extends Component {
     @Override
     public String toString() {
         return super.toString() + "Sub components of " + super.getName() + "\n" + children.toString() + "\n";
+    }
+
+    @Override
+    public double getPrice() {
+        return calcPrice();
     }
 }
