@@ -19,15 +19,18 @@ public class FileUtil {
         String s = null;
         BufferedReader reader = null;
         try{
-            StringBuilder buf = new StringBuilder();
+            StringBuffer buf = new StringBuffer();
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filePath))));
             while( (s = reader.readLine()) != null){
                 buf.append(s).append("\n"); //reader.readLine())返回的字符串会去掉换行符，因此这里要加上
             }
             s = buf.toString().trim(); //去掉最后一个多的换行符
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             if(reader != null) {
                 try {
                     reader.close();
