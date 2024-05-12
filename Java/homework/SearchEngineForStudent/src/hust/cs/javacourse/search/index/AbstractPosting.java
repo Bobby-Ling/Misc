@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * <pre style="font-family: '微软雅黑', Consolas, monospace;"/>
+ * Posting
+ * 所指代的文档id: int docId
+ * 单词在文档里出现的次数: int freq
+ * 单词在文档里出现的位置列表: List<Integer> positions
  * <pre>
  * AbstractPosting是Posting对象的抽象父类.
  *      Posting对象代表倒排索引里每一项， 一个Posting对象包括:
@@ -67,7 +72,7 @@ public abstract class AbstractPosting implements Comparable<AbstractPosting>, Fi
 
     /**
      * 返回包含单词的文档id
-     * @return ：文档id
+     * @return 文档id
      */
     public abstract int getDocId();
 
@@ -79,7 +84,7 @@ public abstract class AbstractPosting implements Comparable<AbstractPosting>, Fi
 
     /**
      * 返回单词在文档里出现的次数
-     * @return ：出现次数
+     * @return 出现次数
      */
     public abstract int getFreq();
 
@@ -91,7 +96,7 @@ public abstract class AbstractPosting implements Comparable<AbstractPosting>, Fi
 
     /**
      * 返回单词在文档里出现的位置列表
-     * @return ：位置列表
+     * @return 位置列表
      */
     public abstract  List<Integer> getPositions();
 
@@ -104,7 +109,7 @@ public abstract class AbstractPosting implements Comparable<AbstractPosting>, Fi
     /**
      * 比较二个Posting对象的大小（根据docId）
      * @param o： 另一个Posting对象
-     * @return ：二个Posting对象的docId的差值
+     * @return 二个Posting对象的docId的差值
      */
     @Override
     public abstract int compareTo(AbstractPosting o);

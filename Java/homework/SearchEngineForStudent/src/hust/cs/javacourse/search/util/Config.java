@@ -45,11 +45,10 @@ public class Config {
      * <pre>
      * 将字符串切分成单词时所需的正则表达式.
      * 例如根据中英文的逗号,分号,句号，问号，冒号,感叹号，中文顿号，空白分割符进行切分
-     * 增加了双引号
      * </pre>
      *
      */
-    public static String STRING_SPLITTER_REGEX = "[,|，|;|；|.|。|?|？|:|：|!|！|、|\\s|\"]+";
+    public static String STRING_SPLITTER_REGEX = "[,|，|;|；|.|。|?|？|:|：|!|！|、|\\s]+";
 
     /**
      * <pre>

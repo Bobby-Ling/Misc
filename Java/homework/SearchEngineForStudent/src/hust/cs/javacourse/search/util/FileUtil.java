@@ -13,21 +13,24 @@ public class FileUtil {
     /**
      * 一次读取指定文本文件的所有内容
      * @param filePath ：指定文本文件的绝对路径
-     * @return  ： 文本文件的内容
+     * @return  文本文件的内容
      */
     public static String read(String filePath){
         String s = null;
         BufferedReader reader = null;
         try{
-            StringBuilder buf = new StringBuilder();
+            StringBuffer buf = new StringBuffer();
             reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File(filePath))));
             while( (s = reader.readLine()) != null){
                 buf.append(s).append("\n"); //reader.readLine())返回的字符串会去掉换行符，因此这里要加上
             }
             s = buf.toString().trim(); //去掉最后一个多的换行符
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             if(reader != null) {
                 try {
                     reader.close();
@@ -62,7 +65,7 @@ public class FileUtil {
     /**
      * 列出指定目录下所有文件的绝对路径(不递归)
      * @param dirPath : 指定目录
-     * @return ： 指定目录下所有文件的绝对路径的列表
+     * @return  指定目录下所有文件的绝对路径的列表
      */
     public static List<String> list(String dirPath){
         List<String> filePaths = new ArrayList<String>();
@@ -87,7 +90,7 @@ public class FileUtil {
      * 列出指定目录下的匹配指定后缀名的所有文件的绝对路径(不递归)
      * @param dirPath : 指定目录
      * @param suffix  ：指定后缀名, 如 .txt
-     * @return : 所有匹配指定后缀名的文件绝对路径列表
+     * @return  所有匹配指定后缀名的文件绝对路径列表
      */
     public static List<String> list(String dirPath, String suffix){
         List<String> filePaths = new ArrayList<String>();

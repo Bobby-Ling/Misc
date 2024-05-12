@@ -2,11 +2,16 @@ package hust.cs.javacourse.search.index.impl;
 
 import hust.cs.javacourse.search.index.*;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Set;
 
 /**
- * AbstractIndex的具体实现类
+ * <pre style="font-family: '微软雅黑', Consolas, monospace;"/>
+ * Index
+ * Map<Integer, String> docIdToDocPathMapping
+ * Map<AbstractTerm, AbstractPostingList> termToPostingListMapping
  */
 public class Index extends AbstractIndex {
     /**
@@ -16,38 +21,34 @@ public class Index extends AbstractIndex {
      */
     @Override
     public String toString() {
-       if(docIdToDocPathMapping.size() == 0 && termToPostingListMapping.size() == 0)
-           return null;
-       else
-        return "docIdToDocPathMap:\n" + docIdToDocPathMapping.toString() + "\ntermTOPosingListMap:\n" + termToPostingListMapping.toString();
+        return null;
     }
 
     /**
-     * 添加文档到索引，更新索引内部的HashMap
-     *
+     * 添加文档到索引，更新索引内部的HashMap <br>
+     * document指代一个文档, 包含List tuples <br>
+     * TermTuple(term,freq=1,curPos) <br>
      * @param document ：文档的AbstractDocument子类型表示
      */
     @Override
     public void addDocument(AbstractDocument document) {
-
-        //获取文档里三元组的映射关系，term -> PostingList
-        HashMap<AbstractTerm,List<Integer>> map = new HashMap<>();
-        for(AbstractTermTuple termTuple : document.getTuples()){
-            if(!map.containsKey(termTuple.term)) {
-                map.put(termTuple.term, new ArrayList<>());
-                map.get(termTuple.term).add(termTuple.curPos);
+        // 更新termToPostingListMapping
+        for(AbstractTermTuple abstractTermTuple: document.getTuples()){
+            // 对于document中的每一个TermTuple
+            // 没有与Term对应的KV对就新建一个
+            if(!termToPostingListMapping.containsKey(abstractTermTuple.term)){
+                termToPostingListMapping.put(abstractTermTuple.term,new PostingList());
             }
-            else
-                map.get(termTuple.term).add(termTuple.curPos);
+            // 找到对应自己Term的PostingList
+            AbstractPostingList postingList=termToPostingListMapping.get(abstractTermTuple.term);
+            // 找到对应自己docId的Posting
+            AbstractPosting posting=postingList.get(postingList.indexOf(document.getDocId()));
+            // 加入这个Term
+            posting.setFreq(posting.getFreq()+1);
+            posting.getPositions().add(abstractTermTuple.curPos);
         }
 
-        //更新索引
-        for(Map.Entry<AbstractTerm,List<Integer>> entry : map.entrySet()){
-            if(!this.termToPostingListMapping.containsKey(entry.getKey()))
-                termToPostingListMapping.put(entry.getKey(),new PostingList());
-            termToPostingListMapping.get(entry.getKey()).add(new Posting(document.getDocId(),entry.getValue().size(),entry.getValue()));
-        }
-
+        // 更新docIdToDocPathMapping
         docIdToDocPathMapping.put(document.getDocId(),document.getDocPath());
     }
 
@@ -59,14 +60,7 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void load(File file) {
-        try{
-            //创建一个ObjectInputStream输入流；
-            //调用ObjectInputStream对象的readObject()得到序列化的对象。
-            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file));
-            readObject(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
     }
 
     /**
@@ -77,31 +71,24 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void save(File file) {
-        try{
-            //创建一个ObjectOutputStream输出流；
-            //调用ObjectOutputStream对象的writeObject输出可序列化对象。
-            ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file));
-            writeObject(outputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     /**
      * 返回指定单词的PostingList
      *
      * @param term : 指定的单词
-     * @return ：指定单词的PostingList;如果索引字典没有该单词，则返回null
+     * @return 指定单词的PostingList;如果索引字典没有该单词，则返回null
      */
     @Override
     public AbstractPostingList search(AbstractTerm term) {
-        return termToPostingListMapping.getOrDefault(term, null);
+        return termToPostingListMapping.get(term);
     }
 
     /**
      * 返回索引的字典.字典为索引里所有单词的并集
      *
-     * @return ：索引中Term列表
+     * @return 索引中Term列表
      */
     @Override
     public Set<AbstractTerm> getDictionary() {
@@ -118,20 +105,16 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void optimize() {
-
-        for(Map.Entry<AbstractTerm,AbstractPostingList> entry : termToPostingListMapping.entrySet()){
-            entry.getValue().sort();
-            for(int i = 0 ; i < entry.getValue().size(); ++i)
-                Collections.sort(entry.getValue().get(i).getPositions());
-        }
-
+        termToPostingListMapping.forEach((term,postingList)->{
+            postingList.sort();
+        });
     }
 
     /**
      * 根据docId获得对应文档的完全路径名
      *
      * @param docId ：文档id
-     * @return : 对应文档的完全路径名
+     * @return  对应文档的完全路径名
      */
     @Override
     public String getDocName(int docId) {
@@ -145,12 +128,7 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void writeObject(ObjectOutputStream out) {
-        try{
-            out.writeObject(docIdToDocPathMapping);
-            out.writeObject(termToPostingListMapping);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     /**
@@ -159,13 +137,7 @@ public class Index extends AbstractIndex {
      * @param in ：输入流对象
      */
     @Override
-    @SuppressWarnings("unchecked")
     public void readObject(ObjectInputStream in) {
-        try{
-            docIdToDocPathMapping = (Map<Integer, String>) in.readObject();
-            termToPostingListMapping = (Map<AbstractTerm, AbstractPostingList>) in.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+
     }
 }

@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * AbstractTermTuple
+ * AbstractTerm term <br>
+ * final int freq = 1 <br>
+ * int curPos <br>
  * <pre>
  * AbstractTermTuple是所有TermTuple对象的抽象父类.
  *      一个TermTuple对象为三元组(单词，出现频率，出现的当前位置).
@@ -36,7 +40,7 @@ public abstract class AbstractTermTuple {
 
     /**
      * 获得三元组的字符串表示
-     * @return ： 三元组的字符串表示
+     * @return  三元组的字符串表示
      */
     @Override
     public abstract String toString();

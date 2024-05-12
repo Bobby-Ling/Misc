@@ -71,19 +71,19 @@ public abstract class AbstractHit implements Comparable<AbstractHit>{
 
     /**
      * 获得文档id
-     * @return ： 文档id
+     * @return  文档id
      */
     public abstract int getDocId();
 
     /**
      * 获得文档绝对路径
-     * @return ：文档绝对路径
+     * @return 文档绝对路径
      */
     public abstract String getDocPath();
 
     /**
      * 获得文档内容
-     * @return ： 文档内容
+     * @return  文档内容
      */
     public abstract String getContent();
 
@@ -95,7 +95,7 @@ public abstract class AbstractHit implements Comparable<AbstractHit>{
 
     /**
      * 获得文档得分
-     * @return ： 文档得分
+     * @return  文档得分
      */
     public abstract double getScore();
 
@@ -107,13 +107,13 @@ public abstract class AbstractHit implements Comparable<AbstractHit>{
 
     /**
      * 获得命中的单词和对应的Posting键值对
-     * @return ：命中的单词和对应的Posting键值对
+     * @return 命中的单词和对应的Posting键值对
      */
     public abstract  Map<AbstractTerm, AbstractPosting> getTermPostingMapping();
 
     /**
      * 获得命中结果的字符串表示, 用于显示搜索结果.
-     * @return : 命中结果的字符串表示
+     * @return  命中结果的字符串表示
      */
     @Override
     public abstract  String toString();

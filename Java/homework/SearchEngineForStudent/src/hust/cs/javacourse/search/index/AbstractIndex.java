@@ -6,6 +6,10 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
+ * <pre style="font-family: '微软雅黑', Consolas, monospace;"/>
+ * Index
+ * Map<Integer, String> docIdToDocPathMapping
+ * Map<AbstractTerm, AbstractPostingList> termToPostingListMapping
  * <pre>
  * AbstractIndex是内存中的倒排索引对象的抽象父类.
  *      一个倒排索引对象包含了一个文档集合的倒排索引.
@@ -66,13 +70,13 @@ public abstract class AbstractIndex implements FileSerializable{
     /**
      * 返回指定单词的PostingList
      * @param term : 指定的单词
-     * @return ：指定单词的PostingList;如果索引字典没有该单词，则返回null
+     * @return 指定单词的PostingList;如果索引字典没有该单词，则返回null
      */
     public abstract AbstractPostingList search(AbstractTerm term);
 
     /**
      * 返回索引的字典.字典为索引里所有单词的并集
-     * @return ：索引中Term列表
+     * @return 索引中Term列表
      */
     public abstract Set<AbstractTerm> getDictionary();
 
@@ -89,7 +93,7 @@ public abstract class AbstractIndex implements FileSerializable{
     /**
      * 根据docId获得对应文档的完全路径名
      * @param docId ：文档id
-     * @return : 对应文档的完全路径名
+     * @return  对应文档的完全路径名
      */
     public abstract String getDocName(int docId);
 }

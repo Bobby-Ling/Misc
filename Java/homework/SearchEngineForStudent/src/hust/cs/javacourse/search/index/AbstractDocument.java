@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *<pre>
- *     AbstractDocument是文档对象的抽象父类.
- *          文档对象是解析一个文本文件得到结果，文档对象里面包含：
- *              文档id.
- *              文档的绝对路径.
- *              文档包含的三元组对象列表，一个三元组对象是抽象类AbstractTermTuple的子类实例
- *</pre>
+ * <pre style="font-family: '微软雅黑', Consolas, monospace;"/>
+ * Document
+ * 文档id: int docId
+ * 文档的绝对路径: String docPath
+ * 文档包含的三元组对象列表: List<AbstractTermTuple> tuples
+ * 由DocumentBuilder通过TermTupleStream, 构造Document对象
  */
 public abstract class AbstractDocument {
     /**
@@ -51,7 +50,7 @@ public abstract class AbstractDocument {
 
     /**
      * 获得文档id
-     * @return ：文档id
+     * @return 文档id
      */
     public abstract int getDocId();
 
@@ -63,7 +62,7 @@ public abstract class AbstractDocument {
 
     /**
      * 获得文档绝对路径
-     * @return ：文档绝对路径
+     * @return 文档绝对路径
      */
     public abstract String getDocPath();
 
@@ -75,7 +74,7 @@ public abstract class AbstractDocument {
 
     /**
      * 获得文档包含的三元组列表
-     * @return ：文档包含的三元组列表
+     * @return 文档包含的三元组列表
      */
     public abstract List<AbstractTermTuple> getTuples();
 
@@ -88,26 +87,26 @@ public abstract class AbstractDocument {
     /**
      * 判断是否包含指定的三元组
      * @param tuple ： 指定的三元组
-     * @return ： 如果包含指定的三元组，返回true;否则返回false
+     * @return  如果包含指定的三元组，返回true;否则返回false
      */
     public abstract boolean contains(AbstractTermTuple tuple);
 
     /**
      * 获得指定下标位置的三元组
      * @param index：指定下标位置
-     * @return：三元组
+     * @return 三元组
      */
     public abstract AbstractTermTuple getTuple(int index);
 
     /**
      * 返回文档对象包含的三元组的个数
-     * @return ：文档对象包含的三元组的个数
+     * @return 文档对象包含的三元组的个数
      */
     public  abstract  int getTupleSize();
 
     /**
      * 获得Document的字符串表示
-     * @return ： Document的字符串表示
+     * @return  Document的字符串表示
      */
     @Override
     public abstract String toString();

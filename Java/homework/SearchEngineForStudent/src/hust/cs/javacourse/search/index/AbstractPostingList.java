@@ -25,7 +25,7 @@ public abstract class AbstractPostingList implements FileSerializable{
 
     /**
      * 获得PosingList的字符串表示
-     * @return ： PosingList的字符串表示
+     * @return  PosingList的字符串表示
      */
     @Override
     public abstract String toString();
@@ -39,28 +39,28 @@ public abstract class AbstractPostingList implements FileSerializable{
     /**
      * 返回指定下标位置的Posting
      * @param index ：下标
-     * @return： 指定下标位置的Posting
+     * @return 指定下标位置的Posting
      */
     public abstract AbstractPosting get(int index);
 
     /**
      * 返回指定Posting对象的下标
      * @param posting：指定的Posting对象
-     * @return ：如果找到返回对应下标；否则返回-1
+     * @return 如果找到返回对应下标；否则返回-1
      */
     public abstract int indexOf(AbstractPosting posting);
 
     /**
      * 返回指定文档id的Posting对象的下标
      * @param docId ：文档id
-     * @return ：如果找到返回对应下标；否则返回-1
+     * @return 如果找到返回对应下标；否则返回-1
      */
     public abstract int indexOf(int docId);
 
     /**
      * 是否包含指定Posting对象
      * @param posting： 指定的Posting对象
-     * @return : 如果包含返回true，否则返回false
+     * @return  如果包含返回true，否则返回false
      */
     public abstract boolean contains(AbstractPosting posting);
 
@@ -78,7 +78,7 @@ public abstract class AbstractPostingList implements FileSerializable{
 
     /**
      * 返回PostingList的大小，即包含的Posting的个数
-     * @return ：PostingList的大小
+     * @return PostingList的大小
      */
     public abstract int size();
 

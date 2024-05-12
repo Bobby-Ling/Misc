@@ -26,7 +26,7 @@ public class StringSplitter {
     /**
      * 将字符串分割成单词列表
      * @param input： 输入字符串
-     * @return ： 分词得到的单词列表
+     * @return  分词得到的单词列表
      */
     public  List<String> splitByRegex(String input){
         List<String> list = new ArrayList<String>();
@@ -57,7 +57,6 @@ public class StringSplitter {
     public static void main(String[] args){
         StringSplitter splitter = new StringSplitter();
         String regex1TestInput = "key1,， ,Key2;Key3，:Key4;；;Key5；？?Key6，!Key7；Key8   key9\nkey10.。？key11";
-//        String regex1TestInput = "\n\naaa bbb ccc\n\nddd is F17";
         splitter.setSplitRegex(Config.STRING_SPLITTER_REGEX);
         List<String> parts = splitter.splitByRegex(regex1TestInput);
         for(int i = 0; i < parts.size(); i++){
