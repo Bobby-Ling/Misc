@@ -1,9 +1,12 @@
+package Container;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Test {
     public static void testAdd(){
-        Container<Integer> container = new Container<>();
+        Container<Integer> container = new SynchronizedContainer<Integer>();
+//        Container<Integer> container = new Container<Integer>();
         int addLoops = 10;  //addTask内的循环次数
         Runnable addTask = new Runnable() {
             @Override
@@ -22,15 +25,15 @@ public class Test {
 
         es.shutdown();
         while (!es.isTerminated()){}
-        System.out.println("Test add " + (addLoops * addTaskCount) +
+        System.out.println("Container.Test add " + (addLoops * addTaskCount) +
                 " elements to container");
-        System.out.println("Container size = " + container.size() +
+        System.out.println("Container.Container size = " + container.size() +
                 ", correct size = " + (addLoops * addTaskCount));
 
     }
 
     public static void testRemove(){
-        Container<Integer> container = new Container<>();
+        Container<Integer> container = new SynchronizedContainer<Integer>();
         int removeLoops = 10; //removeTask内的循环次数
         int removeTaskCount = 100; //removeTask线程个数
 
@@ -56,9 +59,9 @@ public class Test {
         es.shutdown();
         while (!es.isTerminated()){}
 
-        System.out.println("Test remove " + (removeLoops * removeTaskCount) +
+        System.out.println("Container.Test remove " + (removeLoops * removeTaskCount) +
                 " elements from container");
-        System.out.println("Container size = " + container.size() +
+        System.out.println("Container.Container size = " + container.size() +
                 ", correct size = 0");
     }
 

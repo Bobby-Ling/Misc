@@ -1,3 +1,5 @@
+package Container;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,4 +39,8 @@ public class Container<T>{
     public T get(int index){
         return elements.get(index);
     }
+
+    /**
+     * 因为没有对共享资源element加锁
+     */
 }

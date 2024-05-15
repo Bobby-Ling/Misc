@@ -1,17 +1,17 @@
 public class HW9 {
     public static void main(String[] args) {
-        A[] array = new A[10];
+        A5[] array = new A5[10];
     }
 }
 
 /**
  * A
  */
-class A {
+class A5 {
     static int count = 0;
     protected int j;
 
-    public A() {
+    public A5() {
         System.out.println("A" + count + " ");
         count++;
     }
@@ -36,9 +36,9 @@ class Test_1_6 {
     }
 }
 
-class B extends A {
+class B5 extends A5 {
     public void m() {
-        new A().j = 10;
+        new A5().j = 10;
         this.j = 10;
     }
 }
