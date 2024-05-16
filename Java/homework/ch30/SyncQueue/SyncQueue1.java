@@ -15,11 +15,33 @@ import java.util.List;
 public class SyncQueue1<T> extends SyncQueue<T> {
     @Override
     public void produce(List<T> element){
-        synchronized(this){
-            if(super.list.size() != 0){}
-            System.out.println("Produce elements: "+element);
+        synchronized(list){
+            try {
+                // 这里不用if是考虑到"虚假唤醒"
+                while (!list.isEmpty()){
+                    list.wait();
+                }
+                System.out.println("Produce elements: "+element);
+                list.addAll(element);
+                list.notifyAll();
+            }catch (InterruptedException e){ e.printStackTrace(); }
         }
     }
 
+    @Override
+    public List<T> consume(){
+        synchronized(list){
+            try {
+                while (list.isEmpty()) {
+                    list.wait();
+                }
+                System.out.println("Consume elements: "+list);
+                List<T> consumed = list;
+                list.clear();
+                return consumed;
+            }catch (InterruptedException e){ e.printStackTrace(); }
+            return null;
+        }
+    }
 
 }

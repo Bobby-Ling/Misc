@@ -1,5 +1,7 @@
 package SyncQueue;
 
+import java.util.List;
+
 /**
  * SyncQueue2<T>要求有些区别：即生产者线程不管队列是否为空，随时可以向队列生产数据；消费者线程则在队列为空时，必须等待生产者线程向队列生产数据后才能消费数据。这个版本的测试结果应该如下所示：
  * Produce elements: 7 9 2 7 6 8 9 1 7 3
@@ -16,5 +18,28 @@ package SyncQueue;
  * @param <T>
  */
 public class SyncQueue2<T> extends SyncQueue<T> {
+    @Override
+    public void produce(List<T> element){
+        synchronized(list){
+            System.out.println("Produce elements: "+element);
+            list.addAll(element);
+            list.notifyAll();
+        }
+    }
 
+    @Override
+    public List<T> consume(){
+        synchronized(list){
+            try {
+                while (list.isEmpty()) {
+                    list.wait();
+                }
+                System.out.println("Consume elements: "+list);
+                List<T> consumed = list;
+                list.clear();
+                return consumed;
+            }catch (InterruptedException e){ e.printStackTrace(); }
+            return null;
+        }
+    }
 }

@@ -7,7 +7,8 @@ import java.util.concurrent.Executors;
 
 public class TestSyncQueue {
     public static void main(String[] args){
-        SyncQueue<Integer> syncQueue = new SyncQueue1<Integer>();
+//        SyncQueue<Integer> syncQueue = new SyncQueue1<Integer>();
+        SyncQueue<Integer> syncQueue = new SyncQueue2<Integer>();
         Runnable produceTask = ()->{
             while(true){
                 try {
