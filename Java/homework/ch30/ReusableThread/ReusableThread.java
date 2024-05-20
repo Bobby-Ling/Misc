@@ -1,17 +1,17 @@
 package ReusableThread;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ReusableThread extends Thread{
-    private Runnable runTask = null;  //保存接受的线程任务
     //TODO 加入需要的数据成员
     private final Lock lock = new ReentrantLock();
     private final Condition condition = lock.newCondition();
 
-    ArrayList<Runnable> tasks = new ArrayList<>();
+    LinkedList<Runnable> tasks = new LinkedList<>();
     //只定义不带参数的构造函数
     public ReusableThread(){
         super();
@@ -25,21 +25,19 @@ public class ReusableThread extends Thread{
         //这里必须是永远不结束的循环
         System.out.println("running thread");
         try {
+            lock.lock();
             while(true){
-                    lock.lock();
-                while(runTask == null){
+                while(tasks.isEmpty()){
                     condition.await();
                     // 这里会释放锁
                 }
                 // 重新获得锁
-                    lock.unlock();
-                runTask.run();
+                tasks.poll().run();
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            runTask = null;
-            tasks.remove(0);
+            lock.unlock();
         }
     }
 
@@ -49,8 +47,7 @@ public class ReusableThread extends Thread{
      */
     public void submit(Runnable task){
         lock.lock();
-        tasks.add(task);
-        runTask = tasks.get(0);
+        tasks.offer(task);
         condition.signalAll();
         lock.unlock();
     }
