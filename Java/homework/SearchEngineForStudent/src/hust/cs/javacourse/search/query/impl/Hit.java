@@ -4,7 +4,10 @@ import hust.cs.javacourse.search.index.AbstractPosting;
 import hust.cs.javacourse.search.index.AbstractTerm;
 import hust.cs.javacourse.search.query.AbstractHit;
 import hust.cs.javacourse.search.util.FileUtil;
+import hust.cs.javacourse.search.util.HighLighter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Hit extends AbstractHit {
@@ -113,5 +116,19 @@ public class Hit extends AbstractHit {
     @Override
     public int compareTo(AbstractHit o) {
         return (int)(new SimpleSorter().score(this)-new SimpleSorter().score(o));
+    }
+
+    /**
+     * 实现高亮显示
+     * @param highlight
+     * @return
+     */
+    @Override
+    public String toHighLightString(HighLighter highlight) {
+        List<Integer> highlightPositions = new ArrayList<Integer>();
+        for (AbstractPosting positing:this.getTermPostingMapping().values()){
+            highlightPositions.addAll(positing.getPositions());
+        }
+        return highlight.highLight(this.getContent(),highlightPositions);
     }
 }

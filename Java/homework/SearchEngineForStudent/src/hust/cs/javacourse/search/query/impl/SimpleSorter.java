@@ -38,7 +38,7 @@ public class SimpleSorter implements Sort {
         for (AbstractPosting posting:hit.getTermPostingMapping().values()){
             scored+=posting.getFreq();
         }
-        // 每一个搜索结果都是一个doc中的一个Term, 出现频率越高, 分数越高
+        // 每一个搜索结果都是一个doc中的一个Term, 出现频率越高, 分数越低(自然排序)
         return -scored;
     }
 }

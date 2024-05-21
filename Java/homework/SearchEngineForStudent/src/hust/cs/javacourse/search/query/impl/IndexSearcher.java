@@ -8,6 +8,7 @@ import hust.cs.javacourse.search.index.impl.IndexBuilder;
 import hust.cs.javacourse.search.query.AbstractHit;
 import hust.cs.javacourse.search.query.AbstractIndexSearcher;
 import hust.cs.javacourse.search.query.Sort;
+import hust.cs.javacourse.search.util.HighLighter;
 
 import java.io.File;
 import java.util.*;
@@ -29,7 +30,7 @@ public class IndexSearcher extends AbstractIndexSearcher {
      *
      * @param queryTerm ：检索词
      * @param sorter    ：排序器
-     * @return 命中结果数组
+     * @return 命中结果数组, 搜不到返回null
      */
     @Override
     public AbstractHit[] search(AbstractTerm queryTerm, Sort sorter) {
@@ -67,24 +68,46 @@ public class IndexSearcher extends AbstractIndexSearcher {
         AbstractHit[] hitsArray1 = search(queryTerm1,sorter);
         AbstractHit[] hitsArray2 = search(queryTerm2,sorter);
         // 都没搜到
-        if (hitsArray1 == null && hitsArray2 == null) {
-            return null;
+        if (hitsArray1 == null) {
+            return hitsArray2;
+        }else if (hitsArray2 == null) {
+            return hitsArray1;
         }
+        // 下面可以保证hitsArray1和hitsArray2不为null
+
         // 使用Arrays.asList()方法将数组转换List
         List<AbstractHit> hits1 = Arrays.asList(hitsArray1);
         List<AbstractHit> hits2 = Arrays.asList(hitsArray2);
 
         List<AbstractHit> result = new ArrayList<>();
 
-        // 取并集
-        if(combine==LogicalCombination.OR){
-            result.addAll(hits1);
-            result.addAll(hits2);
+        // 求OR
+        // 一个hits以docId为单位, 一个docId对应一个搜索结果
+        // 因此下面合并这些搜索结果
+        result = hits1;
+        for (int i = 0; i < result.size(); i++) {
+            for (int j = 0; j < hits2.size(); j++) {
+                if(result.get(i).getDocId()==hits2.get(j).getDocId()){
+                    result.get(i).getTermPostingMapping().putAll(
+                            hits2.get(j).getTermPostingMapping());
+                }
+            }
+        }
+
+        // 如果求OR, 直接就完毕了
+        if (combine == LogicalCombination.OR){
             return result.toArray(new AbstractHit[0]);
         }
-        // 取交集
-        for (AbstractHit abstractHit : hits1) {
+
+        // 求AND, 将每个文档不同时含有两个词的删去即可
+        List<AbstractHit> newResult = new ArrayList<>();
+        if (combine==LogicalCombination.AND){
+            for (AbstractHit abstractHit : result) {
+                if (abstractHit.getTermPostingMapping().size() == 2) {
+                    newResult.add(abstractHit);
+                }
+            }
         }
-        return new AbstractHit[0];
+        return newResult.toArray(new AbstractHit[0]);
     }
 }

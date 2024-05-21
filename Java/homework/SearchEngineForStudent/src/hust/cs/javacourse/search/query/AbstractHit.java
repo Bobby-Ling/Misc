@@ -4,6 +4,7 @@ import hust.cs.javacourse.search.index.AbstractPosting;
 import hust.cs.javacourse.search.index.AbstractTerm;
 import hust.cs.javacourse.search.index.AbstractTermTuple;
 import hust.cs.javacourse.search.util.FileUtil;
+import hust.cs.javacourse.search.util.HighLighter;
 
 import java.util.List;
 import java.util.Map;
@@ -126,5 +127,6 @@ public abstract class AbstractHit implements Comparable<AbstractHit>{
     @Override
     public abstract int compareTo(AbstractHit o);
 
+    public abstract String toHighLightString(HighLighter highlight);
 
 }
