@@ -1,0 +1,36 @@
+(
+    /C:/Users/bobby/DATA/Git/Java/homework/SearchEngineForStudent/Experiment1Test(JDK17)/test/config/..//text/2.txt 
+    0 
+    [
+        term: activity freq: 1 curPos: 0 ,
+        term: destination freq: 1 curPos: 1 ,
+        term: emergency freq: 1 curPos: 2 ,
+        term: because freq: 1 curPos: 5 ,
+        term: hence freq: 1 curPos: 6 ,
+        term: capital freq: 1 curPos: 7 ,
+        term: i freq: 1 curPos: 8 ,
+        term: frozen freq: 1 curPos: 9 ,
+        term: benefits freq: 1 curPos: 10 ,
+        term: google freq: 1 curPos: 11 ,
+        term: hahahahahahahahahahahahah freq: 1 curPos: 12 ,
+        term: ha freq: 1 curPos: 13 
+    ],
+    D:\IdeaWorkspace\SeachEngine/text/2.txt 
+    0 
+    [
+        term: activity freq: 1 curPos: 0 ,
+        term: destination freq: 1 curPos: 1 ,
+        term: emergency freq: 1 curPos: 2 ,
+        term: because freq: 1 curPos: 5 ,
+        term: hence freq: 1 curPos: 6 ,
+        term: capital freq: 1 curPos: 7 ,
+        term: i freq: 1 curPos: 8 ,
+        term: frozen freq: 1 curPos: 9 ,
+        term: benefits freq: 1 curPos: 10 ,
+        term: google freq: 1 curPos: 11 ,
+        term: hahahahahahahahahahahahah freq: 1 curPos: 12 ,
+        term: ha freq: 1 curPos: 13 ,
+        term: frozen freq: 1 curPos: 14 ,
+        term: google freq: 1 curPos: 15 
+    ]
+)
