@@ -6,6 +6,10 @@ import hust.cs.javacourse.search.index.AbstractTermTuple;
  * TermTuple(单词，出现频率==1，出现的当前位置)
  */
 public class TermTuple extends AbstractTermTuple {
+    public TermTuple(){
+        this.term = new Term();
+        this.curPos = 0;
+    }
     /**
      * (单词，出现频率==1，出现的当前位置)
      * @param term 单词
@@ -28,8 +32,10 @@ public class TermTuple extends AbstractTermTuple {
             if(this==anotherTermTuple){
                 return true;
             }
-            return this.term.equals(anotherTermTuple.term);
-        };
+            return this.freq == anotherTermTuple.freq &&
+                    this.curPos == anotherTermTuple.curPos &&
+                    this.term.equals(anotherTermTuple.term);
+        }
         return false;
     }
 
@@ -40,6 +46,6 @@ public class TermTuple extends AbstractTermTuple {
      */
     @Override
     public String toString() {
-        return "term: "+this.term+"freq: "+freq+"curPos: "+curPos;
+        return "term: "+this.term+" freq: "+freq+" curPos: "+curPos+"\n";
     }
 }

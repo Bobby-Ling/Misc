@@ -34,6 +34,12 @@ public class Config {
      * </pre>
      *
      */
+
+    /**
+     * index.dat
+     */
+    public static String INDEX_FILENAME =  "index.dat";
+
     public static String DOC_DIR  = PROJECT_HOME_DIR + "/text/";
 
     /**

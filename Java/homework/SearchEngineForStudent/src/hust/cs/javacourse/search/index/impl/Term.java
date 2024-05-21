@@ -2,6 +2,7 @@ package hust.cs.javacourse.search.index.impl;
 
 import hust.cs.javacourse.search.index.AbstractTerm;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -15,6 +16,7 @@ public class Term extends AbstractTerm {
      * @param content ：Term内容
      */
     public Term(String content) {
+        // 此处不用转换小写
         super(content);
     }
 
@@ -27,10 +29,7 @@ public class Term extends AbstractTerm {
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof Term anotherTerm) {
-            if(anotherTerm.hashCode() == this.hashCode()) {
-                return this.content.equals(anotherTerm.content);
-            }
-            return false;
+            return this.content.equals(anotherTerm.content);
         }
         return false;
     }
@@ -62,6 +61,7 @@ public class Term extends AbstractTerm {
      */
     @Override
     public void setContent(String content) {
+        // 此处不用转换小写
         this.content = content;
     }
 
@@ -89,7 +89,11 @@ public class Term extends AbstractTerm {
      */
     @Override
     public void writeObject(ObjectOutputStream out) {
-
+        try{
+            out.writeObject(this.content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -99,6 +103,10 @@ public class Term extends AbstractTerm {
      */
     @Override
     public void readObject(ObjectInputStream in) {
-
+        try{
+            content = (String) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

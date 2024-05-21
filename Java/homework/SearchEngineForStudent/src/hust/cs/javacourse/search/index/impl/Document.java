@@ -90,9 +90,11 @@ public class Document extends AbstractDocument {
      */
     @Override
     public void addTuple(AbstractTermTuple tuple) {
-        if(this.tuples.contains(tuple)){
-            return;
-        }
+        // TODO ???
+
+//        if(this.tuples.contains(tuple)){
+//            return;
+//        }
         this.tuples.add(tuple);
     }
 

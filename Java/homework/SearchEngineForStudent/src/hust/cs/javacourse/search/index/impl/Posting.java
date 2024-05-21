@@ -2,6 +2,7 @@ package hust.cs.javacourse.search.index.impl;
 
 import hust.cs.javacourse.search.index.AbstractPosting;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Comparator;
@@ -47,12 +48,7 @@ public class Posting extends AbstractPosting {
             if(this.freq==anotherPosting.freq&&
                     this.docId== anotherPosting.docId&&
                     this.positions.size()==anotherPosting.positions.size()){
-                for(int i=0; i<positions.size(); i++){
-                    if(!this.positions.get(i).equals(anotherPosting.positions.get(i))){
-                        return false;
-                    }
-                }
-                return true;
+                return positions.containsAll(anotherPosting.positions);
             }
             return false;
         }
@@ -66,7 +62,11 @@ public class Posting extends AbstractPosting {
      */
     @Override
     public String toString() {
-        return this.getDocId() + "\t" + this.getFreq() + "\t" + this.getPositions().toString();
+        return "[" +
+                "docId: " + this.getDocId() +
+                " freq: " + this.getFreq() +
+                " positions: " + this.getPositions()
+                + "]";
     }
 
     /**
@@ -155,7 +155,13 @@ public class Posting extends AbstractPosting {
      */
     @Override
     public void writeObject(ObjectOutputStream out) {
-
+        try{
+            out.writeInt(this.docId);
+            out.writeInt(this.freq);
+            out.writeObject(this.positions);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -165,6 +171,13 @@ public class Posting extends AbstractPosting {
      */
     @Override
     public void readObject(ObjectInputStream in) {
-
+        try{
+            // 读入内置类型
+            this.docId = in.readInt();
+            this.freq = in.readInt();
+            this.positions = (List<Integer>) in.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }

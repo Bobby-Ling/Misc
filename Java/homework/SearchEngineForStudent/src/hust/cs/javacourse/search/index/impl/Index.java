@@ -2,9 +2,9 @@ package hust.cs.javacourse.search.index.impl;
 
 import hust.cs.javacourse.search.index.*;
 
-import java.io.File;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,7 +21,8 @@ public class Index extends AbstractIndex {
      */
     @Override
     public String toString() {
-        return null;
+        return "termToPostingListMapping: " + termToPostingListMapping +
+                "\ndocIdToDocPathMapping: " + docIdToDocPathMapping;
     }
 
     /**
@@ -33,6 +34,9 @@ public class Index extends AbstractIndex {
     @Override
     public void addDocument(AbstractDocument document) {
         // 更新termToPostingListMapping
+        if(document == null) {
+            return;
+        }
         for(AbstractTermTuple abstractTermTuple: document.getTuples()){
             // 对于document中的每一个TermTuple
             // 没有与Term对应的KV对就新建一个
@@ -41,6 +45,11 @@ public class Index extends AbstractIndex {
             }
             // 找到对应自己Term的PostingList
             AbstractPostingList postingList=termToPostingListMapping.get(abstractTermTuple.term);
+            // 如果postingList为空, 创建一个没有任何单词的posting
+            if(postingList.indexOf(document.getDocId())==-1){
+                postingList.add(
+                        new Posting(document.getDocId(), 0, new ArrayList<Integer>()));
+            }
             // 找到对应自己docId的Posting
             AbstractPosting posting=postingList.get(postingList.indexOf(document.getDocId()));
             // 加入这个Term
@@ -60,7 +69,10 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void load(File file) {
-        
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
+            readObject(in);
+        } catch (IOException e) {e.printStackTrace();}
     }
 
     /**
@@ -71,7 +83,12 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void save(File file) {
-
+        try {
+            ObjectOutputStream oos = new ObjectOutputStream(
+                    new FileOutputStream(file)
+            );
+            writeObject(oos);
+        } catch (IOException e) {e.printStackTrace();}
     }
 
     /**
@@ -128,7 +145,10 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void writeObject(ObjectOutputStream out) {
-
+        try {
+            out.writeObject(docIdToDocPathMapping);
+            out.writeObject(termToPostingListMapping);
+        }catch (Exception e){e.printStackTrace();}
     }
 
     /**
@@ -138,6 +158,10 @@ public class Index extends AbstractIndex {
      */
     @Override
     public void readObject(ObjectInputStream in) {
-
+        try {
+            docIdToDocPathMapping = (Map<Integer, String>) in.readObject();
+            termToPostingListMapping = (Map<AbstractTerm, AbstractPostingList>) in.readObject();
+        }catch (IOException | ClassNotFoundException e){e.printStackTrace();}
+        // 可以捕获多种异常
     }
 }
