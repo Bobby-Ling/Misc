@@ -26,9 +26,9 @@ public class IndexBuilder extends AbstractIndexBuilder {
      * <pre>
      * 构建指定目录下的所有文本文件的倒排索引.
      *      需要遍历和解析目录下的每个文本文件, 得到对应的Document对象，再依次加入到索引，并将索引保存到文件.
+     * </pre>
      * @param rootDirectory ：指定目录
      * @return 构建好的索引
-     * </pre>
      */
     @Override
     public AbstractIndex buildIndex(String rootDirectory) {
@@ -39,7 +39,6 @@ public class IndexBuilder extends AbstractIndexBuilder {
                     absolutePath,
                     new File(absolutePath)));
         }
-        index.save(new File(Config.INDEX_DIR+Config.INDEX_FILENAME));
         return index;
     }
 }

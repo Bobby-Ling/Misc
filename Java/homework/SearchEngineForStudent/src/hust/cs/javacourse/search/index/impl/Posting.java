@@ -9,11 +9,11 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * <pre style="font-family: '微软雅黑', Consolas, monospace;"/>
+ * <pre style="font-family: '微软雅黑', Consolas, monospace;"></pre>
  * Posting
  * 所指代的文档id: int docId
  * 单词在文档里出现的次数: int freq
- * 单词在文档里出现的位置列表: List<Integer> positions
+ * 单词在文档里出现的位置列表: List [Integer] positions
  */
 public class Posting extends AbstractPosting {
     /**

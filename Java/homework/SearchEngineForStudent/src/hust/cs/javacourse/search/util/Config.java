@@ -1,5 +1,7 @@
 package hust.cs.javacourse.search.util;
 
+import java.io.File;
+
 /**
  * <pre>
  *
@@ -15,6 +17,7 @@ package hust.cs.javacourse.search.util;
  *
  */
 public class Config {
+    static String separator = File.separator;
 
     /**
      * Java工程HOME目录, System.getProperty("user.dir")返回当前JAVA工程目录
@@ -26,7 +29,7 @@ public class Config {
      * 这样做的好处：索引文件目录是相对路径,无论你把整个工程放在什么位置，程序都可以正常运行.
      * </pre>
      */
-    public static String INDEX_DIR = PROJECT_HOME_DIR + "/index/";
+    public static String INDEX_DIR = PROJECT_HOME_DIR + separator+"index"+separator;
     /**
      * <pre>
      *  文本文件的目录,以相对路径指定文本文件目录 ,将文本文件保存在当前工程目录下的text子目录中
@@ -40,7 +43,7 @@ public class Config {
      */
     public static String INDEX_FILENAME =  "index.dat";
 
-    public static String DOC_DIR  = PROJECT_HOME_DIR + "/text/";
+    public static String DOC_DIR  = PROJECT_HOME_DIR + separator+"text"+separator;
 
     /**
      * 构建索引和检索时是否忽略单词大小写
@@ -79,4 +82,12 @@ public class Config {
      * </pre>
      */
     public static int TERM_FILTER_MAXLENGTH = 20;
+
+    @Override
+    public String toString() {
+        return "PROJECT_HOME_DIR=" + PROJECT_HOME_DIR +
+                ",\nINDEX_DIR=" + INDEX_DIR +
+                ",\nINDEX_FILENAME=" + INDEX_FILENAME +
+                ",\nDOC_DIR=" + DOC_DIR;
+    }
 }

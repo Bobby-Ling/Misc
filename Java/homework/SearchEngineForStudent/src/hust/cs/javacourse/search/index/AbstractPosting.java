@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <pre style="font-family: '微软雅黑', Consolas, monospace;"/>
+ * <pre style="font-family: '微软雅黑', Consolas, monospace;"></pre>
  * Posting
  * 所指代的文档id: int docId
  * 单词在文档里出现的次数: int freq
- * 单词在文档里出现的位置列表: List<Integer> positions
+ * 单词在文档里出现的位置列表: List [Integer]
+ * positions
  * <pre>
  * AbstractPosting是Posting对象的抽象父类.
  *      Posting对象代表倒排索引里每一项， 一个Posting对象包括:

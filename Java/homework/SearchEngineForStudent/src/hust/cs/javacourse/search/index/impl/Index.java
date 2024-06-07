@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * <pre style="font-family: '微软雅黑', Consolas, monospace;"/>
+ * <pre style="font-family: '微软雅黑', Consolas, monospace;"></pre>
  * Index
- * Map<Integer, String> docIdToDocPathMapping
- * Map<AbstractTerm, AbstractPostingList> termToPostingListMapping
+ * Map [Integer, String] docIdToDocPathMapping
+ * Map [AbstractTerm, AbstractPostingList] termToPostingListMapping
  */
 public class Index extends AbstractIndex {
     /**
@@ -64,8 +64,8 @@ public class Index extends AbstractIndex {
     /**
      * <pre>
      * 从索引文件里加载已经构建好的索引.内部调用FileSerializable接口方法readObject即可
-     * @param file ：索引文件
      * </pre>
+     * @param file ：索引文件
      */
     @Override
     public void load(File file) {
@@ -78,8 +78,8 @@ public class Index extends AbstractIndex {
     /**
      * <pre>
      * 将在内存里构建好的索引写入到文件. 内部调用FileSerializable接口方法writeObject即可
-     * @param file ：写入的目标索引文件
      * </pre>
+     * @param file ：写入的目标索引文件
      */
     @Override
     public void save(File file) {

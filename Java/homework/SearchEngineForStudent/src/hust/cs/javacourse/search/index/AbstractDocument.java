@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * <pre style="font-family: '微软雅黑', Consolas, monospace;"/>
+ * <pre style="font-family: '微软雅黑', Consolas, monospace;"></pre>
  * Document
  * 文档id: int docId
  * 文档的绝对路径: String docPath
- * 文档包含的三元组对象列表: List<AbstractTermTuple> tuples
+ * 文档包含的三元组对象列表: List [AbstractTermTuple] tuples
  * 由DocumentBuilder通过TermTupleStream, 构造Document对象
  */
 public abstract class AbstractDocument {

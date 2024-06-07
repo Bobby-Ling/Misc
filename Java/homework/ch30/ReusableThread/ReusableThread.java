@@ -8,10 +8,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ReusableThread extends Thread{
     //TODO 加入需要的数据成员
-    private final Lock lock = new ReentrantLock();
-    private final Condition condition = lock.newCondition();
+    private static final Lock lock = new ReentrantLock();
+    private static final Condition condition = lock.newCondition();
 
     LinkedList<Runnable> tasks = new LinkedList<>();
+//    Runnable task = null;
     //只定义不带参数的构造函数
     public ReusableThread(){
         super();
@@ -27,12 +28,15 @@ public class ReusableThread extends Thread{
         try {
             lock.lock();
             while(true){
+//                while(task == null){
                 while(tasks.isEmpty()){
                     condition.await();
                     // 这里会释放锁
                 }
                 // 重新获得锁
                 tasks.poll().run();
+//                task.run();
+//                task = null;
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -45,9 +49,11 @@ public class ReusableThread extends Thread{
      * 提交新的任务
      * @param task 要提交的任务
      */
-    public void submit(Runnable task){
+    public void submit(Runnable task, int index){
         lock.lock();
         tasks.offer(task);
+//        this.task = task;
+        System.out.println(index+" "+task.toString()+" submitted" );
         condition.signalAll();
         lock.unlock();
     }
@@ -89,9 +95,15 @@ class ReusableThreadTest {
 
         ReusableThread t =new ReusableThread();
         t.start();  //主线程启动子线程
+        // 不保证run()在submit之前执行
         for(int i = 0; i < 5; i++){
-            t.submit(task1);
-            t.submit(task2);
+            t.submit(task1,i);
+            try {
+                Thread.currentThread().sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            t.submit(task2,i);
         }
     }
 }

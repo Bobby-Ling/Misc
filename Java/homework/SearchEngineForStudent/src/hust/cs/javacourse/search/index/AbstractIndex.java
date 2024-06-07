@@ -6,10 +6,10 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * <pre style="font-family: '微软雅黑', Consolas, monospace;"/>
+ * <pre style="font-family: '微软雅黑', Consolas, monospace;"></pre>
  * Index
- * Map<Integer, String> docIdToDocPathMapping
- * Map<AbstractTerm, AbstractPostingList> termToPostingListMapping
+ * Map [Integer, String] docIdToDocPathMapping
+ * Map [AbstractTerm, AbstractPostingList] termToPostingListMapping
  * <pre>
  * AbstractIndex是内存中的倒排索引对象的抽象父类.
  *      一个倒排索引对象包含了一个文档集合的倒排索引.
@@ -52,18 +52,16 @@ public abstract class AbstractIndex implements FileSerializable{
     public abstract void addDocument(AbstractDocument document);
 
     /**
-     * <pre>
      * 从索引文件里加载已经构建好的索引.内部调用FileSerializable接口方法readObject即可
      * @param file ：索引文件
-     * </pre>
      */
     public abstract void load(File file);
 
     /**
      * <pre>
      * 将在内存里构建好的索引写入到文件. 内部调用FileSerializable接口方法writeObject即可
-     * @param file ：写入的目标索引文件
      * </pre>
+     * @param file ：写入的目标索引文件
      */
     public abstract void save(File file);
 
