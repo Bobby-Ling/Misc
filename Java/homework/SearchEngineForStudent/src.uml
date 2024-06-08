@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/bobby/DATA/Git/Java/homework/SearchEngineForStudent/src</OriginalElement>
+  <nodes>
+    <node x="1340.0" y="25.0">hust.cs.javacourse.search.index.AbstractTermTuple</node>
+    <node x="-539.5" y="1428.5">hust.cs.javacourse.search.index.impl.Document</node>
+    <node x="1738.5" y="868.0">hust.cs.javacourse.search.query.AbstractHit</node>
+    <node x="698.0" y="709.0">hust.cs.javacourse.search.util.FileUtil</node>
+    <node x="1569.5" y="1840.0">hust.cs.javacourse.search.util.StringSplitter</node>
+    <node x="421.0" y="1853.0">hust.cs.javacourse.search.parse.impl.TermTupleScanner</node>
+    <node x="1102.0" y="1157.0">hust.cs.javacourse.search.index.AbstractIndexBuilder</node>
+    <node x="-665.0" y="1057.0">hust.cs.javacourse.search.run.TestBuildIndex</node>
+    <node x="1746.5" y="520.5">hust.cs.javacourse.search.query.impl.Hit</node>
+    <node x="-28.0" y="-271.5">hust.cs.javacourse.search.index.impl.PostingList</node>
+    <node x="1142.0" y="1287.0">hust.cs.javacourse.search.index.AbstractDocumentBuilder</node>
+    <node x="1422.5" y="-495.0">hust.cs.javacourse.search.query.AbstractIndexSearcher.LogicalCombination</node>
+    <node x="652.0" y="-102.5">hust.cs.javacourse.search.index.FileSerializable</node>
+    <node x="1331.0" y="357.0">hust.cs.javacourse.search.run.TestSearchIndex</node>
+    <node x="836.5" y="-507.0">hust.cs.javacourse.search.query.AbstractIndexSearcher</node>
+    <node x="-499.5" y="1775.5">hust.cs.javacourse.search.index.AbstractDocument</node>
+    <node x="311.0" y="196.0">hust.cs.javacourse.search.index.AbstractPosting</node>
+    <node x="1592.0" y="-315.5">hust.cs.javacourse.search.index.impl.Term</node>
+    <node x="1355.5" y="1597.0">hust.cs.javacourse.search.parse.impl.LengthTermTupleFilter</node>
+    <node x="371.0" y="1397.0">hust.cs.javacourse.search.parse.AbstractTermTupleFilter</node>
+    <node x="1622.0" y="-36.0">hust.cs.javacourse.search.index.AbstractTerm</node>
+    <node x="312.0" y="588.5">hust.cs.javacourse.search.index.impl.Posting</node>
+    <node x="837.0" y="1573.0">hust.cs.javacourse.search.index.impl.DocumentBuilder</node>
+    <node x="1846.0" y="345.0">hust.cs.javacourse.search.query.impl.SimpleSorter</node>
+    <node x="-732.0" y="1277.0">hust.cs.javacourse.search.index.impl.IndexBuilder</node>
+    <node x="352.0" y="1560.0">hust.cs.javacourse.search.parse.impl.PatternTermTupleFilter</node>
+    <node x="13.0" y="1385.0">hust.cs.javacourse.search.parse.AbstractTermTupleStream</node>
+    <node x="2126.0" y="357.5">hust.cs.javacourse.search.query.Sort</node>
+    <node x="-25.0" y="1705.0">hust.cs.javacourse.search.parse.AbstractTermTupleScanner</node>
+    <node x="587.0" y="949.5">hust.cs.javacourse.search.util.Config</node>
+    <node x="326.0" y="-247.5">hust.cs.javacourse.search.index.AbstractPostingList</node>
+    <node x="1341.0" y="-267.0">hust.cs.javacourse.search.index.impl.TermTuple</node>
+    <node x="735.0" y="557.0">hust.cs.javacourse.search.run.TreeMapTest</node>
+    <node x="1156.5" y="593.0">hust.cs.javacourse.search.query.impl.IndexSearcher</node>
+    <node x="750.5" y="949.5">hust.cs.javacourse.search.util.StopWords</node>
+    <node x="337.5" y="1160.0">hust.cs.javacourse.search.parse.impl.StopWordTermTupleFilter</node>
+    <node x="1273.5" y="197.0">hust.cs.javacourse.search.util.HighLighter</node>
+    <node x="305.5" y="-567.5">hust.cs.javacourse.search.index.AbstractIndex</node>
+    <node x="-394.5" y="948.5">hust.cs.javacourse.search.index.impl.Index</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="hust.cs.javacourse.search.parse.AbstractTermTupleScanner" target="hust.cs.javacourse.search.parse.AbstractTermTupleStream" relationship="GENERALIZATION">
+      <point x="0.0" y="-57.0" />
+      <point x="0.0" y="57.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.AbstractIndexSearcher.LogicalCombination" target="hust.cs.javacourse.search.query.AbstractIndexSearcher" relationship="INNER_CLASS">
+      <point x="-136.5" y="0.0" />
+      <point x="262.5" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.AbstractTermTuple" target="hust.cs.javacourse.search.index.AbstractTerm" relationship="TO_ONE">
+      <point x="99.0" y="0.0" />
+      <point x="-117.0" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.run.TestSearchIndex" target="hust.cs.javacourse.search.index.impl.Term" relationship="CREATE">
+      <point x="88.0" y="-5.0" />
+      <point x="1620.0" y="397.0" />
+      <point x="-119.0" y="117.5" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.DocumentBuilder" target="hust.cs.javacourse.search.parse.impl.StopWordTermTupleFilter" relationship="CREATE">
+      <point x="-44.0" y="-69.0" />
+      <point x="1015.0" y="1242.0" />
+      <point x="221.5" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.impl.IndexSearcher" target="hust.cs.javacourse.search.query.AbstractIndexSearcher" relationship="GENERALIZATION">
+      <point x="-260.5" y="-69.0" />
+      <point x="59.5" y="69.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.run.TestBuildIndex" target="hust.cs.javacourse.search.index.impl.DocumentBuilder" relationship="CREATE">
+      <point x="0.0" y="-45.0" />
+      <point x="-581.0" y="946.5" />
+      <point x="1025.0" y="946.5" />
+      <point x="-34.0" y="-69.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.Term" target="hust.cs.javacourse.search.index.AbstractTerm" relationship="GENERALIZATION">
+      <point x="0.0" y="117.5" />
+      <point x="0.0" y="-118.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.DocumentBuilder" target="hust.cs.javacourse.search.parse.impl.TermTupleScanner" relationship="CREATE">
+      <point x="-0.0" y="69.0" />
+      <point x="1059.0" y="1912.0" />
+      <point x="138.0" y="-10.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.AbstractIndex" target="hust.cs.javacourse.search.index.AbstractTerm" relationship="TO_MANY">
+      <point x="135.0" y="129.5" />
+      <point x="594.0" y="23.0" />
+      <point x="-117.0" y="-59.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.IndexBuilder" target="hust.cs.javacourse.search.index.AbstractIndexBuilder" relationship="GENERALIZATION">
+      <point x="151.0" y="28.5" />
+      <point x="1140.0" y="1350.5" />
+      <point x="-139.0" y="45.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.TermTuple" target="hust.cs.javacourse.search.index.AbstractTermTuple" relationship="GENERALIZATION">
+      <point x="0.0" y="69.0" />
+      <point x="0.0" y="-57.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.Index" target="hust.cs.javacourse.search.index.impl.PostingList" relationship="CREATE">
+      <point x="5.0" y="-153.5" />
+      <point x="-236.0" y="-58.0" />
+      <point x="-147.0" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.AbstractTermTupleFilter" target="hust.cs.javacourse.search.parse.AbstractTermTupleStream" relationship="TO_ONE">
+      <point x="-188.0" y="0.0" />
+      <point x="126.0" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.AbstractIndexSearcher" target="hust.cs.javacourse.search.index.impl.Index" relationship="CREATE">
+      <point x="-0.0" y="69.0" />
+      <point x="1099.0" y="1087.25" />
+      <point x="153.5" y="-14.75" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.AbstractIndex" target="hust.cs.javacourse.search.index.FileSerializable" relationship="REALIZATION">
+      <point x="153.5" y="35.25" />
+      <point x="799.0" y="-402.75" />
+      <point x="-0.0" y="-44.5" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.Posting" target="hust.cs.javacourse.search.index.AbstractPosting" relationship="GENERALIZATION">
+      <point x="0.0" y="-153.5" />
+      <point x="0.0" y="166.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.PostingList" target="hust.cs.javacourse.search.index.AbstractPostingList" relationship="GENERALIZATION">
+      <point x="147.0" y="0.0" />
+      <point x="-133.0" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.TermTupleScanner" target="hust.cs.javacourse.search.parse.impl.PatternTermTupleFilter" relationship="CREATE">
+      <point x="5.0" y="-69.0" />
+      <point x="5.0" y="82.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.impl.SimpleSorter" target="hust.cs.javacourse.search.query.Sort" relationship="REALIZATION">
+      <point x="113.0" y="0.0" />
+      <point x="-113.0" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.Document" target="hust.cs.javacourse.search.index.AbstractDocument" relationship="GENERALIZATION">
+      <point x="66.0" y="153.5" />
+      <point x="0.0" y="-190.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.AbstractPostingList" target="hust.cs.javacourse.search.index.AbstractPosting" relationship="TO_MANY">
+      <point x="0.0" y="189.5" />
+      <point x="0.0" y="-166.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.run.TestSearchIndex" target="hust.cs.javacourse.search.query.impl.IndexSearcher" relationship="CREATE">
+      <point x="0.0" y="45.0" />
+      <point x="0.0" y="-69.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.LengthTermTupleFilter" target="hust.cs.javacourse.search.parse.AbstractTermTupleFilter" relationship="GENERALIZATION">
+      <point x="0.0" y="-45.0" />
+      <point x="1539.0" y="1442.0" />
+      <point x="188.0" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.AbstractIndexBuilder" target="hust.cs.javacourse.search.index.AbstractDocumentBuilder" relationship="TO_ONE">
+      <point x="85.0" y="45.0" />
+      <point x="0.0" y="-57.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.run.TestBuildIndex" target="hust.cs.javacourse.search.index.impl.Index" relationship="CREATE">
+      <point x="84.0" y="0.0" />
+      <point x="-153.5" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.TermTupleScanner" target="hust.cs.javacourse.search.parse.impl.LengthTermTupleFilter" relationship="CREATE">
+      <point x="138.0" y="0.0" />
+      <point x="1539.0" y="1922.0" />
+      <point x="-0.0" y="45.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.impl.IndexSearcher" target="hust.cs.javacourse.search.query.AbstractHit" relationship="CREATE">
+      <point x="0.0" y="69.0" />
+      <point x="1419.0" y="1082.0" />
+      <point x="-220.5" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.impl.Hit" target="hust.cs.javacourse.search.query.AbstractHit" relationship="GENERALIZATION">
+      <point x="0.0" y="141.5" />
+      <point x="0.0" y="-214.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.TermTupleScanner" target="hust.cs.javacourse.search.util.StringSplitter" relationship="CREATE">
+      <point x="138.0" y="10.0" />
+      <point x="-129.5" y="10.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.run.TestSearchIndex" target="hust.cs.javacourse.search.index.impl.IndexBuilder" relationship="CREATE">
+      <point x="-88.0" y="-5.0" />
+      <point x="948.0" y="397.0" />
+      <point x="948.0" y="1340.5" />
+      <point x="151.0" y="18.5" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.AbstractIndexSearcher" target="hust.cs.javacourse.search.index.AbstractIndex" relationship="TO_ONE">
+      <point x="-262.5" y="0.0" />
+      <point x="153.5" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.impl.IndexSearcher" target="hust.cs.javacourse.search.query.impl.Hit" relationship="CREATE">
+      <point x="262.5" y="0.0" />
+      <point x="-212.5" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.AbstractHit" target="hust.cs.javacourse.search.index.AbstractPosting" relationship="TO_MANY">
+      <point x="-214.5" y="-214.0" />
+      <point x="1744.5" y="461.0" />
+      <point x="148.0" y="99.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.Index" target="hust.cs.javacourse.search.index.AbstractIndex" relationship="GENERALIZATION">
+      <point x="-5.0" y="-153.5" />
+      <point x="-246.0" y="-438.0" />
+      <point x="-153.5" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.TermTupleScanner" target="hust.cs.javacourse.search.parse.impl.StopWordTermTupleFilter" relationship="CREATE">
+      <point x="-138.0" y="-10.0" />
+      <point x="335.5" y="1912.0" />
+      <point x="335.5" y="1242.0" />
+      <point x="-221.5" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.PatternTermTupleFilter" target="hust.cs.javacourse.search.parse.AbstractTermTupleFilter" relationship="GENERALIZATION">
+      <point x="0.0" y="-82.0" />
+      <point x="0.0" y="45.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.AbstractHit" target="hust.cs.javacourse.search.index.AbstractTerm" relationship="TO_MANY">
+      <point x="-218.5" y="-214.0" />
+      <point x="1.5" y="118.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.DocumentBuilder" target="hust.cs.javacourse.search.parse.impl.LengthTermTupleFilter" relationship="CREATE">
+      <point x="222.0" y="0.0" />
+      <point x="-183.5" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.query.impl.Hit" target="hust.cs.javacourse.search.query.impl.SimpleSorter" relationship="CREATE">
+      <point x="0.0" y="-141.5" />
+      <point x="0.0" y="57.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.TermTuple" target="hust.cs.javacourse.search.index.impl.Term" relationship="CREATE">
+      <point x="98.0" y="0.0" />
+      <point x="-147.0" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.TermTupleScanner" target="hust.cs.javacourse.search.util.StringSplitter" relationship="TO_ONE">
+      <point x="0.0" y="69.0" />
+      <point x="559.0" y="2157.5" />
+      <point x="1699.0" y="2157.5" />
+      <point x="0.0" y="82.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.AbstractTerm" target="hust.cs.javacourse.search.index.FileSerializable" relationship="REALIZATION">
+      <point x="-117.0" y="-116.0" />
+      <point x="147.0" y="24.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.AbstractPostingList" target="hust.cs.javacourse.search.index.FileSerializable" relationship="REALIZATION">
+      <point x="133.0" y="0.0" />
+      <point x="-147.0" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.DocumentBuilder" target="hust.cs.javacourse.search.index.impl.Document" relationship="CREATE">
+      <point x="-104.5" y="-69.0" />
+      <point x="954.5" y="1558.0" />
+      <point x="178.5" y="-24.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.run.TestSearchIndex" target="hust.cs.javacourse.search.query.impl.SimpleSorter" relationship="CREATE">
+      <point x="88.0" y="5.0" />
+      <point x="-113.0" y="5.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.DocumentBuilder" target="hust.cs.javacourse.search.index.AbstractDocumentBuilder" relationship="GENERALIZATION">
+      <point x="220.0" y="-69.0" />
+      <point x="-85.0" y="57.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.IndexBuilder" target="hust.cs.javacourse.search.index.impl.Index" relationship="CREATE">
+      <point x="151.0" y="0.0" />
+      <point x="-241.0" y="1322.0" />
+      <point x="0.0" y="153.5" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.DocumentBuilder" target="hust.cs.javacourse.search.parse.impl.PatternTermTupleFilter" relationship="CREATE">
+      <point x="-222.0" y="0.0" />
+      <point x="207.0" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.run.TestSearchIndex" target="hust.cs.javacourse.search.index.impl.DocumentBuilder" relationship="CREATE">
+      <point x="-88.0" y="5.0" />
+      <point x="1035.0" y="407.0" />
+      <point x="-24.0" y="-69.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.StopWordTermTupleFilter" target="hust.cs.javacourse.search.parse.AbstractTermTupleFilter" relationship="GENERALIZATION">
+      <point x="5.0" y="82.0" />
+      <point x="5.0" y="-45.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.TermTupleScanner" target="hust.cs.javacourse.search.index.impl.TermTuple" relationship="CREATE">
+      <point x="-138.0" y="0.0" />
+      <point x="309.0" y="1922.0" />
+      <point x="309.0" y="-249.5" />
+      <point x="-98.0" y="-51.5" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.AbstractPosting" target="hust.cs.javacourse.search.index.FileSerializable" relationship="REALIZATION">
+      <point x="148.0" y="0.0" />
+      <point x="799.0" y="362.0" />
+      <point x="0.0" y="44.5" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.TermTupleScanner" target="hust.cs.javacourse.search.parse.AbstractTermTupleScanner" relationship="GENERALIZATION">
+      <point x="-5.0" y="-69.0" />
+      <point x="554.0" y="1762.0" />
+      <point x="164.0" y="0.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.AbstractIndex" target="hust.cs.javacourse.search.index.AbstractPostingList" relationship="TO_MANY">
+      <point x="0.0" y="129.5" />
+      <point x="0.0" y="-189.5" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.impl.TermTupleScanner" target="hust.cs.javacourse.search.index.impl.Term" relationship="CREATE">
+      <point x="-138.0" y="10.0" />
+      <point x="307.0" y="1932.0" />
+      <point x="307.0" y="-269.0" />
+      <point x="-147.0" y="-71.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.run.TestSearchIndex" target="hust.cs.javacourse.search.util.HighLighter" relationship="CREATE">
+      <point x="0.0" y="-45.0" />
+      <point x="0.0" y="45.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.impl.Index" target="hust.cs.javacourse.search.index.impl.Posting" relationship="CREATE">
+      <point x="153.5" y="-52.75" />
+      <point x="459.0" y="1049.25" />
+      <point x="-0.0" y="153.5" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.run.TestBuildIndex" target="hust.cs.javacourse.search.index.impl.IndexBuilder" relationship="CREATE">
+      <point x="0.0" y="45.0" />
+      <point x="0.0" y="-45.0" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.index.AbstractDocument" target="hust.cs.javacourse.search.index.AbstractTermTuple" relationship="TO_MANY">
+      <point x="204.5" y="0.0" />
+      <point x="305.0" y="1965.5" />
+      <point x="305.0" y="133.5" />
+      <point x="-99.0" y="51.5" />
+    </edge>
+    <edge source="hust.cs.javacourse.search.parse.AbstractTermTupleFilter" target="hust.cs.javacourse.search.parse.AbstractTermTupleStream" relationship="GENERALIZATION">
+      <point x="-5.0" y="-45.0" />
+      <point x="554.0" y="1365.0" />
+      <point x="139.0" y="1365.0" />
+      <point x="0.0" y="-57.0" />
+    </edge>
+  </edges>
+  <settings layout="紧凑" zoom="0.6330784647450615" showDependencies="true" x="2621.366719030677" y="1191.7412677343689" />
+  <SelectedNodes />
+  <Categories>
+    <Category>内部类</Category>
+    <Category>字段</Category>
+    <Category>属性</Category>
+    <Category>方法</Category>
+    <Category>构造函数</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+
