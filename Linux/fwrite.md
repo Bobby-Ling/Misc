@@ -1,4 +1,4 @@
-# fwrite()和fwrite()
+# fwrite()和fflush()
 
 ## FILE结构体
 
@@ -15,7 +15,7 @@ char* _IO_buf_end: 指向缓冲区的末尾位置的指针
 
 ## fflush调用栈
 
-> 缓冲区阈值,比如:4096B
+> 缓冲区阈值:4096B
 
 ### 底层:`__GI___libc_write`
 
@@ -26,9 +26,7 @@ syscall(1)
 
 ![alt text](Assets/report2/image.png)
 
-### SIZE=4095
-
-使用fflush()写入
+### fflush()
 
 - IO_fflush
     `int _IO_fflush (FILE *fp)`
@@ -84,9 +82,7 @@ bt
 #6  0x0000555555555243 in main () at /home/bobby_ubuntu/Git/code/write_file.c:18
 ``` -->
 
-### SIZE=4096
-
-在fwrite()中写入
+### fwrite()
 
 - _IO_fwrite(buf,size,count,fp)
 - written=_IO_new_file_xsputn(fp,data,to_do=n)
@@ -130,13 +126,60 @@ bt
     if (to_do)
         to_do -= _IO_default_xsputn (f, s+do_write, to_do);
     ```
-
-    大文件写入
-
 - _IO_new_do_write
 - _IO_new_file_write
 - __GI___libc_write
     同上
+
+### 大文件写入
+
+```c
+// #define SIZE (2*4*KiB+1)
+// 8192         8*KiB
+// 1
+
+// #define SIZE (1*MiB-1)
+// 1044480      1*MiB-1*KiB
+// 4095         1*KiB-1
+
+// #define SIZE (1*GiB)
+// 1073741824   1*Gib
+
+// #define SIZE (1*GiB+2*MiB+(1*MiB-1))
+// 1076883456   1*GiB+(3*MiB-1*KiB)
+// 4095         1*KiB-1
+
+// #define SIZE (1*GiB+2*MiB+3*KiB+4)
+// 1075838976   1*GiB+2*MiB
+// 3076         3*KiB-4
+
+// #define SIZE __UINT32_MAX__
+// __UINT32_MAX__==4294967295 4*GiB-1
+// 提交                         实际
+// 4294963200   4*GiB-4*KiB     2147479552(7FFFF000)   这里系统调用没有写完, 只写了约2G
+// 2147483648   2*GiB           2147479552(7FFFF000)
+// 4096         4*KiB           4096
+// 4095         4*KiB-1         4096
+
+// #define SIZE (2*GiB+1*MiB)
+// #define SIZE 2148532224
+// 提交                 实际
+// 2148532224(80100000) 2147479552(7FFFF000)   
+// 1052672(101000)      1052672(101000)
+```
+
+### 多次写入
+
+```c
+#define SIZE (2*4*KiB+1)
+// 8192
+// 4096
+// 4096
+// 2
+// 两次fwrite
+```
+
+
 
 <!-- ```
 #0  __GI___libc_write (fd=3, buf=buf@entry=0x555555559480, nbytes=nbytes@entry=4096) at ../sysdeps/unix/sysv/linux/write.c:26
