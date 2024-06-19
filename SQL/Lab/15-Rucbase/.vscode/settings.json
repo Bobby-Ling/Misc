@@ -1,0 +1,6 @@
+{
+    "cmake.sourceDirectory": "/home/bobby_ubuntu/Git/Git/SQL/Lab/15-Rucbase/rmdb",
+    "files.trimTrailingWhitespaceInRegexAndStrings": false,
+    "editor.trimAutoWhitespace": false,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+}

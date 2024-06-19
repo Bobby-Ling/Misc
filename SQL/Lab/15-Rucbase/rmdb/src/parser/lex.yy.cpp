@@ -1,6 +1,6 @@
-#line 2 "/home/aaron/rucdeke/rucbase/src/parser/lex.yy.cpp"
+#line 2 "/home/bobby_ubuntu/Git/Git/SQL/Lab/15-Rucbase/rmdb/src/parser/lex.yy.cpp"
 
-#line 4 "/home/aaron/rucdeke/rucbase/src/parser/lex.yy.cpp"
+#line 4 "/home/bobby_ubuntu/Git/Git/SQL/Lab/15-Rucbase/rmdb/src/parser/lex.yy.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -616,9 +616,9 @@ char *yytext;
         } \
     }
 
-#line 620 "/home/aaron/rucdeke/rucbase/src/parser/lex.yy.cpp"
+#line 620 "/home/bobby_ubuntu/Git/Git/SQL/Lab/15-Rucbase/rmdb/src/parser/lex.yy.cpp"
 
-#line 622 "/home/aaron/rucdeke/rucbase/src/parser/lex.yy.cpp"
+#line 622 "/home/bobby_ubuntu/Git/Git/SQL/Lab/15-Rucbase/rmdb/src/parser/lex.yy.cpp"
 
 #define INITIAL 0
 #define STATE_COMMENT 1
@@ -856,7 +856,7 @@ YY_DECL
 
 #line 48 "lex.l"
     /* block comment */
-#line 860 "/home/aaron/rucdeke/rucbase/src/parser/lex.yy.cpp"
+#line 860 "/home/bobby_ubuntu/Git/Git/SQL/Lab/15-Rucbase/rmdb/src/parser/lex.yy.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1161,7 +1161,7 @@ YY_RULE_SETUP
 #line 113 "lex.l"
 ECHO;
 	YY_BREAK
-#line 1165 "/home/aaron/rucdeke/rucbase/src/parser/lex.yy.cpp"
+#line 1165 "/home/bobby_ubuntu/Git/Git/SQL/Lab/15-Rucbase/rmdb/src/parser/lex.yy.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
