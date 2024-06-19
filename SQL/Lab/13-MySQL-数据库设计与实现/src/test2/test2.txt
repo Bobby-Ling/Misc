@@ -14,7 +14,7 @@
 ④. 排场和放映厅有一对多的位于关系。每个排场位于一个放映厅，每个放映厅可以安排多个排场。
 
 请给出ER图文件存放的URL:
-
+https://gitee.com/bobby-ling/Git/raw/master/SQL/Lab/13-MySQL-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1%E4%B8%8E%E5%AE%9E%E7%8E%B0/src/test2/ersolution.jpg
 以下给出关系模式：
 关系模式的表达格式参考：
 学生(学号,姓名,性别,出生日期,院系id),主码:(学号); 外码：(院系id)
