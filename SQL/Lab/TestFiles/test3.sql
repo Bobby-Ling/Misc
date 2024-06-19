@@ -1,0 +1,1 @@
+UPDATE bank_card SET b_balance = b_balance + IF(b_type = '信用卡', ?, ?) WHERE b_number = ?;

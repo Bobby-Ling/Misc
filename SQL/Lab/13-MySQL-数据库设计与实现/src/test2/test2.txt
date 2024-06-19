@@ -1,0 +1,32 @@
+# 业务功能描述
+设计一个影院管理系统。影院对当前的放映厅和电影进行排片，顾客到来后，可以购买任一排场的电影票，进入对应放映厅观看。系统中有以下实体集：
+
+电影(movie)：属性有标识号(movie_ID)、电影名(title)、类型(type)、时长(runtime)、首映日期(release_date)、导演姓名(director)、主演姓名(starring)。
+顾客(customer)：属性有标识号(c_ID)、姓名(name)、手机号(phone)。
+放映厅(hall)：属性有标识号(hall_ID)、放映模式(mode)、容纳人数(capacity)、位置(location)。
+排场(schedule)：属性有标识号(schedule_ID)、日期(date)、时间(time)、票价(price)、票数(number)。
+电影票(ticket)：属性有标识号(ticket_ID)、座位号(seat_num)。
+
+实体间的关系描述如下：
+①. 顾客和电影票有一对多的购买关系。每位顾客可以买多张电影票，每张电影票被一位顾客购买。
+②. 电影票和排场有多对一的属于关系。一张电影票只属于一个排场，一个排场有多张电影票。
+③. 排场和电影有一对多的放映关系。每个排场放一部电影，每部电影可以在多个排场放映。
+④. 排场和放映厅有一对多的位于关系。每个排场位于一个放映厅，每个放映厅可以安排多个排场。
+
+请给出ER图文件存放的URL:
+
+以下给出关系模式：
+关系模式的表达格式参考：
+学生(学号,姓名,性别,出生日期,院系id),主码:(学号); 外码：(院系id)
+
+movie(movie_ID,title,type,runtime,release_date,director,starring),PK(movie_ID),FK(schedule_ID);
+customer(c_ID,name,phone),PK(c_ID)
+hall(hall_ID,mode,capacity,location),PK(hall_ID),FK(schedule_ID)
+schedule(schedule_ID,date,time,price,number),PK(schedule_ID)
+ticket(ticket_ID,seat_num),PK(ticket_ID),FK(schedule_ID,c_ID)
+
+
+
+
+
+
