@@ -7,12 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8a83804d-8081-454a-9a7f-03d689ae7e77" name="更改" comment="ReusableThread">
-      <change beforePath="$PROJECT_DIR$/../SearchEngineForStudent/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../SearchEngineForStudent/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SearchEngineForStudent/src/hust/cs/javacourse/search/run/TreeMapTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ReusableThread/ReusableThread.java" beforeDir="false" afterPath="$PROJECT_DIR$/ReusableThread/ReusableThread.java" afterDir="false" />
-    </list>
+    <list default="true" id="8a83804d-8081-454a-9a7f-03d689ae7e77" name="更改" comment="ReusableThread" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -77,8 +72,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.15989.150" />
-        <option value="bundled-js-predefined-1d06a55b98c1-91d5c284f522-JavaScript-IU-241.15989.150" />
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.17011.79" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.17011.79" />
       </set>
     </attachedChunks>
   </component>
@@ -93,6 +88,7 @@
       <workItem from="1715788537026" duration="1953000" />
       <workItem from="1715831539549" duration="2026000" />
       <workItem from="1716733620139" duration="2539000" />
+      <workItem from="1717827567824" duration="37000" />
     </task>
     <task id="LOCAL-00001" summary="ReusableThread">
       <option name="closed" value="true" />
