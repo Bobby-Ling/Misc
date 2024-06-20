@@ -1,4 +1,6 @@
 /rucbase-lab/
+/rmdb-index/
+/rmdb-storage/
 build/
 Build/
 cmake-build-debug/

@@ -2,7 +2,10 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$/../../.." vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/rmdb-index" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/rmdb-storage" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/rucbase-lab" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/rucbase-lab/deps/googletest" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../2-MySQL-表结构与完整性约束的修改(ALTER)/data/workspace/myshixun" vcs="Git" />
   </component>
 </project>

@@ -28,14 +28,12 @@ void DiskManager::write_page(int fd, page_id_t page_no, const char *offset, int 
     // 注意处理异常
     //lseek
 
-    /*
-    SEEK_SET 参数offset 即为新的读写位置.
-    SEEK_CUR 以目前的读写位置往后增加offset 个位移量.
-    SEEK_END 将读写位置指向文件尾后再增加offset 个位移量.
-    当whence 值为SEEK_CUR 或SEEK_END 时, 参数offet 允许负值的出现.
-    */
+/*     if( fd2path_.find(fd) == fd2path_.end() ) {
+        throw FileNotOpenError(fd);
+    }
+ */    
     lseek(fd, page_no * PAGE_SIZE, SEEK_SET);
-    if (write(fd, offset, num_bytes) == -1) {
+    if( write(fd, (void *)offset, num_bytes) != num_bytes ) {
         throw UnixError();
     }
 }
@@ -54,10 +52,17 @@ void DiskManager::read_page(int fd, page_id_t page_no, char *offset, int num_byt
     // 1.lseek()定位到文件头，通过(fd,page_no)可以定位指定页面及其在磁盘文件中的偏移量
     // 2.调用read()函数
     // 注意处理异常
+
+
+/*     if( fd2path_.find(fd) == fd2path_.end() ) {
+        throw FileNotOpenError(fd);
+    }
+ */    
     lseek(fd, page_no * PAGE_SIZE, SEEK_SET);
-    if (read(fd, offset, num_bytes) == -1) {
+    if( read(fd, (void *)offset, num_bytes) < 0 ) {
         throw UnixError();
     }
+  
 }
 
 /**
@@ -75,7 +80,6 @@ page_id_t DiskManager::AllocatePage(int fd) {
     assert(fd >= 0 && fd < MAX_FD);
     return fd2pageno_[fd] ++; 
 }
-  
 
 /**
  * @brief Deallocate page (operations like drop index/table)
@@ -112,22 +116,10 @@ void DiskManager::destroy_dir(const std::string &path) {
 bool DiskManager::is_file(const std::string &path) {
     // Todo:
     // 用struct stat获取文件信息
-    struct stat st;
-    return stat(path.c_str(), &st) == 0 && S_ISREG(st.st_mode);
-    /*
-    常规文件(regular file)包含文本文件、二进制可执行文件等;
-    不包括特殊文件类型, 如目录、符号链接、设备文件等.
 
-    执行成功则返回0，失败返回-1，错误代码存于errno。
-    错误代码：
-    1、ENOENT 参数file_name 指定的文件不存在
-    2、ENOTDIR 路径中的目录存在但却非真正的目录
-    3、ELOOP 欲打开的文件有过多符号连接问题, 上限为16 符号连接
-    4、EFAULT 参数buf 为无效指针, 指向无法存在的内存空间
-    5、EACCESS 存取文件时被拒绝
-    6、ENOMEM 核心内存不足
-    7、ENAMETOOLONG 参数file_name 的路径名称太长
-    */
+    struct stat st;
+    //return stat(path.c_str(), &st) == 0 && (S_IFREG ==(st.st_mode & S_IFMT));
+    return stat(path.c_str(), &st) == 0 && S_ISREG(st.st_mode);
 }
 
 /**
@@ -137,33 +129,12 @@ void DiskManager::create_file(const std::string &path) {
     // Todo:
     // 调用open()函数，使用O_CREAT模式
     // 注意不能重复创建相同文件
-
-    // mode = 0664 S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH
-    int fd = open(path.c_str(), O_RDWR | O_EXCL | O_CREAT, 0664);
-    if (fd == -1) {
-        // 包含重复创建相同文件
+    if(!is_file(path)) {
+        auto fd = open( path.c_str(), O_CREAT | O_RDWR, 0600);  //0x1ff
+        if (fd != -1) close(fd);
+    } else {
         throw FileExistsError(path);
     }
-
-
-    /*
-    O_RDONLY: 只读模式
-    O_WRONLY: 只写模式
-    O_RDWR: 可读可写
-    以下的常量是选用的, 这些选项是用来和上面的必选项进行按位或起来作为flags参数.
-    O_APPEND 表示追加, 如果原来文件里面有内容, 则这次写入会写在文件的最末尾.
-    O_CREAT 表示如果指定文件不存在, 则创建这个文件
-    O_EXCL 表示如果要创建的文件已存在, 则出错, 同时返回 -1, 并且修改 errno 的值.
-    O_TRUNC 表示截断, 如果文件存在, 并且以只写、读写方式打开, 则将其长度截断为0.
-    O_NOCTTY 如果路径名指向终端设备, 不要把这个设备用作控制终端.
-    O_NONBLOCK 如果路径名指向 FIFO/块文件/字符文件, 则把文件的打开和后继 I/O设置为非阻塞模式(nonblocking mode)
-
-    文件权限由open的mode参数和当前进程的umask掩码共同决定。
-    第三个参数mode在第二个参数中有O_CREAT时才作用，如果没有，则第三个参数可以忽略
-    S_IRUSR,S_IWUSR,S_IXUSR,S_IRWXU;
-    S_IRGRP,S_IWGRP,S_IXGRP,S_IRWXG;
-    S_IROTH,S_IWOTH,S_IXOTH,S_IRWXO;
-    */
 
 }
 
@@ -175,18 +146,28 @@ void DiskManager::destroy_file(const std::string &path) {
     // 调用unlink()函数
     // 注意不能删除未关闭的文件
 
-    if (unlink(path.c_str()) == -1) {
-        if (errno == ENOENT) {
-            // No such file or directory
-            throw FileNotFoundError(path.c_str());
-        }
-        throw UnixError();
+    if (path2fd_.count(path.c_str()) == 0 && is_file(path) == 1) {
+        unlink(path.c_str());
+    } else {
+        throw FileNotFoundError(path);
     }
+
+/*     if( !is_file(path) ) {
+        throw FileNotFoundError(path);
+    }
+    if( path2fd_.find(path) == path2fd_.end() ) {
+        if( unlink(path.c_str()) < 0 ) {
+            throw UnixError();
+        }
+    } else {
+        throw FileNotClosedError(path);
+    }
+ */    
 }
 
 /**
  * @brief 用于打开指定路径文件
- * @return fd
+ * 返回值的用途??????????????  权当return file descritor
  */
 int DiskManager::open_file(const std::string &path) {
     // Todo:
