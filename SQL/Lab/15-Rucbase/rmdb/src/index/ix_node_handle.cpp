@@ -1,9 +1,13 @@
 #include "ix_node_handle.h"
 
+#include <algorithm> // for std::upper_bound and std::lower_bound
+#include <iterator>  // fro std::begin and std::end
+#include "MemoryIterator.h" // iterator for IxNodeHandle
+
 /**
  * @brief 在当前node中查找第一个>=target的key_idx
  *
- * @return key_idx，范围为[0,num_key)，如果返回的key_idx=num_key，则表示target大于最后一个key
+ * @return key_idx，范围为[0,num_key)，如果返回的key_idx=num_key，则表示target大于最后一个key; 注意, 这里返回0表示在第一个节点即在左子树
  * @note 返回key index（同时也是rid index），作为slot no
  */
 int IxNodeHandle::lower_bound(const char *target) const {
@@ -11,7 +15,16 @@ int IxNodeHandle::lower_bound(const char *target) const {
     // 查找当前节点中第一个大于等于target的key，并返回key的位置给上层
     // 提示: 可以采用多种查找方式，如顺序遍历、二分查找等；使用ix_compare()函数进行比较
 
-    return idx;
+    // 获得key调用get_key(); 值value为Rid类型, 对于内部结点, 其Rid中的page_no表示指向的孩子结点的页面编号. 
+
+    auto IxNodeHandleKeyIterator = MemoryIterator<>(keys, file_hdr->col_len, file_hdr->btree_order);
+    auto result = std::lower_bound(IxNodeHandleKeyIterator.begin(), IxNodeHandleKeyIterator.end(), target,
+        [this](const MemoryIterator<>::dereference_type &a, const MemoryIterator<>::dereference_type &value) {
+            // ix_compare return <:-1 >:1 =:0
+            return -1 == ix_compare(a, value, file_hdr->col_type, file_hdr->col_len);
+        }
+    );
+    return std::distance(IxNodeHandleKeyIterator.begin(), result);
 }
 
 /**
@@ -25,7 +38,14 @@ int IxNodeHandle::upper_bound(const char *target) const {
     // 查找当前节点中第一个大于target的key，并返回key的位置给上层
     // 提示: 可以采用多种查找方式：顺序遍历、二分查找等；使用ix_compare()函数进行比较
 
-
+    auto IxNodeHandleKeyIterator = MemoryIterator<>(keys, file_hdr->col_len, file_hdr->btree_order);
+    auto result = std::upper_bound(IxNodeHandleKeyIterator.begin(), IxNodeHandleKeyIterator.end(), target,
+        [this](const MemoryIterator<>::dereference_type &a, const MemoryIterator<>::dereference_type &value) {
+            // ix_compare return <:-1 >:1 =:0
+            return -1 == ix_compare(a, value, file_hdr->col_type, file_hdr->col_len);
+        }
+    );
+    return std::distance(IxNodeHandleKeyIterator.begin(), result);
 }
 
 /**
@@ -43,7 +63,13 @@ bool IxNodeHandle::LeafLookup(const char *key, Rid **value) {
     // 3. 如果存在，获取key对应的Rid，并赋值给传出参数value
     // 提示：可以调用lower_bound()和get_rid()函数。
 
-
+    int index = lower_bound(key);
+    if (index != file_hdr->btree_order) {
+        // 找到了当前的index
+        // 实际上就是根据同样的index对Rid数组进行索引
+        *value = get_rid(index);
+        return true;
+    }
     return false;
 }
 
@@ -57,6 +83,12 @@ page_id_t IxNodeHandle::InternalLookup(const char *key) {
     // 1. 查找当前非叶子节点中目标key所在孩子节点（子树）的位置
     // 2. 获取该孩子节点（子树）所在页面的编号
     // 3. 返回页面编号
+
+    // 根据B+树的查找, 这里会有三种情况
+    int index = lower_bound(key);
+    if (index == 0) {
+        // 
+    }
 
 
 }

@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <list>
+#include <ranges>
+#include <iterator> 
 #include <unordered_map>
 #include <iostream>
-#include <iterator> 
 #include <algorithm>
+#include <stdint.h>
 using namespace std;
 
 
@@ -36,6 +38,24 @@ int main(int, char **) {
         std::cout << item.first << ": " << item.second << " ";
     });
 
-    cout << " end";
+    cout << "\n-----------------------------\n\n";
+
+    char *arr;
+    arr = new char[10];
+
+#pragma pack(push,1)
+    struct st { uint8_t a; char b[5]; uint32_t c; };
+    reinterpret_cast<st *> (arr)[0] = {0x12,"123\0",0x78563412};
+    // -exec x/10xb arr
+    // 0x55555557a3e0:	0x12	0x31	0x32	0x33	0x00	0x00	0x12	0x34
+    // 0x55555557a3e8:	0x56	0x78
+    printf("%s", arr);
+    // reinterpret_cast<struct { char b[5];uint8_t a; uint32_t c; } * > (arr)[0] = {"123\0",0x12,0x78563412};
+    // error: types may not be defined in casts
+#pragma pack(pop)
+
+    // auto it_arr = std::ranges
+
+
     return 0;
 }

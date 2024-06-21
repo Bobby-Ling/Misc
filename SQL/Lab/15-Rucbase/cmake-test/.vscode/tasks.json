@@ -6,7 +6,7 @@
 			"label": "CMake: 生成",
 			"command": "build",
 			"targets": [
-				"cmake_mult1"
+				"${command:cmake.launchTargetPath}"
 			],
 			"group": {
 				"kind": "build",
