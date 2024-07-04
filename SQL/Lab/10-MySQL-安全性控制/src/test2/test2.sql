@@ -13,6 +13,6 @@ GRANT SELECT (b_c_id, b_number, b_type) ON bank_card TO client_manager;
 # (4) 授予fund_manager对fund表的select,insert,update权限；
 GRANT SELECT, INSERT, UPDATE ON fund TO fund_manager;
 # (5) 将client_manager的权限授予用户tom和jerry；
-GRANT client_manager TO tom,jerry;
+GRANT client_manager TO tom,jerry /*WITH ADMIN OPTION */;
 # (6) 将fund_manager权限授予用户Cindy.
 GRANT fund_manager TO Cindy;

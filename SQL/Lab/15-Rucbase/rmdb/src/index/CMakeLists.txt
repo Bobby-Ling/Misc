@@ -13,3 +13,5 @@ target_link_libraries(b_plus_tree_delete_test index gtest_main)
 # concurrent insert and delete test
 add_executable(b_plus_tree_concurrent_test b_plus_tree_concurrent_test.cpp)
 target_link_libraries(b_plus_tree_concurrent_test index gtest_main)
+
+add_executable(logger_test test.cpp)

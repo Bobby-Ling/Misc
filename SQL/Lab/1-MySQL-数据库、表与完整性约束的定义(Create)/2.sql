@@ -40,7 +40,7 @@ IF NOT EXISTS为可选短语, 其语义为仅当该表不存在时才创建表;
        | CHECK (表达式)
 ```
 表约束以关键词CONSTRAINT打头, 后跟约束名, 约束名可以省略, 甚至连同关键词CONSTRAINT一同省略. 这时, 系统将自动为约束命名, DBMS取的名字一般可读性不强, 不好记, 会给将来可能的修改约束、删除约束等操作带来麻烦, 总是给约束取一个有意义的名字是个好习惯. 
-表约束可以是主码约束(PRMARY KEY)、唯一性约束(UNIQUE)、外码约束(FOREIGN KEY)、CHECK约束等中的一种. 
+表约束可以是主码约束(PRIMARY KEY)、唯一性约束(UNIQUE)、外码约束(FOREIGN KEY)、CHECK约束等中的一种.
 建议遵守约定俗成的约束命名规则: 
 - 主码约束以"PK_"打头, 后跟表名, 一个表只会有一个主码约束; 
 - 外码约束以"FK_"打头, 后跟表名及列名; 
@@ -93,13 +93,13 @@ CREATE TABLE t_user
 
 CREATE DATABASE TestDb;
 USE TestDb;
-CREATE TABLE t_emp
-(
+CREATE TABLE t_emp (
     id INT COMMENT '员工编号，主码',
     name VARCHAR(32) COMMENT '员工名称',
     deptId INT COMMENT '所在部门标号',
     salary FLOAT COMMENT '工资',
-    CONSTRAINT PK_t_temp PRIMARY KEY (id)
+    CONSTRAINT PK_t_temp PRIMARY KEY (id),
+    CONSTRAINT aa PRIMARY KEY (id),FOREIGN KEY ()
 );
---在表约束定义主码, 并为主码约束命名为PK_t_temp
+-- 在表约束定义主码, 并为主码约束命名为PK_t_temp
 -- DROP DATABASE TestDb;

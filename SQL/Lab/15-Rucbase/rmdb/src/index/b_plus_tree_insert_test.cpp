@@ -111,11 +111,15 @@ class BPlusTreeTests : public ::testing::Test {
             out << "<TR><TD COLSPAN=\"" << leaf->GetSize() << "\">"
                 << "max_size=" << leaf->GetMaxSize() << ",min_size=" << leaf->GetMinSize() << "</TD></TR>\n";
             out << "<TR><TD COLSPAN=\"" << leaf->GetSize() << "\">"
-                << "btree_order=" << leaf->file_hdr->btree_order << ",num_key=" << leaf->page_hdr->num_key
+                // << "btree_order=" << leaf->file_hdr->btree_order
+                << "num_key=" << leaf->page_hdr->num_key
                 << "</TD></TR>\n";
             out << "<TR>";
             for (int i = 0; i < leaf->GetSize(); i++) {
-                out << "<TD>" << leaf->KeyAt(i) << "</TD>\n";
+                out << "<TD>"
+                    // << leaf->KeyAt(i)
+                    << "&lt;" << leaf->KeyAt(i) << "," << leaf->ValueAt(i) << "&gt;"
+                    << "</TD>\n";
             }
             out << "</TR>";
             // Print table end
@@ -146,12 +150,13 @@ class BPlusTreeTests : public ::testing::Test {
             out << "<TR><TD COLSPAN=\"" << inner->GetSize() << "\">"
                 << "max_size=" << inner->GetMaxSize() << ",min_size=" << inner->GetMinSize() << "</TD></TR>\n";
             out << "<TR><TD COLSPAN=\"" << inner->GetSize() << "\">"
-                << "btree_order=" << inner->file_hdr->btree_order << ",num_key=" << inner->page_hdr->num_key
+                // << "btree_order=" << inner->file_hdr->btree_order
+                << "num_key=" << inner->page_hdr->num_key
                 << "</TD></TR>\n";
             out << "<TR>";
             for (int i = 0; i < inner->GetSize(); i++) {
                 out << "<TD PORT=\"p" << inner->ValueAt(i) << "\">";
-                out << inner->KeyAt(i);
+                out << "&lt;" << inner->KeyAt(i) << "," << inner->ValueAt(i) << "&gt;";
                 // if (inner->KeyAt(i) != 0) {  // 原判断条件是if (i > 0)
                 //     out << inner->KeyAt(i);
                 // } else {

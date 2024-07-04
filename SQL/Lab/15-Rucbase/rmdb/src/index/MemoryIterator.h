@@ -22,6 +22,17 @@ public:
     }
 
     /**
+     * @brief 将指针转换至TargetType类型
+     * @tparam TargetType
+     * @return static_cast后的当前指针
+     */
+    template <typename TargetType>
+    TargetType As() const {
+        static_assert(std::is_convertible<pointer_type, TargetType>::value, "Invalid type conversion");
+        return static_cast<TargetType>(begin_ptr + element_size_ * index_);
+    }
+
+    /**
      * @brief 解引用操作符
      */
     dereference_type operator*() const {

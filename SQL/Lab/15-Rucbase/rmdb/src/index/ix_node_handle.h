@@ -1,6 +1,6 @@
 #pragma once
 #include "ix_defs.h"
-
+#include <sstream>
 static const bool binary_search = true;  // 控制在lower_bound/uppper_bound函数中是否使用二分查找
 
 /**
@@ -61,6 +61,7 @@ class IxNodeHandle {
      * @note 返回key index（同时也是rid index），作为slot no
      */
     int lower_bound(const char *target) const;
+    int lower_bound1(const char *target) const;
 
     /**
      * @brief 在当前node中查找第一个>target的key_idx
@@ -69,10 +70,13 @@ class IxNodeHandle {
      * @note 注意此处的范围从1开始
      */
     int upper_bound(const char *target) const;
+    int upper_bound1(const char *target) const;
 
     bool LeafLookup(const char *key, Rid **value);
+    bool LeafLookup1(const char *key, Rid **value);
 
     page_id_t InternalLookup(const char *key);
+    page_id_t InternalLookup1(const char *key);
 
     /**
      * @brief used in leaf node to insert (key,value)
@@ -80,6 +84,7 @@ class IxNodeHandle {
      * @return the size after Insert
      */
     int Insert(const char *key, const Rid &value);
+    int Insert1(const char *key, const Rid &value);
 
     /**
      * @brief used in leaf node to remove (key,value) which contains the key
@@ -87,6 +92,7 @@ class IxNodeHandle {
      * @return the size after Remove
      */
     int Remove(const char *key);
+    int Remove1(const char *key);
 
     /**
      * @brief 将key的前n位插入到原来keys中的pos位置；将rid的前n位插入到原来rids中的pos位置
@@ -97,10 +103,12 @@ class IxNodeHandle {
      *                      key           key_slot
      */
     void insert_pairs(int pos, const char *key, const Rid *rid, int n);
+    void insert_pairs1(int pos, const char *key, const Rid *rid, int n);
 
     void insert_pair(int pos, const char *key, const Rid &rid);
 
     void erase_pair(int pos);
+    void erase_pair1(int pos);
 
     /**
      * @brief  此函数由parent调用，寻找child
@@ -159,4 +167,27 @@ class IxNodeHandle {
      * @return the last child
      */
     page_id_t RemoveAndReturnOnlyChild();
+
+    std::string ToString()const {
+        auto unsafe_this = const_cast<IxNodeHandle *>(this);
+        std::stringstream buf;
+        buf << "PageNo:" << unsafe_this->GetPageNo() << " ";
+        buf << "num_keys:" << unsafe_this->GetSize() << " ";
+        /*
+        buf << "K:";
+                for (int i = 0; i < unsafe_this->GetSize(); i++) {
+            buf << unsafe_this->KeyAt(i) << " ";
+        }
+        buf << "V: ";
+        for (int i = 0; i < unsafe_this->GetSize(); i++) {
+            buf << unsafe_this->ValueAt(i) << " ";
+        }
+        */
+        buf << "<K,V>: ";
+        for (int i = 0; i < unsafe_this->GetSize(); i++) {
+            buf << "<" << unsafe_this->KeyAt(i) << ","
+                << unsafe_this->ValueAt(i) << "> ";
+        }
+        return buf.str();
+    }
 };

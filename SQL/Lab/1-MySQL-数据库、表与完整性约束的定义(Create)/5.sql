@@ -3,7 +3,7 @@
 
 ## DEFAULT约束的语法
 
-efault约束只能定义为列一级约束, 即在需要指定默认值的列之后用关键字DEFAULT申明默认值, 其语法为: 
+default约束只能定义为列一级约束, 即在需要指定默认值的列之后用关键字DEFAULT申明默认值, 其语法为:
 ```
 col_name data_type [DEFAULT {literal | (expr)} ]
 ```
@@ -32,8 +32,7 @@ create table `order`(
 CREATE DATABASE IF NOT EXISTS MyDb;
 USE MyDb;
 
-CREATE TABLE hr
-(
+CREATE TABLE hr (
     id CHAR(10) PRIMARY KEY COMMENT '工号,主码',
     name VARCHAR(32) NOT NULL COMMENT '姓名,不允许为空值',
     mz CHAR(16) DEFAULT '汉族' COMMENT '民族, 缺省值为“汉族”'

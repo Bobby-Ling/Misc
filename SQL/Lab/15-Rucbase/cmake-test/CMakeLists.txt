@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.0.0)
 project(cmake_mult VERSION 0.1.0 LANGUAGES C CXX)
 
 # add_executable(cmake_mult1 main.cpp)
-add_executable(begin_test begin_test.cpp)
+# add_executable(begin_test begin_test.cpp)
+add_executable(allocator allocator.cpp)
 
 # # Minimum CMake version required to build this project
 # cmake_minimum_required(VERSION 3.10)
