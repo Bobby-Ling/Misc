@@ -376,6 +376,9 @@ void IxIndexHandle::InsertIntoParent(IxNodeHandle *old_node, const char *key, Ix
         file_hdr_.root_page = newRootNode->GetPageNo();
         // 添加指向old_node的KV
         newRootNode->Insert(old_node->get_key(0), Rid{.page_no = old_node->GetPageNo(),-1});
+        // 更新old_node和new_node的parent
+        old_node->SetParentPageNo(newRootNode->GetPageNo());
+        new_node->SetParentPageNo(newRootNode->GetPageNo());
         // 接下来就可以照常插入了
         buffer_pool_manager_->UnpinPage(newRootNode->GetPageId(), true);
     }
