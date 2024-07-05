@@ -19,10 +19,11 @@ using namespace std;
 #endif
 
 namespace logger {
-    enum class Level { Disabled, Info, Debug, Warning, Error, Fatal };
+    enum class Level { Disabled, Verbose, Info, Debug, Warning, Error, Fatal };
     static const map<Level, const char *> LevelStr =
     {
         { Level::Disabled, "Disabled" },
+        { Level::Verbose, "Verbose   " },
         { Level::Info, "Info    " },
         { Level::Debug, "Debug   " },
         { Level::Warning, "Warning " },

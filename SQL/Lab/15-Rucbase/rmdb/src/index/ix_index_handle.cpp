@@ -97,6 +97,7 @@ bool IxIndexHandle::insert_entry(const char *key, const Rid &value, Transaction 
     // 3. 如果结点已满，分裂结点，并把新结点的相关信息插入父节点
     // 提示：记得unpin page；若当前叶子节点是最右叶子节点，则需要更新file_hdr_.last_leaf；记得处理并发的上锁
     std::scoped_lock lock{root_latch_};
+    Log(Level::Info) << "IxIndexHandle::insert_entry";
     /*
     ## 插入
 
@@ -204,7 +205,8 @@ IxNodeHandle *IxIndexHandle::Split(IxNodeHandle *node) {
     // 3. 如果新的右兄弟结点不是叶子结点，更新该结点的所有孩子结点的父节点信息(使用IxIndexHandle::maintain_child())
 
     // 这里是被加锁了的函数(insert_entry)内部调用的函数, 不能加锁
-
+    Log(Level::Info) << "IxIndexHandle::Split";
+    Log(Level::Debug) << "Split前: " << "node: " << node->ToString();
     /*
     (此时数目N为M(叶子);M+1(内部))
     1. 分裂:
@@ -238,7 +240,7 @@ IxNodeHandle *IxIndexHandle::Split(IxNodeHandle *node) {
     // 1. 将原结点的键值对平均分配，右半部分分裂为新的右兄弟结点
     if (node->IsLeafPage()) {
         // [0,M-1] -> [0,M/2-1],[M/2,M-1];[M/2]
-        rightNewNode->insert_pairs(0, node->get_key(M / 2), node->get_rid(M / 2), M / 2);
+        rightNewNode->insert_pairs(0, node->get_key(M / 2), node->get_rid(M / 2), M - M / 2);
         node->SetSize(M / 2);
         rightNewNode->SetSize(M - M / 2);
 
@@ -247,15 +249,16 @@ IxNodeHandle *IxIndexHandle::Split(IxNodeHandle *node) {
     }
     else {
         // [0,M] -> [0,M/2],[M/2+1,M];[M/2+1]
-        rightNewNode->insert_pairs(0, node->get_key(M / 2 + 1), node->get_rid(M / 2 + 1), M / 2 + 1);
+        rightNewNode->insert_pairs(0, node->get_key(M / 2 + 1), node->get_rid(M / 2 + 1), M - M / 2);
         node->SetSize(M / 2 + 1);
         rightNewNode->SetSize(M - M / 2);
 
         // 3. 如果新的右兄弟结点不是叶子结点，更新该结点的所有孩子结点的父节点信息(使用IxIndexHandle::maintain_child())
         for (int i = 0; i < rightNewNode->GetSize(); i++) {
-            maintain_child(rightNewNode, 1);
+            maintain_child(rightNewNode, i);
         }
     }
+    Log(Level::Debug) << "Split后: " << "node: " << node->ToString() << " rightNewNode: " << rightNewNode->ToString();
     return rightNewNode;
 }
 IxNodeHandle *IxIndexHandle::Split1(IxNodeHandle *node) {
@@ -329,7 +332,7 @@ void IxIndexHandle::InsertIntoParent(IxNodeHandle *old_node, const char *key, Ix
     // 提示：记得unpin page
 
     // 这里是被加锁了的函数(insert_entry)内部调用的函数, 不能加锁
-
+    Log(Level::Info) << "IxIndexHandle::InsertIntoParent";
     /*
     1. 检查old_node是否为root
         1. 是, 则新分配一个root作为父节点
@@ -343,6 +346,24 @@ void IxIndexHandle::InsertIntoParent(IxNodeHandle *old_node, const char *key, Ix
                 4:<1,2> <2,3>
                  /      /    \
             2:<1,0>   3:<2,0> <3,0>
+
+
+        e.g.
+            4:<1,2> <2,3> <3,5>
+            /         |         \
+        2:<1,0>     3:<2,0>     5<3,0> <4,0>
+
+            4:<1,2> <2,3> <3,5>
+            /         |         \
+        2:<1,0>     3:<2,0>     5<3,0> <4,0> <5,0>
+
+            4:<1,2> <2,3> <3,5> <4,6>
+            /         |         \          \
+        2:<1,0>     3:<2,0>     5<3,0>      6:<4,0> <5,0>
+
+            4:<1,2> <2,3>      7:<3,5> <4,6>
+            /         |         /          \
+        2:<1,0>     3:<2,0>     5<3,0>      6:<4,0> <5,0>
         ```
     3. 检查插入后是否满足数目条件: N<=M(内部)
         (N为当前KV数目)
@@ -386,7 +407,7 @@ void IxIndexHandle::InsertIntoParent(IxNodeHandle *old_node, const char *key, Ix
 
     // 2. 找到父节点, 并插入
     // 这里注意, IxNodeHandle只是一个句柄, 一个节点可以有多个句柄, 是用来方便管理的; 实际上节点之间的"链接"是通过page_no实现的
-    IxNodeHandle *parentNode = FetchNode(old_node->GetPageNo());
+    IxNodeHandle *parentNode = FetchNode(old_node->GetParentPageNo());
     parentNode->Insert(key, Rid{
         .page_no = new_node->GetPageNo(),
         .slot_no = -1

@@ -178,8 +178,12 @@ class IxNodeHandle {
         auto unsafe_this = const_cast<IxNodeHandle *>(this);
         std::stringstream buf;
         buf << "PageNo:" << unsafe_this->GetPageNo() << " ";
+        buf << "Parent:" << unsafe_this->GetParentPageNo() << " ";
         buf << (page_hdr->is_leaf ? "叶子" : "内部") << " ";
-        buf << "num_keys:" << unsafe_this->GetSize() << " ";
+        if (page_hdr->is_leaf) {
+            buf << unsafe_this->GetPrevLeaf() << "<= =>";
+            buf << unsafe_this->GetNextLeaf() << " ";
+        }
         /*
         buf << "K:";
                 for (int i = 0; i < unsafe_this->GetSize(); i++) {
@@ -195,7 +199,7 @@ class IxNodeHandle {
             buf << "<" << unsafe_this->KeyAt(i) << ","
                 << unsafe_this->ValueAt(i) << "> ";
             if (i >= 1 && unsafe_this->KeyAt(i - 1) > unsafe_this->KeyAt(i)) {
-                Log(Level::Info) << "非升序排列" << unsafe_this->KeyAt(i - 1) << ">" << unsafe_this->KeyAt(i);
+                Log(Level::Disabled) << "非升序排列" << unsafe_this->KeyAt(i - 1) << ">" << unsafe_this->KeyAt(i);
             }
         }
         // auto IxNodeHandleKeyIterator = MemoryIterator<>(keys, file_hdr->col_len, page_hdr->num_key);

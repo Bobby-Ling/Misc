@@ -109,7 +109,7 @@ class BPlusTreeTests : public ::testing::Test {
             // Print data
             out << "<TR><TD COLSPAN=\"" << leaf->GetSize() << "\">page_no=" << leaf->GetPageNo() << "</TD></TR>\n";
             out << "<TR><TD COLSPAN=\"" << leaf->GetSize() << "\">"
-                << "max_size=" << leaf->GetMaxSize() << ",min_size=" << leaf->GetMinSize() << "</TD></TR>\n";
+                << leaf->GetPrevLeaf() << " " << leaf->GetParentPageNo() << " " << leaf->GetNextLeaf() << "</TD></TR>\n";
             out << "<TR><TD COLSPAN=\"" << leaf->GetSize() << "\">"
                 // << "btree_order=" << leaf->file_hdr->btree_order
                 << "num_key=" << leaf->page_hdr->num_key
@@ -147,8 +147,8 @@ class BPlusTreeTests : public ::testing::Test {
             out << "label=<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\">\n";
             // Print data
             out << "<TR><TD COLSPAN=\"" << inner->GetSize() << "\">page_no=" << inner->GetPageNo() << "</TD></TR>\n";
-            out << "<TR><TD COLSPAN=\"" << inner->GetSize() << "\">"
-                << "max_size=" << inner->GetMaxSize() << ",min_size=" << inner->GetMinSize() << "</TD></TR>\n";
+            // out << "<TR><TD COLSPAN=\"" << inner->GetSize() << "\">"
+                // << inner->GetPrevLeaf() << " " << inner->GetParentPageNo() << " " << inner->GetNextLeaf() << "</TD></TR>\n";
             out << "<TR><TD COLSPAN=\"" << inner->GetSize() << "\">"
                 // << "btree_order=" << inner->file_hdr->btree_order
                 << "num_key=" << inner->page_hdr->num_key

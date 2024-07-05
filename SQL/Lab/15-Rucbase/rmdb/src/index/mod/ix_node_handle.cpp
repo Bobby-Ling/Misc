@@ -31,7 +31,7 @@ int IxNodeHandle::lower_bound(const char *target) const {
     // 提示: 可以采用多种查找方式，如顺序遍历、二分查找等；使用ix_compare()函数进行比较
 
     // 获得key调用get_key(); 值value为Rid类型, 对于内部结点, 其Rid中的page_no表示指向的孩子结点的页面编号. 
-    Log(Level::Info) << "IxNodeHandle::lower_bound";
+    Log(Level::Verbose) << "IxNodeHandle::lower_bound";
     // return lower_bound1(target);
 
     auto IxNodeHandleKeyIterator = MemoryIterator<>(keys, file_hdr->col_len, page_hdr->num_key);
@@ -42,8 +42,9 @@ int IxNodeHandle::lower_bound(const char *target) const {
         }
     );
     int ans = std::distance(IxNodeHandleKeyIterator.begin(), result);
-    Log(Level::Debug) << ToString() << "ans:" << ans << " target:" << *(int *)target;
-    Log(Level::Error, ans != lower_bound1(target)) << "lower_bound():" << ans << " lower_bound1():" << lower_bound1(target);
+    int idx = lower_bound1(target);
+    Log(Level::Verbose) << ToString() << "ans:" << ans << " target:" << *(int *)target;
+    Log(Level::Error, ans != idx) << "lower_bound():" << ans << " lower_bound1():" << idx << " " << ToString();
     return ans;
 }
 int IxNodeHandle::lower_bound1(const char *target) const {
@@ -78,7 +79,7 @@ int IxNodeHandle::lower_bound1(const char *target) const {
         if (idx == -1)
             idx = num_key_now;
     }
-    Log(Level::Debug) << ToString() << "idx:" << idx << " target:" << *(int *)target;
+    // Log(Level::Debug) << ToString() << "idx:" << idx << " target:" << *(int *)target;
     return idx;
 }
 /**
@@ -93,7 +94,7 @@ int IxNodeHandle::upper_bound(const char *target) const {
     // 查找当前节点中第一个大于target的key，并返回key的位置给上层
     // 提示: 可以采用多种查找方式：顺序遍历、二分查找等；使用ix_compare()函数进行比较
 
-    Log(Level::Info) << "IxNodeHandle::upper_bound";
+    Log(Level::Verbose) << "IxNodeHandle::upper_bound";
     // return upper_bound1(target);
 
     auto IxNodeHandleKeyIterator = MemoryIterator<>(keys, file_hdr->col_len, page_hdr->num_key);
@@ -104,7 +105,7 @@ int IxNodeHandle::upper_bound(const char *target) const {
         }
     );
     int ans = std::distance(IxNodeHandleKeyIterator.begin(), result);
-    Log(Level::Debug) << ToString() << "ans:" << ans << " target:" << *(int *)target;
+    Log(Level::Verbose) << ToString() << "ans:" << ans << " target:" << *(int *)target;
     Log(Level::Error, ans != upper_bound1(target)) << "upper_bound():" << ans << " upper_bound1():" << upper_bound1(target);
     return ans;
 }
@@ -155,7 +156,7 @@ bool IxNodeHandle::LeafLookup(const char *key, Rid **value) {
     // 3. 如果存在，获取key对应的Rid，并赋值给传出参数value
     // 提示：可以调用lower_bound()和get_rid()函数。
 
-    Log(Level::Info) << "IxNodeHandle::LeafLookup";
+    Log(Level::Verbose) << "IxNodeHandle::LeafLookup";
     // return LeafLookup1(key, value);
 
     // key是唯一的; 对于叶子节点, 满足key>=keys[0], 所以index==0就代表key==keys[0](或未找到)
@@ -173,7 +174,7 @@ bool IxNodeHandle::LeafLookup(const char *key, Rid **value) {
     // 找到了当前的index
     // 实际上就是根据同样的index对Rid数组进行索引
     *value = get_rid(index);
-    Log(Level::Debug) << ToString() << "key: " << *(int *)key << " value:" << (*value)->page_no;
+    Log(Level::Verbose) << ToString() << "key: " << *(int *)key << " value:" << (*value)->page_no;
     return true;
 }
 bool IxNodeHandle::LeafLookup1(const char *key, Rid **value) {
@@ -204,14 +205,14 @@ page_id_t IxNodeHandle::InternalLookup(const char *key) {
     // 2. 获取该孩子节点（子树）所在页面的编号
     // 3. 返回页面编号
 
-    Log(Level::Info) << "IxNodeHandle::InternalLookup";
+    Log(Level::Verbose) << "IxNodeHandle::InternalLookup";
     // return InternalLookup1(key);
 
     // 值value为Rid类型, 对于内部结点, 其Rid中的page_no表示指向的孩子结点的页面编号.
     // 而内部结点每个key右边的value指向的孩子结点中的键均大于等于该key, 每个key左边的value指向的孩子结点中的键均小于该key.
     // index:[0,page_hdr->num_key-1]
     int index = lower_bound(key);
-    Log(Level::Debug) << ToString() << "key: " << *(int *)key << " value:" << ValueAt(index);
+    Log(Level::Verbose) << ToString() << "key: " << *(int *)key << " value:" << ValueAt(index);
     if (index == page_hdr->num_key) {
         // 没找到表示在最右子树, 则返回rids[index-1].page_no
         return ValueAt(index - 1);
@@ -278,8 +279,8 @@ void IxNodeHandle::insert_pairs(int pos, const char *key, const Rid *rid, int n)
     // 3. 通过rid获取n个连续键值对的rid值，并把n个rid值插入到pos位置
     // 4. 更新当前节点的键数量
 
-    Log(Level::Info) << "IxNodeHandle::insert_pairs";
-    Log(Level::Debug) << ToString() << "insert_pairs插入前";
+    Log(Level::Verbose) << "IxNodeHandle::insert_pairs";
+    Log(Level::Disabled) << ToString() << "insert_pairs插入前";
     // insert_pairs1(pos, key, rid, n);
     // Log(Level::Disabled) << ToString() << "insert_pairs插入后";
     // return;
@@ -293,7 +294,7 @@ void IxNodeHandle::insert_pairs(int pos, const char *key, const Rid *rid, int n)
         Log(Level::Error) << "IxNodeHandle::insert_pairs 插入不合法";
         return;
     }
-    Log(Level::Debug) << ToString() << "准备insert_pairs插入 pos: " << pos << " n:" << n
+    Log(Level::Verbose) << ToString() << "准备insert_pairs插入 pos: " << pos << " n:" << n
         << " key: " << *(int *)key << " value:" << rid[0].page_no;
     // [pos+n,num_key+n) <- [pos,num_key) 
     memmove(get_key(pos + n), get_key(pos), n * file_hdr->col_len);
@@ -307,7 +308,7 @@ void IxNodeHandle::insert_pairs(int pos, const char *key, const Rid *rid, int n)
     // memcpy(keys + pos * file_hdr->col_len, key, n * file_hdr->col_len);
     // memcpy(rids + pos, rid, sizeof(Rid) * n);
     page_hdr->num_key += n;
-    Log(Level::Debug) << ToString() << "insert_pairs插入后";
+    Log(Level::Verbose) << ToString() << "insert_pairs插入后";
 }
 void IxNodeHandle::insert_pairs1(int pos, const char *key, const Rid *rid, int n) {
     // Todo:
@@ -380,8 +381,8 @@ int IxNodeHandle::Insert(const char *key, const Rid &value) {
     // 3. 如果key不重复则插入键值对
     // 4. 返回完成插入操作之后的键值对数量
 
-    Log(Level::Info) << "IxNodeHandle::Insert";
-    Log(Level::Debug) << ToString() << "Insert插入前 key: " << *(int *)key << " value:" << value.page_no;
+    Log(Level::Verbose) << "IxNodeHandle::Insert";
+    Log(Level::Verbose) << ToString() << "Insert插入前 key: " << *(int *)key << " value:" << value.page_no;
     // return Insert1(key, value);
 
     // e.g.  {3,6} <- 0~2 : index=0, pos=0
@@ -391,7 +392,7 @@ int IxNodeHandle::Insert(const char *key, const Rid &value) {
     //       {3,6} <- 7~  : index=2, pos=2, index == page_hdr->num_key
     // 插入时要保证顺序
     int index = lower_bound(key);
-    if (ix_compare(get_key(index), key, file_hdr->col_type, file_hdr->col_len) == 0) {
+    if (index < GetSize() && ix_compare(get_key(index), key, file_hdr->col_type, file_hdr->col_len) == 0) {
         // equal
         Log(Level::Debug) << "key已存在";
         return page_hdr->num_key;
@@ -399,7 +400,7 @@ int IxNodeHandle::Insert(const char *key, const Rid &value) {
     // 现在不存在重复的了, 直接插入
     // XXX 是否越界和num_key的更新在insert_pairs处理
     insert_pair(index, key, value);
-    Log(Level::Debug) << ToString() << "Insert插入后 key: " << *(int *)key << " value:" << value.page_no;
+    Log(Level::Verbose) << ToString() << "Insert插入后 key: " << *(int *)key << " value:" << value.page_no;
     return page_hdr->num_key;
 }
 int IxNodeHandle::Insert1(const char *key, const Rid &value) {
