@@ -14,6 +14,20 @@
         "*.sql": "sql",
         "*.qml": "qml",
         "CMakeLists.txt": "cmake",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "*.tcc": "cpp",
+        "algorithm": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "fstream": "cpp",
+        "iosfwd": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
+        "numeric": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp",
+        "regex": "cpp",
+        "iomanip": "cpp"
     }
 }

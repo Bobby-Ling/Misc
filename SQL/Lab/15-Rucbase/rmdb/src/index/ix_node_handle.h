@@ -1,6 +1,12 @@
 #pragma once
 #include "ix_defs.h"
 #include <sstream>
+
+#include <iterator>  // fro std::begin and std::end
+#include "MemoryIterator.h" // iterator for IxNodeHandle
+#include "logger.h"
+using namespace logger;
+
 static const bool binary_search = true;  // 控制在lower_bound/uppper_bound函数中是否使用二分查找
 
 /**
@@ -172,6 +178,7 @@ class IxNodeHandle {
         auto unsafe_this = const_cast<IxNodeHandle *>(this);
         std::stringstream buf;
         buf << "PageNo:" << unsafe_this->GetPageNo() << " ";
+        buf << (page_hdr->is_leaf ? "叶子" : "内部") << " ";
         buf << "num_keys:" << unsafe_this->GetSize() << " ";
         /*
         buf << "K:";
@@ -187,7 +194,14 @@ class IxNodeHandle {
         for (int i = 0; i < unsafe_this->GetSize(); i++) {
             buf << "<" << unsafe_this->KeyAt(i) << ","
                 << unsafe_this->ValueAt(i) << "> ";
+            if (i >= 1 && unsafe_this->KeyAt(i - 1) > unsafe_this->KeyAt(i)) {
+                Log(Level::Info) << "非升序排列" << unsafe_this->KeyAt(i - 1) << ">" << unsafe_this->KeyAt(i);
+            }
         }
+        // auto IxNodeHandleKeyIterator = MemoryIterator<>(keys, file_hdr->col_len, page_hdr->num_key);
+        // for (auto it = IxNodeHandleKeyIterator.begin();it < IxNodeHandleKeyIterator.end();it++) {
+        //     buf << " " << *it.As<int *>() << ",";
+        // }
         return buf.str();
     }
 };

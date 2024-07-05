@@ -25,27 +25,37 @@ class IxIndexHandle {
 
     // for search
     bool GetValue(const char *key, std::vector<Rid> *result, Transaction *transaction);
+    bool GetValue1(const char *key, std::vector<Rid> *result, Transaction *transaction);
 
     IxNodeHandle *FindLeafPage(const char *key, Operation operation, Transaction *transaction);
 
     // for insert
     bool insert_entry(const char *key, const Rid &value, Transaction *transaction);
+    bool insert_entry1(const char *key, const Rid &value, Transaction *transaction);
 
     IxNodeHandle *Split(IxNodeHandle *node);
+    IxNodeHandle *Split1(IxNodeHandle *node);
 
     void InsertIntoParent(IxNodeHandle *old_node, const char *key, IxNodeHandle *new_node, Transaction *transaction);
+    void InsertIntoParent1(IxNodeHandle *old_node, const char *key, IxNodeHandle *new_node, Transaction *transaction);
 
     // for delete
     bool delete_entry(const char *key, Transaction *transaction);
+    bool delete_entry1(const char *key, Transaction *transaction);
 
     bool CoalesceOrRedistribute(IxNodeHandle *node, Transaction *transaction = nullptr);
+    bool CoalesceOrRedistribute1(IxNodeHandle *node, Transaction *transaction = nullptr);
 
     bool AdjustRoot(IxNodeHandle *old_root_node);
+    bool AdjustRoot1(IxNodeHandle *old_root_node);
 
     void Redistribute(IxNodeHandle *neighbor_node, IxNodeHandle *node, IxNodeHandle *parent, int index);
+    void Redistribute1(IxNodeHandle *neighbor_node, IxNodeHandle *node, IxNodeHandle *parent, int index);
 
     bool Coalesce(IxNodeHandle **neighbor_node, IxNodeHandle **node, IxNodeHandle **parent, int index,
                   Transaction *transaction);
+    bool Coalesce1(IxNodeHandle **neighbor_node, IxNodeHandle **node, IxNodeHandle **parent, int index,
+    Transaction *transaction);
 
     // 辅助函数，lab3执行层将使用
     Iid lower_bound(const char *key);

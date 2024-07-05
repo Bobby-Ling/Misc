@@ -28,8 +28,8 @@ public:
      */
     template <typename TargetType>
     TargetType As() const {
-        static_assert(std::is_convertible<pointer_type, TargetType>::value, "Invalid type conversion");
-        return static_cast<TargetType>(begin_ptr + element_size_ * index_);
+        // static_assert(std::is_convertible<pointer_type, TargetType>::value, "Invalid type conversion");
+        return reinterpret_cast<TargetType>(begin_ptr + element_size_ * index_);
     }
 
     /**
