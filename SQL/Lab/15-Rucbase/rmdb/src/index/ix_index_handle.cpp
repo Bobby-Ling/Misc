@@ -56,8 +56,16 @@ bool IxIndexHandle::GetValue(const char *key, std::vector<Rid> *result, Transact
     // 2. 在叶子节点中查找目标key值的位置，并读取key对应的rid
     // 3. 把rid存入result参数中
     // 提示：使用完buffer_pool提供的page之后，记得unpin page；记得处理并发的上锁
-
-    return GetValue1(key, result, transaction);
+    std::scoped_lock lock{root_latch_};
+    IxNodeHandle *targetLeaf = FindLeafPage(key, Operation::FIND, transaction);
+    Rid *rid = new Rid;
+    bool isFind = targetLeaf->LeafLookup(key, &rid);
+    if (isFind) {
+        result->push_back(*rid);
+    }
+    // 使用完毕
+    buffer_pool_manager_->UnpinPage(targetLeaf->GetPageId(), false);
+    return isFind;
 }
 bool IxIndexHandle::GetValue1(const char *key, std::vector<Rid> *result, Transaction *transaction) {
     // Todo:
@@ -88,8 +96,65 @@ bool IxIndexHandle::insert_entry(const char *key, const Rid &value, Transaction 
     // 2. 在该叶子节点中插入键值对
     // 3. 如果结点已满，分裂结点，并把新结点的相关信息插入父节点
     // 提示：记得unpin page；若当前叶子节点是最右叶子节点，则需要更新file_hdr_.last_leaf；记得处理并发的上锁
+    std::scoped_lock lock{root_latch_};
+    /*
+    ## 插入
 
-    return insert_entry1(key, value, transaction);
+    (假定原树不存在此节点)
+    1. 找到叶节点, 插入
+    2. 检查插入后是否满足数目条件: N<=M-1(叶子);N<=M(内部)
+        (N为当前KV数目)
+        1. 满足: 结束
+        2. 不满足: (此时数目N为M(叶子);M+1(内部))
+            1. 分裂:
+                - 叶子节点: [0,M/2-1],[M/2,M-1];[M/2]
+                    ```cpp
+                    e.g. M=3, {0,1,2}->{0},{1,2};{1}
+                         M=4, {0,1,2,3}->{0,1},{2,3};{2}
+                    ```
+                - 内部节点: [0,M/2],[M/2+1,M];[M/2+1]
+                    ```cpp
+                    e.g. M=3, {0,1,2,3}->{0,1},{2,3};{2}
+                         M=4, {0,1,2,3,4}->{0,1,2},{3,4};{3}
+                    如果没有K0的话, 就和叶子节点一样了: {0,1,2,3}->{1},{2,3};{2}
+                    ```
+            2. 插入并检查父节点是否满足数目条件
+                1. 满足: 结束
+                2. 不满足: 转2.2.1
+
+    这里只有Leaf的情况
+    */
+
+    // 1. 找到叶节点, 插入
+    IxNodeHandle *targetLeaf = FindLeafPage(key, Operation::FIND, transaction);
+    Log(Level::Error, !targetLeaf->IsLeafPage()) << "FindLeafPage返回非LeafPage";
+    // 由Insert保证插入的pos和去重
+    targetLeaf->Insert(key, value);
+
+    // 2. 检查插入后是否满足数目条件: N<=M-1(叶子)
+    int N = targetLeaf->GetSize(); // 插入后KV数
+    int M = targetLeaf->GetMaxSize() - 1; // B+树阶数
+    if (N > (M - 1)) {
+        // 2.2. 不满足: (此时数目N为M(叶子))
+        // 2.2.1 分裂: - 叶子节点: [0,M/2-1],[M/2,M-1];[M/2]  
+        // 分裂为targetLeaf和rightNewNode
+        IxNodeHandle *rightNewNode = Split(targetLeaf); // 要在外面Unpin rightNewNode和targetLeaf
+        // 2.2.2. 插入rightNewNode的keys[0]并检查父节点是否满足数目条件
+        // XXX InsertIntoParent包含递归更新, 且会Unpin除了将rightNewNode和targetLeaf外的页面(???)
+        InsertIntoParent(targetLeaf, rightNewNode->get_key(0), rightNewNode, transaction);
+        // 若当前叶子节点是最右叶子节点, 则需要更新file_hdr_.last_leaf
+        // file_hdr_为当前index的文件头, 包含页面个数/root页面id等信息
+        if (file_hdr_.last_leaf == targetLeaf->GetPageNo()) {
+            file_hdr_.last_leaf = rightNewNode->GetPageNo();
+        }
+        // 不再使用rightNewNode, 且已经对rightNewNode进行了修改
+        buffer_pool_manager_->UnpinPage(rightNewNode->GetPageId(), true);
+    }
+    // 2.1/2.2.2.1 满足: 结束
+    // 不再使用targetLeaf, 且已经对targetLeaf进行了修改
+    buffer_pool_manager_->UnpinPage(targetLeaf->GetPageId(), true);
+    // XXX 返回值待考虑: 如果已经存在?
+    return true;
 }
 bool IxIndexHandle::insert_entry1(const char *key, const Rid &value, Transaction *transaction) {
     // Todo:
@@ -138,7 +203,60 @@ IxNodeHandle *IxIndexHandle::Split(IxNodeHandle *node) {
     //    为新节点分配键值对，更新旧节点的键值对数记录
     // 3. 如果新的右兄弟结点不是叶子结点，更新该结点的所有孩子结点的父节点信息(使用IxIndexHandle::maintain_child())
 
-    return Split1(node);
+    // 这里是被加锁了的函数(insert_entry)内部调用的函数, 不能加锁
+
+    /*
+    (此时数目N为M(叶子);M+1(内部))
+    1. 分裂:
+        - 叶子节点: [0,M/2-1],[M/2,M-1];[M/2]
+            ```cpp
+            e.g. M=3, {0,1,2}->{0},{1,2};{1}
+                 M=4, {0,1,2,3}->{0,1},{2,3};{2}
+            ```
+        - 内部节点: [0,M/2],[M/2+1,M];[M/2+1]
+            ```cpp
+            e.g. M=3, {0,1,2,3}->{0,1},{2,3};{2}
+                 M=4, {0,1,2,3,4}->{0,1,2},{3,4};{3}
+            如果没有K0的话, 就和叶子节点一样了: {0,1,2,3}->{1},{2,3};{2}
+            ```
+    */
+    // int N = node->GetSize(); // 插入后KV数
+    int M = node->GetMaxSize() - 1; // B+树阶数
+
+    IxNodeHandle *rightNewNode = CreateNode();
+    // 需要初始化新节点的page_hdr内容
+    // 此时, rightNewNode->file_hdr为当前index的file_hdr_
+    // rightNewNode->page_hdr指向为清零过后的page.data_[4096], 因此先填充
+    *(rightNewNode->page_hdr) = IxPageHdr{
+        .next_free_page_no = IX_NO_PAGE,
+        .parent = node->GetParentPageNo(),
+        .num_key = 0,
+        .is_leaf = node->IsLeafPage(),
+        .prev_leaf = node->IsLeafPage() ? node->GetPageNo() : IX_NO_PAGE,
+        .next_leaf = node->IsLeafPage() ? node->GetNextLeaf() : IX_NO_PAGE
+    };
+    // 1. 将原结点的键值对平均分配，右半部分分裂为新的右兄弟结点
+    if (node->IsLeafPage()) {
+        // [0,M-1] -> [0,M/2-1],[M/2,M-1];[M/2]
+        rightNewNode->insert_pairs(0, node->get_key(M / 2), node->get_rid(M / 2), M / 2);
+        node->SetSize(M / 2);
+        rightNewNode->SetSize(M - M / 2);
+
+        // 2. 如果新的右兄弟结点是叶子结点，更新新旧节点的prev_leaf和next_leaf指针
+        node->SetNextLeaf(rightNewNode->GetPageNo());
+    }
+    else {
+        // [0,M] -> [0,M/2],[M/2+1,M];[M/2+1]
+        rightNewNode->insert_pairs(0, node->get_key(M / 2 + 1), node->get_rid(M / 2 + 1), M / 2 + 1);
+        node->SetSize(M / 2 + 1);
+        rightNewNode->SetSize(M - M / 2);
+
+        // 3. 如果新的右兄弟结点不是叶子结点，更新该结点的所有孩子结点的父节点信息(使用IxIndexHandle::maintain_child())
+        for (int i = 0; i < rightNewNode->GetSize(); i++) {
+            maintain_child(rightNewNode, 1);
+        }
+    }
+    return rightNewNode;
 }
 IxNodeHandle *IxIndexHandle::Split1(IxNodeHandle *node) {
     // Todo:
@@ -210,7 +328,85 @@ void IxIndexHandle::InsertIntoParent(IxNodeHandle *old_node, const char *key, Ix
     // 4. 如果父亲结点仍需要继续分裂，则进行递归插入
     // 提示：记得unpin page
 
-    return InsertIntoParent1(old_node, key, new_node, transaction);
+    // 这里是被加锁了的函数(insert_entry)内部调用的函数, 不能加锁
+
+    /*
+    1. 检查old_node是否为root
+        1. 是, 则新分配一个root作为父节点
+        2. 否, 继续
+    2. 找到父节点, 并插入
+        ```
+        e.g. page_no:<key,value>, value==rid.page_no
+            原始:
+            2:<1,0> <2,0>
+            插入<3,0>:
+                4:<1,2> <2,3>
+                 /      /    \
+            2:<1,0>   3:<2,0> <3,0>
+        ```
+    3. 检查插入后是否满足数目条件: N<=M(内部)
+        (N为当前KV数目)
+        1. 满足: 结束
+        2. 不满足: (此时数目M+1(内部))
+            1. 分裂:
+                - 内部节点: old_node': [0,M/2],new_node': [M/2+1,M];key': [M/2+1]
+                    ```cpp
+                    e.g. M=3, {0,1,2,3}->{0,1},{2,3};{2}
+                         M=4, {0,1,2,3,4}->{0,1,2},{3,4};{3}
+                    ```
+            2. [递归]转1
+    */
+
+    // 1. 检查old_node是否为root
+    if (file_hdr_.root_page == old_node->GetPageNo()) {
+        // 1.1. 是, 则新分配一个root作为父节点
+        IxNodeHandle *newRootNode = CreateNode();
+        // 需要初始化新节点的page_hdr内容
+        // 此时, newRootNode->file_hdr为当前index的file_hdr_
+        // newRootNode->page_hdr指向为清零过后的page.data_[4096], 因此先填充
+        *(newRootNode->page_hdr) = IxPageHdr{
+            .next_free_page_no = IX_NO_PAGE,
+            .parent = IX_NO_PAGE,
+            .num_key = 0,
+            .is_leaf = false,
+            .prev_leaf = IX_NO_PAGE,
+            .next_leaf = IX_NO_PAGE
+        };
+        // 更新root_page; 这里file_hdr_为共享资源(每个Node都有一个指向file_hdr_的指针)
+        file_hdr_.root_page = newRootNode->GetPageNo();
+        // 添加指向old_node的KV
+        newRootNode->Insert(old_node->get_key(0), Rid{.page_no = old_node->GetPageNo(),-1});
+        // 更新old_node和new_node的parent
+        old_node->SetParentPageNo(newRootNode->GetPageNo());
+        new_node->SetParentPageNo(newRootNode->GetPageNo());
+        // 接下来就可以照常插入了
+        buffer_pool_manager_->UnpinPage(newRootNode->GetPageId(), true);
+    }
+    // 1.2. 否, 继续
+
+    // 2. 找到父节点, 并插入
+    // 这里注意, IxNodeHandle只是一个句柄, 一个节点可以有多个句柄, 是用来方便管理的; 实际上节点之间的"链接"是通过page_no实现的
+    IxNodeHandle *parentNode = FetchNode(old_node->GetPageNo());
+    parentNode->Insert(key, Rid{
+        .page_no = new_node->GetPageNo(),
+        .slot_no = -1
+        }); // slot_no内部节点没用
+
+    // 3. 检查插入后是否满足数目条件: N<=M(内部)
+    int N = parentNode->GetSize(); // 插入后KV数
+    int M = parentNode->GetMaxSize() - 1; // B+树阶数
+    if (N > M) {
+        // 3.2. 不满足: (此时数目M+1(内部))
+        // 3.2.1. 分裂: - 内部节点: old_node': [0,M/2],new_node': [M/2+1,M];key': [M/2+1]
+        IxNodeHandle *rightNewNode = Split(parentNode); // 要在外面Unpin rightNewNode和parentNode
+        // 3.3.2. [递归]转1
+        InsertIntoParent(parentNode, rightNewNode->get_key(0), rightNewNode, transaction);
+        // 需要在外部Unpin parentNode和rightNewNode
+        // 不再使用rightNewNode, 且已经对rightNewNode进行了修改
+        buffer_pool_manager_->UnpinPage(rightNewNode->GetPageId(), true);
+    }
+    buffer_pool_manager_->UnpinPage(parentNode->GetPageId(), true);
+    // 这样, 最后只需要在外部Unpin parentNode和rightNewNode即可
 }
 void IxIndexHandle::InsertIntoParent1(IxNodeHandle *old_node, const char *key, IxNodeHandle *new_node,
                                      Transaction *transaction) {

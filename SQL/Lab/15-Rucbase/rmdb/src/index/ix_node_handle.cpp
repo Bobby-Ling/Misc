@@ -369,7 +369,7 @@ void IxNodeHandle::insert_pair(int pos, const char *key, const Rid &rid) { inser
 /**
  * @brief 用于在结点中插入单个键值对。
  * 函数返回插入后的键值对数量
- *
+ * 要保证插入后的顺序并去重
  * @param (key, value) 要插入的键值对
  * @return int 键值对数量
  */
