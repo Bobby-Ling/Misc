@@ -897,6 +897,13 @@ ls -l /etc/systemd/system/multi-user.target.wants/
 
 ```
 
+## 包管理
+
+```bash
+
+
+```
+
 ## SSH
 
 - 远程登录
@@ -1044,13 +1051,64 @@ x{m,n} =x\{m,n\} x的字符数量在m到n个之间.
 ### `sed`
 
 ```bash
-sed 's/old_string/new_string/' file.txt #替换
+sed -i 's/regex/target/g' # 加i表示原地修改, 否则输出修改后的结果, 不影响原文件; g全局查找
+# 只需要注意一下, 这里正则表达式将?和+当作普通字符, 而*是特殊字符
+
+sed 's/old_string/new_string/' file.txt # 替换
 sed '/pattern/a new_line_text' file.txt # 每一行匹配到 pattern 的行之后添加 new_line_text
 sed 's/^[ \t]*//;s/[ \t]*$//' file.txt # 删除行首和行尾的空格
 sed 'Nd' file.txt # # 删除文件中的第N行
 sed '/^$/d' file.txt # 删除文件中的空行
 sed 's/|$//' # 删除最后一个`|`
 find -maxdepth 1 -type d -printf "%f|" | sed 's/|$//;s/x86_64-linux-gnu|//'
+```
+### awk
+
+```bash
+# 完全用法示例
+FILENAME 当前文件名
+NR 当前处理的是第几行
+NF 当前行有多少个字段
+$NF 最后一个字段
+$(NF-1)代表倒数第二个字段
+
+~ 匹配正则表达式, 使用格式e.g.: $0 ~ /regex/
+!~ 不匹配正则表达式
+
+var1=$GDK_SCALE
+var2=$GDK_DPI_SCALE
+echo | awk 'BEGIN{ print "start",v1,v2 } pattern{  } END{ print "end",v1,v2 }' v1=$var1 v2=$var2 # ???
+
+# 默认为pattern{}
+dmesg -w | awk '
+{
+    # 匹配形如 "ksys_write called: fd = 1, buf = ..., count = ..., pid = 2851" 的行
+    if ($0 ~ /ksys_write called: fd = [0-9]+, buf = [0-9a-fx]+, count = [0-9]+, pid = [0-9]+/) {
+        # 将()内匹配的提取PID和FD至arr
+        match($0, /fd = ([0-9]+), buf = [0-9a-fx]+, count = [0-9]+, pid = ([0-9]+)/, arr)
+        fd = arr[1]
+        pid = arr[2]
+        
+        # 获取进程名称
+        comm_file = "/proc/" pid "/comm"
+        comm = "N/A"
+        if ((getline line < comm_file) > 0) {
+            comm = line
+        }
+        close(comm_file)
+
+        # 获取文件名
+        fd_file = "/proc/" pid "/fd/" fd
+        cmd = "readlink " fd_file
+        cmd | getline filename
+        close(cmd)
+
+        # 输出结果
+        print "PID: " pid ", Process Name: " comm ", FD: " fd ", Filename: " filename
+    }
+}'
+
+
 ```
 
 ### `xargs`
@@ -1152,6 +1210,8 @@ du -sh
   source ~/.bashrc
 
   vim /etc/apt/sources.list
+  
+  sudo sed -i 's/mirrors\.ustc\.edu\.cn/archive\.ubuntu\.com/g'  /etc/apt/sources.list
   # 注意:sudo执行脚本不会默认载入用户定义的环境变量
   sudo -E build.sh # 载入当前.bashrc的环境变量来执行shell脚本
   ```
@@ -1479,6 +1539,13 @@ export KBUILD_USERCFLAGS := -Wall -Wmissing-prototypes -Wstrict-prototypes \
 #     - See include/linux/module.h for more details
 
 sudo make drivers/usb/serial/usbserial.ko KCONFIG_CONFIG=config-wsl-modified-5.15.1 -j $(nproc)
+```
+
+#### 修改后的编译选项
+
+```bash
+CONFIG_RANDOMIZE_BASE=n
+
 ```
 
 ### `Glibc`
