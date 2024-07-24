@@ -1,0 +1,1 @@
+break __GI___libc_write

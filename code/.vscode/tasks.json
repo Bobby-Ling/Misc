@@ -1,0 +1,98 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "C/C++: g++ 生成",
+      "command": "/usr/bin/g++",
+      "args": [
+        "-g",
+        "${file}",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}",
+        "-Wl,-rpath=/opt/glibc-2.35/lib",
+        "-O0"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "C/C++: g++ 生成"
+    },
+    {
+      "type": "shell",
+      "label": "C/C++: gcc 生成",
+      "command": "/usr/bin/gcc",
+      "args": [
+        "-g",
+        "${file}",
+        "-o",
+        "${fileDirname}/${fileBasenameNoExtension}",
+        "-Wl,-rpath=/opt/glibc-2.35/lib"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        // "isDefault": true
+      },
+      "detail": "C/C++: gcc 生成"
+    },
+    {
+      "type": "shell",
+      "label": "C/C++: gcc 内核生成",
+      "command": "/usr/bin/gcc",
+      "args": [
+        "-Wall",
+        "-Wextra",
+        "-O2",
+        "-c",
+        "-o",
+        "${file}.o",
+        "${file}",
+        "-I$HOME/Git/WSL2-Linux-Kernel/include:$HOME/Git/WSL2-Linux-Kernel/arch/x86/include:$HOME/Git/WSL2-Linux-Kernel/tools/include",
+        ";",
+        "/usr/bin/gcc",
+        "-shared",
+        "-o",
+        "${file}.ko",
+        "${file}.o"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$gcc"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "detail": "C/C++: gcc 内核生成"
+    },
+    {
+      "type": "cmake",
+      "label": "CMake: 生成",
+      "command": "build",
+      "targets": [
+        "${command:cmake.launchTargetPath}"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "CMake 模板 生成 任务"
+    }
+  ]
+}

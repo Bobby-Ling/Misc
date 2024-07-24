@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/home/bobby_ubuntu/Git/WSL2-Linux-Kernel-linux-msft-wsl-6.6.36.3/include/",
+                "/home/bobby_ubuntu/Git/WSL2-Linux-Kernel-linux-msft-wsl-6.6.36.3/arch/x86/include/",
+                "/home/bobby_ubuntu/Git/WSL2-Linux-Kernel-linux-msft-wsl-6.6.36.3/arch/x86/include/generated/"
+            ],
+            "defines": [],
+            "intelliSenseMode": "linux-gcc-x64",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}

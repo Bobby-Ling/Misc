@@ -1,0 +1,12 @@
+/.cache/
+/Others/
+build/
+Build/
+*.a
+*.ko
+*.ko.*
+*.mod
+*.mod.*
+*.o
+*.o.*
+*.cmd

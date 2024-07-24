@@ -1,0 +1,12 @@
+CompileFlags:
+  Remove: [
+    -mpreferred-stack-boundary=3,
+    -mindirect-branch=thunk-extern,
+    -mindirect-branch-register,
+    -fno-allow-store-data-races,
+    -fconserve-stack,
+    -mrecord-mcount
+    ]
+  Add: [-I/usr/include, -I/home/bobby_ubuntu/.vscode-server/data/User/globalStorage/llvm-vs-code-extensions.vscode-clangd/install/18.1.3/clangd_18.1.3/lib/clang/18/include]
+# 因为编译命令中不会出现标准库的包含目录, 因此手动添加
+# 加入后边的clang包含目录是因为自带目录里没有stddef.h(???)
