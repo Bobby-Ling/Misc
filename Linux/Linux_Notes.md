@@ -931,6 +931,52 @@ ls -l /etc/systemd/system/multi-user.target.wants/
 - 举例
   - grep "/sbin/nologin" /etc/passwd | wc -l
   - cat readme.txt | wc -l
+- 获取某个程序的输出并将其存储到变量
+```bash
+output=$(ls -l)
+# 或者
+output=`ls -l`
+```
+- 命名管道
+```bash
+#!/bin/bash
+# shellcheck shell=bash
+
+# 创建命名管道
+fifo=/tmp/myfifo
+mkfifo "$fifo"
+
+# 启动程序并将其输出重定向到命名管道
+./write_test > "$fifo" &
+# $!最后一个运行的后台任务pid
+pid=$! 
+
+# 从命名管道中读取随机数
+output=""
+read -r output < "$fifo"
+
+pid_in_crt=0
+echo $output | awk '
+{
+    # 匹配形如 "pid: %d get_pid_in_crt: %ld\n"
+    if ($0 ~ /pid: [0-9]+ get_pid_in_crt: [0-9]+/) {
+        # 将()内匹配的提取至arr
+        match($0, /pid: ([0-9]+) get_pid_in_crt: ([0-9]+)/, arr)
+        pid_in_crt = arr[2]
+        print pid_in_crt
+    }
+}' | pid_in_crt
+
+echo $pid_in_crt
+
+# 删除命名管道
+rm "$fifo"
+
+# 等待程序在后台运行完毕
+wait $pid
+
+```
+
 
 ## vim
 
@@ -1046,6 +1092,22 @@ a|b|c 匹配a或b或c.
 () 字符组, 如: love(able|ers) 匹配loveable或lovers. 
 (..)(..)\1\2 模板匹配. \1代表前面第一个模板, \2代第二个括弧里面的模板. 
 x{m,n} =x\{m,n\} x的字符数量在m到n个之间. 
+```
+
+### `ripgrep`
+
+```bash
+rg [-etF...] pattern [path ...]
+command | rg [-etF...] pattern
+-e 接正则表达式(等价于 -- "pattern that contains -")
+# 默认使用正则表达式
+# 不使用正则表达式
+
+# 对于目录默认递归搜索
+
+rg -F "search_term" file.txt
+rg -F -t txt "search_term" path
+
 ```
 
 ### `sed`
@@ -1173,7 +1235,12 @@ sudo tailscale file get
   useadd smb ##添加smb用户
   passwd smb  ##设置密码为smb
   sudo vim /etc/samba/smb.conf
-
+  
+  # 挂载
+  sudo mount -t cifs //127.0.0.1/home ./mount/ -o username=bobby_ubuntu,password=****
+  # 自动挂载
+  //$localhost/home /home/$user  cifs credentials=/home/$user/.smbcredentials,uid=1000,gid=1000,iocharset=utf8 0 0
+  sudo mount -a
   ```
 
 ### `du`
@@ -1210,6 +1277,13 @@ du -sh
   source ~/.bashrc
 
   vim /etc/apt/sources.list
+  # WSL2出现failed fetch
+  # 将./home/bobby_ubuntu/shells/fix_resolv.conf.sh添加至/etc/resolv.conf
+  #!/bin/bash
+  # 开机加入以下内容至/etc/resolv.conf
+  echo "nameserver 8.8.8.8" >> /etc/resolv.conf
+  echo "nameserver 8.8.4.4" >> /etc/resolv.conf
+  exit 0
   
   sudo sed -i 's/mirrors\.ustc\.edu\.cn/archive\.ubuntu\.com/g'  /etc/apt/sources.list
   # 注意:sudo执行脚本不会默认载入用户定义的环境变量
@@ -1229,7 +1303,7 @@ du -sh
   dmesg -l debug -T | tail -10
   ```
 
-## linux调试
+## Linux Kernel
 
 ### `printk`
 
@@ -1262,9 +1336,42 @@ du -sh
 
   在 /proc/sys/kernel/printk 会显示4个数值( 可由 echo 修改) , 分别表示当前控制台日志级别、未明确指定日志级别的默认消息日志级别、最小( 最高) 允许设置的控制台日志级别、引导时默认的日志级别. 当 printk() 中的消息日志级别小于当前控制台日志级别时, printk 的信息( 要有\n符) 就会在控制台上显示. 但无论当前控制台日志级别是何值, 通过 /proc/kmsg ( 或使用dmesg) 总能查看. 另外如果配置好并运行了 syslogd 或 klogd, 没有在控制台上显示的 printk 的信息也会追加到 /var/log/messages.log 中.
 
+### 根据PID和UID过滤
+
+```bash
+# 添加一个用户debug_user, 使用/home/bobby_ubuntu作为home, 属于bobby_ubuntu用户组
+sudo useradd -d /home/bobby_ubuntu -g bobby_ubuntu -c "used for kernel debug" debug_user
+
+sudo passwd debug_user 
+# 设置密码
+
+id debug_user
+# uid=1001(debug_user) gid=1000(bobby_ubuntu) groups=1000(bobby_ubuntu)
+
+sudo getent passwd debug_user 
+# debug_user:x:1001:1000:used for kernel debug:/home/bobby_ubuntu:/bin/sh
+
+# 切换默认shell为bash
+chsh -s /usr/bin/bash
+
+
+# 测试
+sleep 2; echo "abcd" > file.txt
+# 然后启用断点
+```
+
+![QEMU调试](Assets/Linux_Notes/image.png)
+
+### kprobe
+
+### ftrace
+
 ### QEMU
 
 ```bash
+# QEMU启动需要CONFIG_VIRTIO_PCI=y和CONFIG_VIRTIO_BLK=y, 否则无法挂载vda
+# > https://wiki.gentoo.org/wiki/Knowledge_Base:Unable_to_mount_root_fs
+
 # 查看initrd
 lsinitramfs ./initrd
 zcat ./initrd.img | cpio -id
@@ -1311,17 +1418,150 @@ $ lsblk # lspci lshw
 # virtiofs
 # 需要CONFIG_VIRTIO_FS等配置
 
-
-
 debugStub.listen.guest64 = "1" # 8864
+
+# 启用color
+export TERM=xterm-256color
+# 更改tty大小
+stty size # 查看
+stty cols 151
+stty rows 21
+
+# 内核模块缺失造成网络无法连接!!!
+./build.sh qemu_install # 手动安装
+
+# SSH
+# -device e1000,netdev=net0 -netdev user,id=net0,hostfwd=tcp::2222-:22 \
+ssh -p 2222 bobby_ubuntu@localhost
+
+```
+
+#### 启动
+
+> 更多命令行选项: Documentation/admin-guide/kernel-parameters.txt
+
+```bash
+mkdir ./qcow2
+
+sudo modprobe nbd max_part=8 # 如果没有将nbd编译进内核
+sudo qemu-nbd --connect=/dev/nbd0 ./disk.qcow2
+sudo fdisk -l /dev/nbd0 # 查看信息
+# Disk /dev/nbd0: 10 GiB, 10737418240 bytes, 20971520 sectors
+# Units: sectors of 1 * 512 = 512 bytes
+# Sector size (logical/physical): 512 bytes / 512 bytes
+# I/O size (minimum/optimal): 512 bytes / 512 bytes
+# Disklabel type: gpt
+# Disk identifier: 4CDC292C-F081-43D4-B0AE-7ADD9735450E
+# Device      Start      End  Sectors Size Type
+# /dev/nbd0p1  2048     4095     2048   1M BIOS boot
+# /dev/nbd0p2  4096 20969471 20965376  10G Linux filesystem
+
+sudo blkid /dev/nbd0p1 /dev/nbd0p2 # 查看文件系统和UUID及PARTUUID
+# /dev/nbd0p1: PARTUUID="bc6a805a-f598-470b-8db2-17650b8f0abd"
+# /dev/nbd0p2: UUID="ad3ecbb9-c70e-4f3e-bcd2-7483211087b7" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="29ae8344-def4-41b3-b84d-ffe685c41580"
+sudo mount /dev/nbd0p1 ./qcow2 # 挂载
+
+# echo $$ # 查看当前shell pid
+# sudo lsof ./qcow2 # 查看当前使用此目录的进程
+sudo umount ./qcow2 # umount
+sudo qemu-nbd -d /dev/nbd0 # 断开连接
+
+# qemu指定root: -append "root=PARTUUID=29ae8344-def4-41b3-b84d-ffe685c41580"
+# 启动后
+bobby_ubuntu@bobbyqemu:~$ sudo blkid 
+# /dev/vda2: UUID="ad3ecbb9-c70e-4f3e-bcd2-7483211087b7" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="29ae8344-def4-41b3-b84d-ffe685c41580"
+# /dev/vda1: PARTUUID="bc6a805a-f598-470b-8db2-17650b8f0abd"
+bobby_ubuntu@bobbyqemu:~$ lsblk
+# NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS
+# nbd0    43:0    0   0B  0 disk 
+# nbd1    43:32   0   0B  0 disk 
+# nbd2    43:64   0   0B  0 disk 
+# nbd3    43:96   0   0B  0 disk 
+# nbd4    43:128  0   0B  0 disk 
+# nbd5    43:160  0   0B  0 disk 
+# nbd6    43:192  0   0B  0 disk 
+# nbd7    43:224  0   0B  0 disk 
+# vda    253:0    0  10G  0 disk 
+# ├─vda1 253:1    0   1M  0 part 
+# └─vda2 253:2    0  10G  0 part /
+
+# UUID存储于文件系统, 启动时不可用; PARTUUID存储于分区表, 启动时可用
+# 因此"root=/dev/vda2"等价于"root=PARTUUID=29ae8344-def4-41b3-b84d-ffe685c41580"
+
+# > https://unix.stackexchange.com/questions/93767/why-cant-i-specify-my-root-fs-with-a-uuid
+
+# Just to clarify UUIDs are the only reliable way for the kernel to identify hard drives. There are two types: UUID, which is stored in the filesystem and is not available to the kernel at boot-time, and PARTUUID, which is stored in the partition table and IS available at boot time. So you have to use
+	# root=PARTUUID=SSSSSSSS-PP
+# as /dev/sd?? can change with devices plugged/unplugged.
+# Don't forget to capitalize the hexadecimal number SSSSSSSS-PP you get from blkid!
+# The more easy to use
+	# root=LABEL=
+	# root=UUID=
+# only work with an initramfs that fetches these identifiers.
+# So, if you use a non-empty initramfs, you can have all three! With an empty initramfs, you only have PARTUUID.
+```
+
+#### 文件共享
+
+- 9p
+
+> [qemu 9p](https://wiki.qemu.org/Documentation/9psetup)
+
+```bash
+# 启动选项 -virtfs local,path=$HOME/Git/code,mount_tag=host0,security_model=passthrough,id=host0
+mount -t 9p -o trans=virtio host0 ~/mount -oversion=9p2000.L
+
+# 会导致网络故障?!!!
+```
+- smb
+
+???
+
+- scp
+
+```bash
+scp -P 2222 -r ~/Git/code/ bobby_ubuntu@127.0.0.1:~/mount
+``` 
+
+#### 其他操作
+
+> [qemu suse doc](https://documentation.suse.com/sles/15-SP5/html/SLES-all/cha-qemu-monitor.html)
+
+- ctrl-A + c进入monitor命令行
+- 显示帮助
+  (monitor) help drive_add
+  (monitor) device_add ? 会显示候选列表
+- 
+```bash
+
 ```
 
 ### `GDB+QEMU+VSCode`
 
-#### 启动虚拟机
+#### 配置编译选项
 
 ```bash
-# 编译选项
+# ./Makefile:
+ifdef CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE
+KBUILD_CFLAGS += -O2
+KBUILD_RUSTFLAGS += -Copt-level=2
+else ifdef CONFIG_CC_OPTIMIZE_FOR_SIZE
+KBUILD_CFLAGS += -Os
+KBUILD_RUSTFLAGS += -Copt-level=s
+endif
+
+# 改为了O1 Og O0均通不过(或panic)
+
+CONFIG_READABLE_ASM = y
+CONFIG_GDB_SCRIPTS = y
+```
+
+#### 启动虚拟机
+
+##### busubox
+
+```bash
+# 编译选项(或nokaslr)
 CONFIG_RANDOMIZE_BASE=n
 
 # 制作ram disk根文件系统(busybox)
@@ -1346,18 +1586,17 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
 
 ```
 
-#### VSCode配置
+#### Linux C/C++环境配置(clangd+VSCode+Cmake(kernel/user))
 
 ##### 配置调试启动
 
-```bash
-# 修改.vscode/launch.json
+```json
+//  修改.vscode/launch.json
 "miDebuggerServerAddress": "127.0.0.1:1234",
 "program": "${workspaceFolder}/vmlinux",
-# 相当于:
+//  相当于:
 $ gdb vmlinux
 (gdb) target remote:1234
-
 
 "setupCommands":[{
   "description": "为 gdb 启用当前目录的.gdbinit",
@@ -1377,6 +1616,13 @@ $ gdb vmlinux
 
 # .vscode/c_cpp_properties.json
 "compileCommands": "${workspaceFolder}/compile_commands.json"
+
+# The tools/ directory adopts a different build system, and produces .cmd
+# files in a different format. Do not support it.
+# 因此使用bear make
+
+# tools 依赖(不全) 见tools目录部分
+bear --output ../compile_commands.json --append  -- make -j $(nproc) all
 ```
 
 ##### 附录
@@ -1493,25 +1739,18 @@ quit: 简记为 q , 退出gdb
 
 
 (gdb) set args          # 设置程序启动参数, 如: set args 10 20 30
-
 (gdb) show args         # 查看程序启动参数
-
 (gdb) path <dir>        # 设置程序的运行路径
-
 (gdb) show paths        # 查看程序的运行路径
-
 (gdb) set env <name=val># 设置环境变量, 如: set env USER=chen
-
 (gdb) show env [name]   # 查看环境变量
-
 (gdb) cd <dir>          # 相当于shell的cd命令
-
 (gdb) pwd               # 显示当前所在目录
 ```
 
-### `系统调用`
+### `syscall 系统调用`
 
-```bash
+#### v5.x + 
 arch/x86/entry/syscalls/syscall_64.tbl
 <number> <abi> <name> <entry point>
 
@@ -1524,8 +1763,34 @@ arch/x86/entry/syscalls/syscall_64.tbl
 其次, 系统调用函数返回值类型是 long. 为了保证 32 位和 64 位系统的兼容性, 系统调用在用户空间和内核空间有不同的返回值类型, 在用户空间为 int, 在内核空间为 long. 
 
 实现该系统调用, 把它放进 kernel/ 下的一个相关文件, 比如 sys.c
-```
 
+#### v4.19
+
+> [Adding a New System Call](https://www.kernel.org/doc/html/v4.19/process/adding-syscalls.html#x86-system-call-implementation)
+
+```c
+// arch/x86/entry/syscalls/syscall_64.tbl
+454 common  get_pid_in_crt  __x64_sys_get_pid_in_crt
+
+// arch/x86/entry/syscalls/syscall_32.tbl
+454 i386    get_pid_in_crt  sys_get_pid_in_crt  __ia32_sys_get_pid_in_crt
+
+// include/linux/syscalls.h
+asmlinkage long sys_get_pid_in_crt();
+
+// include/uapi/asm-generic/unistd.h
+#define __NR_xyzzy 292
+__SYSCALL(__NR_xyzzy, sys_xyzzy)
+
+// kernel/sys_ni.c 
+COND_SYSCALL(get_pid_in_crt);
+
+// kernel/sys.c
+SYSCALL_DEFINE0(get_pid_in_crt)
+{
+	return current->pid;
+}
+```
 ### `Kernel`
 
 ```bash
@@ -1539,6 +1804,100 @@ export KBUILD_USERCFLAGS := -Wall -Wmissing-prototypes -Wstrict-prototypes \
 #     - See include/linux/module.h for more details
 
 sudo make drivers/usb/serial/usbserial.ko KCONFIG_CONFIG=config-wsl-modified-5.15.1 -j $(nproc)
+```
+#### 内核文档
+
+```bash
+pip install virtualenv
+virtualenv sphinx_latest
+. sphinx_latest/bin/activate
+# which pip : /home/bobby_ubuntu/Git/WSL2-Linux-Kernel-linux-msft-wsl-6.6.36.3/sphinx_latest/bin/pip
+pip install -r Documentation/sphinx/requirements.txt
+pip install sphinx_rtd_theme
+```
+
+#### tools目录
+
+```bash
+# tools 依赖(不全)
+sudo apt install libcap-dev libasound2-dev libpopt-dev libfuse-dev libnuma-dev libpci-dev libconfig-dev libnl-genl-3-dev binutils-dev libdw-dev systemtap-sdt-dev libunwind-dev libslang2-dev libperl-dev libzstd-dev libbabeltrace-dev libpfm4-dev libtraceevent-dev libtracefs-dev libmnl-dev libcap-ng-dev liburing-dev libelf-dev libmount-dev libxen-dev
+bear --output ../compile_commands.json --append  -- make -j $(nproc) all
+```
+
+#### 编译3.16-rc7
+
+```bash
+# 查看每个tag提交时间
+git for-each-ref --format='%(refname:short) %(creatordate)' refs/tags
+
+# 查看编译工具链
+# Documentation/Changes
+# https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/Documentation/Changes?id=refs/tags/v3.16-rc7
+
+# Gnu C                  3.2                     # gcc --version
+# Gnu make               3.80                    # make --version
+# binutils               2.12                    # ld -v                    https://ftp.gnu.org/gnu/binutils/
+# util-linux             2.10o                   # fdformat --version
+# module-init-tools      0.9.10                  # depmod -V
+# e2fsprogs              1.41.4                  # e2fsck -V
+# jfsutils               1.1.3                   # fsck.jfs -V
+# reiserfsprogs          3.6.3                   # reiserfsck -V
+# xfsprogs               2.6.0                   # xfs_db -V
+# squashfs-tools         4.0                     # mksquashfs -version
+# btrfs-progs            0.18                    # btrfsck
+# pcmciautils            004                     # pccardctl -V
+# quota-tools            3.09                    # quota -V
+# PPP                    2.4.0                   # pppd --version
+# isdn4k-utils           3.1pre1                 # isdnctrl 2>&1|grep version
+# nfs-utils              1.0.5                   # showmount --version
+# procps                 3.2.0                   # ps --version
+# oprofile               0.9                     # oprofiled --version
+# udev                   081                     # udevd --version
+# grub                   0.93                    # grub --version || grub-install --version
+# mcelog                 0.6                     # mcelog --version
+# iptables               1.4.2                   # iptables -V
+```
+
+##### 多版本共存
+
+```bash
+# 需要低版本的工具: binutils-2.26 gcc-4.8
+
+# https://lantern.cool/tool-linux-muti-gcc/
+# https://launchpad.net/ubuntu/+source/gcc-4.8
+# 4.8.4-2ubuntu1~14.04.4 
+
+# 添加old源
+# /etc/apt/sources.list
+# deb [trusted=yes] https://mirrors.ustc.edu.cn/ubuntu-old-releases/ubuntu/ lucid main restricted universe multiverse # etc
+# 所有的old release https://mirrors.ustc.edu.cn/ubuntu-old-releases/ubuntu/dists/
+
+sudo apt update
+# 添加公钥
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32
+sudo apt update
+sudo apt install gcc-4.8 g++-4.8
+
+# 将各个版本 gcc 加入 gcc 候选中, 设置优先级(优先级可以不同版本设置相同, 后面再通过配置来指定使用的版本)
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 50
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 50
+
+sudo update-alternatives --config gcc
+# There are 2 choices for the alternative gcc (providing /usr/bin/gcc).
+#   Selection    Path              Priority   Status
+# ------------------------------------------------------------
+# * 0            /usr/bin/gcc-11    50        auto mode
+#   1            /usr/bin/gcc-11    50        manual mode
+#   2            /usr/bin/gcc-4.8   50        manual mode
+# Press <enter> to keep the current choice[*], or type selection number: 
+
+# binutils-2.26
+sudo apt install binutils-2.26
+sudo update-alternatives --install /usr/bin/as as /usr/bin/x86_64-linux-gnu-as 50
+sudo update-alternatives --install /usr/bin/as as /usr/bin/x86_64-linux-gnu-as-2.26 50
+sudo update-alternatives --config as
+
+# 在Ubuntu 22.04上成功编译, 但是WSL2无法启动
 ```
 
 #### 修改后的编译选项
@@ -1615,3 +1974,210 @@ bobby_ubuntu@Bobby:~/Git/code$ ldd out
         libc.so.6 => /opt/glibc-2.35/lib/libc.so.6 (0x00007f69c6cfd000)
         /lib64/ld-linux-x86-64.so.2 (0x00007f69c6ef4000)
 ```
+
+## linux进程
+
+### 关于pid
+
+- syscall(39): getpid()
+
+```c
+// 39	common	getpid			sys_getpid
+// include/linux/syscalls.h
+// kernel/sys.c
+/**
+ * sys_getpid - return the thread group id of the current process
+ *
+ * Note, despite the name, this returns the tgid not the pid.  The tgid and
+ * the pid are identical unless CLONE_THREAD was specified on clone() in
+ * which case the tgid is the same in all threads of the same group.
+ *
+ * This is SMP safe as current->tgid does not change.
+ */
+SYSCALL_DEFINE0(getpid)
+{
+  // 坑点在于这个值并不会等于current->tgid或current->pid(后者是可以理解的)
+  // [  -0.000001] ksys_write called by 1001: fd = 25, buf = 000000007276e236, count = 11, tgid = 115729, sys_getpid = 115288 in kprobe
+  // [  +0.000002] ksys_write called by 1001: fd = 25, buf = 00000000bdeadf9a, count = 11, tgid = 115729, sys_getpid = 115288 in kprobe
+	return task_tgid_vnr(current);
+}
+```
+
+### struct task_struct
+
+```c
+// Size: 13440 bytes, alignment 64 bytes
+// include/linux/sched.h
+
+```
+
+## Linux文件系统
+
+### vfs层
+
+ksys_write
+  vfs_write
+		count截断为MAX_RW_COUNT(2147479552)
+    
+    
+### ext4等文件系统
+
+```c
+struct file_operations ext4_file_operations = {
+	.read_iter	= ext4_file_read_iter,
+	.write_iter	= ext4_file_write_iter,
+	.open		= ext4_file_open,
+	.fsync		= ext4_sync_file,
+  // ...
+};
+
+```
+
+### page
+
+```c
+struct address_space {
+	struct inode		*host;
+	unsigned long		nrpages;
+	const struct address_space_operations *a_ops;
+	struct list_head	private_list;
+	void			*private_data;
+  // ...
+}
+
+static const struct address_space_operations ext4_da_aops = {
+	.writepages		= ext4_writepages,
+	.write_begin		= ext4_da_write_begin,
+	.write_end		= ext4_da_write_end,
+	.dirty_folio		= ext4_dirty_folio,
+  // ...
+};
+``` 
+
+### Direct IO
+
+```c
+// [^_]submit_bio\(\)
+
+```
+
+### block
+
+### driver, etc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## TMP
+
+### 调试/跟踪方法
+
+#### ftrace
+
+包含消耗时间, 可视化调用层级, task切换等
+
+##### 精确地进行跟踪
+
+- 使用set_graph_function和set_ftrace_notrace过滤函数(所有可用函数见available_filter_functions)
+- 使用PID过滤进程
+
+##### 坑点
+
+过滤的PID使用current(宏, 指向task_struct, 架构相关)->pid(至少3.x起)
+经测试(VMware/WSL2, 4.19/5.15/6.6.36)下并不等于getpid; QEMU(Linux)下current->pid==getpid()但不等于ftrace内的pid(未找明原因)
+
+#### kprobe
+
+支持根据函数名称(symbol)hook内核函数, 编译为内核模块动态加载
+- 过滤
+可用:
+```c
+pid_t user_pid = task_tgid_vnr(current);
+uid_t user_uid = current->cred->uid.val;
+```
+获取uid和用户空间pid来过滤
+
+- 获取参数
+
+x86平台使用寄存器获取
+```c
+#include <bpf_helpers.h>
+#define PT_REGS_PARM1(x) ((x)->di)
+// ...
+```
+
+#### QEMU+GDB
+
+- 过滤:
+```c
+// 防止优化
+volatile int uid_temp = current->cred->uid.val;
+if (uid_temp == 1001) {};
+```
+
+### 文件系统
+
+- O_WRONLY | O_CREAT | O_TRUNC + fsync(fd)
+
+sys_write
+  vfs_write
+    ext4_file_write_iter(file->f_op->write_iter)
+      ext4_buffered_write_iter(非O_DIRECT)
+        generic_perform_write
+          ...页高速缓存相关
+          无sync写盘过程(非O_SYNC)
+
+__x64_sys_fsync
+  ...
+    ext4_sync_file(file->f_op->fsync)
+      do_writepages
+        ext4_io_submit
+          submit_bio
+          
+- O_WRONLY | O_SYNC
+
+sys_write
+  vfs_write
+    ext4_file_write_iter(file->f_op->write_iter)
+      ext4_buffered_write_iter(非O_DIRECT)
+        generic_perform_write
+        ...页高速缓存相关
+        vfs_fsync_range(O_SYNC)
+          ext4_sync_file(file->f_op->fsync)
+            ...
+            (同上)
+
+
+- O_WRONLY | O_SYNC | O_DIRECT
+
+sys_write
+  vfs_write
+    ext4_file_write_iter(file->f_op->write_iter)
+      iomap_dio_rw(O_DIRECT)
+        ...
+        iomap_dio_bio_iter(得到bio)
+        ...
+          submit_bio
+          
