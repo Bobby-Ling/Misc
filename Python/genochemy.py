@@ -2,13 +2,17 @@
 
 # Genochemy
 from enum import Enum
-from gc import enable
 from pprint import pprint, pformat
 from typing import Any, Optional, TypeAlias, Union, override
 from typing import List, Dict, Set, Tuple
 
 class StatePool:
     class Scope(Enum):
+        """作用域
+        SEQUENCE: 每一个Sequence实例的局部变量, 暂时使用Sequence实例的self表示, 暂时只包括expression
+        EMULATION: 模拟中的全局量
+        ENVIRONMENT: drug_A blue_light red_light
+        """
         EMULATION = 0
         ENVIRONMENT = 1
     KeyType: TypeAlias = Optional[Union['Sequence', Scope]]
@@ -68,7 +72,7 @@ class Emulation:
     def resolve_dependency(self):
         """处理依赖关系
         
-        使用拓扑排序处理依赖关系DAG
+        TODO 使用拓扑排序处理依赖关系AOV
         """
     def resolve_state_pool(self):
         for sequence in self.sequences:
@@ -120,6 +124,20 @@ class Coding_Region(Bio_Device):
     pass
 
 class Constitutive(Promoter):
+    """等价json
+
+    {
+        "name": "Constitutive",
+        "type": "Promoter",
+        "data_flow": {
+            "EMULATION": {
+                "expression": {
+                    "default": 1.0
+                }
+            }
+        }
+    }
+    """
     pass
 class Repressed(Promoter):
     pass
@@ -130,7 +148,7 @@ class Blue_light_sensor_dimer(Activated):
     @override
     def express(self):
         """
-        in:  blue_light_dimer_value = 0
+        in:  blue_light_dimer_value = 1.0
         out: expression
         """
         expression_tmp = self._state_pool.get_state("blue_light_dimer_value", 0.0)
@@ -140,7 +158,7 @@ class Repressor_A(Repressed):
     @override
     def express(self):
         """
-        in:  Repressor_A_value = 0
+        in:  Repressor_A_value = 0.0
         out: expression
         """
         expression_tmp = self._state_pool.get_state("Repressor_A_value", 0.0)
@@ -158,30 +176,59 @@ class mCherry_gene(Fluorescence_Protein_gene):
     @override
     def execute(self):
         """
-        in:  expression = 1
+        in:  expression = 1.0
         out: mCherry_value
         """
         expression_tmp = self._state_pool.get_state("expression", 1.0, self._sequence)
         self._state_pool.add_state("mCherry_value", expression_tmp)
     pass
 class Blue_light_sensor_gene(Activator_gene):
+    """可以从下面的json构造这个类
+    
+    {
+        "name": "Blue_light_sensor_gene",
+        "type": "Coding_Region",
+        "data_flow": {
+            "ENVIRONMENT": {
+                "blue_light": {
+                    "default": 0.0
+                }
+            },
+            "EMULATION": {
+                "expression": {
+                    "default": 0.0
+                },
+                "blue_light_dimer_value": {
+                    "default": null,
+                    "depends_on": [
+                        "blue_light",
+                        "expression"
+                    ],
+                    "formula": "blue_light * expression"
+                }
+            }
+        }
+    }
+    """
     @override
     def execute(self):
         """
-        env: blue_light = 0
-        in:  expression = 0
+        env: blue_light = 0.0
+        in:  expression = 0.0
         out: blue_light_dimer_value
         """
         blue_light_tmp = self._state_pool.get_state("blue_light", 0.0, StatePool.Scope.ENVIRONMENT)
         expression_tmp = self._state_pool.get_state("expression", 0.0, self._sequence)
         self._state_pool.add_state("blue_light_dimer_value", blue_light_tmp * expression_tmp)
     pass
+
+
 class Repressor_A_gene(Repressor_gene):
     @override
     def execute(self):
         """
-        env: drug_A = 0
-        in:  expression = 0
+        env: drug_A = 0.0
+        in:  expression = 0.0
         out: Repressor_A_value
         """
         drug_A_tmp = self._state_pool.get_state("drug_A", 0.0, StatePool.Scope.ENVIRONMENT)
