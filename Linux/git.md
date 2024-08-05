@@ -535,3 +535,10 @@ git submodule update --recursive --remote
     git stash pop
     git checkout -b <new-branch-name>
     ```
+
+## 添加多个远程Url
+
+```bash
+git remote -v
+git remote set-url --add origin git@github.com:Bobby-Ling/Misc.git
+```
