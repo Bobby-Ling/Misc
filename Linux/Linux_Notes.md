@@ -1116,6 +1116,15 @@ rg -F -t txt "search_term" path
 sed -i 's/regex/target/g' # 加i表示原地修改, 否则输出修改后的结果, 不影响原文件; g全局查找
 # 只需要注意一下, 这里正则表达式将?和+当作普通字符, 而*是特殊字符
 
+# 重点: 特殊字符处理
+# s后面的作为分隔符, 如(分隔符与正则表达式无关, 只是给sed用来分隔的)
+echo "this is /a/b/c" | sed 's#/a/b/c#/x/y/z#g'
+echo "this is /a/b/c" | sed 's@/a/b/c@/x/y/z@g'
+echo "this is /a/b/c" | sed 's!/a/b/c!/x/y/z!g'
+echo "this is /a/b/c" | sed 's|/a/b/c|/x/y/z|g'
+echo "this is /a/b/c" | sed 's_/a/b/c_/x/y/z_g'
+
+
 sed 's/old_string/new_string/' file.txt # 替换
 sed '/pattern/a new_line_text' file.txt # 每一行匹配到 pattern 的行之后添加 new_line_text
 sed 's/^[ \t]*//;s/[ \t]*$//' file.txt # 删除行首和行尾的空格
@@ -1558,7 +1567,7 @@ CONFIG_GDB_SCRIPTS = y
 
 #### 启动虚拟机
 
-##### busubox
+##### busybox
 
 ```bash
 # 编译选项(或nokaslr)
@@ -2141,6 +2150,7 @@ if (uid_temp == 1001) {};
 
 - O_WRONLY | O_CREAT | O_TRUNC + fsync(fd)
 
+```
 sys_write
   vfs_write
     ext4_file_write_iter(file->f_op->write_iter)
@@ -2148,16 +2158,20 @@ sys_write
         generic_perform_write
           ...页高速缓存相关
           无sync写盘过程(非O_SYNC)
+```
 
+```
 __x64_sys_fsync
   ...
     ext4_sync_file(file->f_op->fsync)
       do_writepages
         ext4_io_submit
           submit_bio
+```
           
 - O_WRONLY | O_SYNC
 
+```
 sys_write
   vfs_write
     ext4_file_write_iter(file->f_op->write_iter)
@@ -2168,10 +2182,12 @@ sys_write
           ext4_sync_file(file->f_op->fsync)
             ...
             (同上)
+```
 
 
 - O_WRONLY | O_SYNC | O_DIRECT
 
+```
 sys_write
   vfs_write
     ext4_file_write_iter(file->f_op->write_iter)
@@ -2180,4 +2196,5 @@ sys_write
         iomap_dio_bio_iter(得到bio)
         ...
           submit_bio
+```
           
